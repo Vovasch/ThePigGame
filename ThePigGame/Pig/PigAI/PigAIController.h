@@ -54,8 +54,12 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	UFUNCTION(BlueprintCallable)
 	void OnTargetLocationReached();
 
+	protected:
 	UFUNCTION(BlueprintCallable)
 	void OnMoveToTargetLocationFailed();
+
+	protected:
+	void OnTargetLoacationEvent(bool succes);
 
 	protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -1,7 +1,5 @@
 #include "TBaseTask.h"
 
-TBaseTask::TBaseTask(UTaskDispatcher* owner) : m_pTaskDispatcherOwner(owner) {}
-
 void TBaseTask::Start() {
 	if(m_bInProgress) return;
 	OnEvent(ETaskEvent::Start, m_xTaskType);

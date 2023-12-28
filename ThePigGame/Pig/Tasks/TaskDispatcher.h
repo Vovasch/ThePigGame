@@ -1,27 +1,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../../Utils/EventHandler/TEventHandler.h"
+#include "../../Utils/PigDataUser/IPigDataUser.h"
 #include "TBaseTask.h"
 #include "TaskEvent.h"
 #include "TaskType.h"
 #include "Containers/Queue.h"
 #include "type_traits"
-#include "../../Utils/EventHandler/TEventHandler.h"
 #include "TaskDispatcherEvent.h"
 #include "TaskDispatcher.generated.h"
 
 class APig;
 
 UCLASS()
-class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETaskDispatcherEvent, ETaskType> {
+class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETaskDispatcherEvent, ETaskType>, public ICachedPigDataUser {
 	GENERATED_BODY()
 
 	public:
 	UTaskDispatcher();
 
-	public:
-	void SetPigOwner(APig*);
-	APig* GetPigOwner();
+	virtual void Init(APig* pig) override;
 
 	public:
 	void AddTask(ETaskType taskType);
@@ -44,7 +43,7 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	void CreateTask() {
 		static_assert(std::is_base_of_v<TBaseTask, TaskType>, "TaskType must be derived from TBaseTask");
 
-		auto task = MakeShared<TaskType>(this);
+		auto task = MakeShared<TaskType>();
 		task->Subscribe(ETaskEvent::End, [this](ETaskType taskType) { this->OnEndTask(taskType); });
 		m_vAllTasks[(uint32)task->GetTaskType()] = { task, ETaskState::None };
 	}

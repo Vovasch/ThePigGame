@@ -7,9 +7,10 @@ class UEatingSpot;
 class TGoToEatTask : public TBaseTask {
 	
 	public:
-	TGoToEatTask(UTaskDispatcher* owner);
+	TGoToEatTask();
 
 	public:
 	virtual void Start() override;
-	virtual void Fail() override;
+	void OnNoEatingSpotAvailable();
+	void OnFailedToReachEatingSpot();
 };

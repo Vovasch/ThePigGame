@@ -5,6 +5,6 @@
 class TGoToSleepTask : public TBaseTask {
 
 	public:
-	TGoToSleepTask(UTaskDispatcher* owner);
+	TGoToSleepTask();
 
 };

@@ -285,7 +285,7 @@ UTaskDispatcher* APig::GetTaskDispatcher() {
 
 void APig::CreateTaskDispatcher() {
 	m_pTaskDispatcher = NewObject<UTaskDispatcher>();
-	m_pTaskDispatcher->SetPigOwner(this);
+	m_pTaskDispatcher->Init(this);
 }
 
 void APig::AddTask(ETaskType taskType) {

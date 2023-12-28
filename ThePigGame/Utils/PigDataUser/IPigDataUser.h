@@ -1,10 +1,7 @@
 #pragma once
 
-#include "../../Pig/Pig.h"
-#include "../../Pig/PigAI/PigAIController.h"
-#include "../../Pig/PigStateMachine/PigStateMachine.h"
-#include "../../Pig/Tasks/TaskDispatcher.h"
-#include "../../Farm/Farm.h"
+class APig;
+
 
 class INoCachePigDataUser {	
 	public:
@@ -28,7 +25,7 @@ class INoCachePigDataUser {
 
 class ICachedPigDataUser : public INoCachePigDataUser {
 	public:
-	void Init(APig* pig) {
+	virtual void Init(APig* pig) {
 		m_pPig = pig;
 	}
 

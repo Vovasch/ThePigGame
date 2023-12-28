@@ -61,21 +61,25 @@ void APigAIController::SetTargetEatingSpot(UEatingSpot* eatingSpot) {
 	m_pTargetEatingSpot = eatingSpot;
 }
 
-
-void APigAIController::OnTargetLocationReached() {
-
+void APigAIController::OnTargetLoacationEvent(bool success) {
 	if(m_xTargetLocationType == ETargetLocationTypes::EatingSpot) {
-		OnEvent(EPigAIControllerEvent::ReachedEatingSpot);
+		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
 	} else if(m_xTargetLocationType == ETargetLocationTypes::SleepingSpot) {
-		OnEvent(EPigAIControllerEvent::ReachedSleepingSpot);
+		OnEvent(success ? EPigAIControllerEvent::ReachedSleepingSpot : EPigAIControllerEvent::FailedToReachSleepingSpot);
 	}
 
 	m_xTargetLocation = FVector::ZeroVector;
 	m_xTargetLocationType = ETargetLocationTypes::None;
+
+}
+
+
+void APigAIController::OnTargetLocationReached() {
+	OnTargetLoacationEvent(true);
 }
 
 void APigAIController::OnMoveToTargetLocationFailed() {
-
+	OnTargetLoacationEvent(false);
 }
 
 bool APigAIController::CanStartEating() {
@@ -97,7 +101,7 @@ void APigAIController::BindOnEvents() {
 		if (CanStartEating()) {
 			OnEvent(EPigAIControllerEvent::CanStartEating);
 		} else {
-			OnEvent(EPigAIControllerEvent::UableToStartEating);
+			OnEvent(EPigAIControllerEvent::UnableToStartEating);
 		}
 	});
 }

@@ -9,12 +9,10 @@ UTaskDispatcher::UTaskDispatcher() {
 	CreateTask<TGoToSleepTask>();
 }
 
-void UTaskDispatcher::SetPigOwner(APig* owner) {
-	m_pPigOwner = owner;
-}
-
-APig* UTaskDispatcher::GetPigOwner() {
-	return m_pPigOwner;
+void UTaskDispatcher::Init(APig* pig) {
+	for(auto& taskData : m_vAllTasks) {
+		if(taskData.Task) taskData.Task->Init(pig);
+	}
 }
 
 void UTaskDispatcher::OnStartTask(ETaskType taskType) {

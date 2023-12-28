@@ -1,16 +1,12 @@
 #pragma once
 
 #include "../../Utils/EventHandler/TEventHandler.h"
+#include "../../Utils/PigDataUser/IPigDataUser.h"
 #include "TaskEvent.h"
 #include "TaskType.h"
-#include "TaskDispatcher.h"
-//class UTaskDispatcher;
 
-class TBaseTask : public TEventHandler<ETaskEvent, ETaskType> {
 
-	public:
-	TBaseTask(UTaskDispatcher* owner);
-
+class TBaseTask : public TEventHandler<ETaskEvent, ETaskType>, public ICachedPigDataUser {
 	public:
 	virtual void Start();
 	virtual void Complete();
@@ -25,9 +21,6 @@ class TBaseTask : public TEventHandler<ETaskEvent, ETaskType> {
 
 	protected:
 	ETaskType m_xTaskType = ETaskType::None;
-
-	protected:
-	UTaskDispatcher* m_pTaskDispatcherOwner = nullptr;
 
 	private:
 	bool m_bInProgress = false;

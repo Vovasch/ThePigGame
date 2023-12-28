@@ -1,5 +1,5 @@
 #include "TGoToSleepTask.h"
 
-TGoToSleepTask::TGoToSleepTask(UTaskDispatcher* owner) : TBaseTask(owner) {
+TGoToSleepTask::TGoToSleepTask() {
 	m_xTaskType = ETaskType::GoToSleep;
 }

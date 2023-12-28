@@ -7,19 +7,17 @@
 
 
 
-TGoToEatTask::TGoToEatTask(UTaskDispatcher* owner) : TBaseTask(owner) {
+TGoToEatTask::TGoToEatTask() {
 	m_xTaskType = ETaskType::GoToEat;
 }
 
 void TGoToEatTask::Start() {
-	auto pig = m_pTaskDispatcherOwner->GetPigOwner();
-	auto aiController = pig->GetPigAIController();
-	auto farm = pig->GetOwnerFarm();
+	auto aiController = GetAIController();
 
-	auto targetEatingSpot = farm->GetAvailableEatingSpot();
+	auto targetEatingSpot = GetFarm()->GetAvailableEatingSpot();
 	aiController->SetTargetEatingSpot(targetEatingSpot);
 	if(!targetEatingSpot) {
-		Fail();
+		OnNoEatingSpotAvailable();
 		return;
 	}
 
@@ -28,24 +26,28 @@ void TGoToEatTask::Start() {
 		aiController->Unsibscribe(this);
 	});
 
+	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachEatingSpot, [this, aiController]() {
+		this->OnFailedToReachEatingSpot();
+		aiController->Unsibscribe(this);
+	});
+
 	aiController->SetTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
 	
 	TBaseTask::Start();
+}
+
+void TGoToEatTask::OnNoEatingSpotAvailable() {
+	
+	GetFarm()->Subscribe(this, EFarmEvent::EatingSpotFreed, [this]() {
+		GetPig()->AddTask(ETaskType::GoToEat);
+		GetFarm()->Unsibscribe(this);
+	});
+
+	TBaseTask::Fail();
 
 }
 
-void TGoToEatTask::Fail() {
-	TBaseTask::Fail();
-	
-	auto pig = m_pTaskDispatcherOwner->GetPigOwner();
-	auto aiController = pig->GetPigAIController();
-	auto farm = pig->GetOwnerFarm();
-
-	farm->Subscribe(this, EFarmEvent::EatingSpotFreed, [this, pig, farm]() {
-		pig->AddTask(ETaskType::GoToEat);
-		farm->Unsibscribe(this);
-	});
-
-
-
+void TGoToEatTask::OnFailedToReachEatingSpot() {
+	Fail();
+	GetPig()->AddTask(ETaskType::GoToEat);
 }
