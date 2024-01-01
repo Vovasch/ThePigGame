@@ -21,15 +21,19 @@ void TGoToEatTask::Start() {
 		return;
 	}
 
-	aiController->Subscribe(this, EPigAIControllerEvent::ReachedEatingSpot, [this, aiController]() {
+	aiController->Subscribe(this, EPigAIControllerEvent::CanStartEating, [this, aiController]() {
+		GetAIController()->Unsibscribe(this);
 		this->Complete();
-		aiController->Unsibscribe(this);
+	});
+
+	aiController->Subscribe(this, EPigAIControllerEvent::UnableToStartEating, [this, aiController]() {
+		this->RestartTask();
 	});
 
 	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachEatingSpot, [this, aiController]() {
-		this->OnFailedToReachEatingSpot();
-		aiController->Unsibscribe(this);
+		this->RestartTask();
 	});
+
 
 	aiController->SetTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
 	
@@ -38,16 +42,21 @@ void TGoToEatTask::Start() {
 
 void TGoToEatTask::OnNoEatingSpotAvailable() {
 	
+	GetPig()->SetWaitingForEatingSpot(true);
+	GetAIController()->Unsibscribe(this);
+	Fail();
+
 	GetFarm()->Subscribe(this, EFarmEvent::EatingSpotFreed, [this]() {
-		GetPig()->AddTask(ETaskType::GoToEat);
 		GetFarm()->Unsibscribe(this);
+		GetPig()->SetWaitingForEatingSpot(false);
+		GetPig()->AddTask(ETaskType::GoToEat);
 	});
 
-	TBaseTask::Fail();
 
 }
 
-void TGoToEatTask::OnFailedToReachEatingSpot() {
+void TGoToEatTask::RestartTask() {
+	GetAIController()->Unsibscribe(this);
 	Fail();
 	GetPig()->AddTask(ETaskType::GoToEat);
 }

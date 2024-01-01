@@ -40,10 +40,10 @@ void AFarm::BeginPlay() {
 					});
 
 					eatingSpot->Subscribe(EEatingSpotEvent::Freed, [this]() {
-						auto nonewereAvailabe = m_iAvailableEatingSpots == 0;
+						auto noneWereAvailable = m_iAvailableEatingSpots == 0;
 
 						++m_iAvailableEatingSpots;
-						OnEvent(EFarmEvent::EatingSpotFreed);
+						if(noneWereAvailable) OnEvent(EFarmEvent::EatingSpotFreed);
 
 					});
 				}
@@ -63,7 +63,7 @@ void AFarm::BeginPlay() {
 		auto uclass = LoadObject<UClass>(nullptr, UTF8_TO_TCHAR("Blueprint'/Game/Pig/BP_BigPig.BP_BigPig_C'"));
 
 		origin.Z = 87.2f;
-		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < 4; i++) {
 			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
 			origin.X += 70;
 			if(!pig) continue;

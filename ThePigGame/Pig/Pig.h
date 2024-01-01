@@ -102,6 +102,10 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	public:
 	void AddTask(ETaskType taskType);
 
+	public:
+	void SetWaitingForEatingSpot(bool isWaiting);
+
+
 	protected:
 	Age m_xAge;
 
@@ -163,5 +167,9 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	protected:
 	UPROPERTY()
 	UClass* m_xAdultAnimBlueprint;
+
+	protected:
+	bool m_bIsWaitingForEatingSpot = false;
+
 
 };

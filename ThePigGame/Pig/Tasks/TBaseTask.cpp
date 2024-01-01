@@ -7,6 +7,7 @@ void TBaseTask::Start() {
 }
 
 void TBaseTask::OnEnd() {
+	m_bInProgress = false;
 	OnEvent(ETaskEvent::End, m_xTaskType);
 }
 
@@ -14,14 +15,12 @@ void TBaseTask::Complete() {
 	if(!m_bInProgress) return;
 	OnEnd();
 	OnEvent(ETaskEvent::Success, m_xTaskType);
-	m_bInProgress = false;
 }
 
 void TBaseTask::Fail() {
 	if(!m_bInProgress) return;
 	OnEnd();
 	OnEvent(ETaskEvent::Fail, m_xTaskType);
-	m_bInProgress = false;
 }
 
 void TBaseTask::Tick(float delta) {

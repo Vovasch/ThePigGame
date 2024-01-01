@@ -66,8 +66,6 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	TQueue<ETaskType> m_xTaskQue;
 	TStaticArray<TTaskData, (int32)ETaskType::Size> m_vAllTasks;
 
-	protected:
-	APig* m_pPigOwner = nullptr;
 
 
 };

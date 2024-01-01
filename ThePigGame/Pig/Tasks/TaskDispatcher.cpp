@@ -10,6 +10,7 @@ UTaskDispatcher::UTaskDispatcher() {
 }
 
 void UTaskDispatcher::Init(APig* pig) {
+	ICachedPigDataUser::Init(pig);
 	for(auto& taskData : m_vAllTasks) {
 		if(taskData.Task) taskData.Task->Init(pig);
 	}

@@ -53,6 +53,9 @@ APig* APigAIController::GetPig() {
 
 
 void APigAIController::SetTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
+	if (loc == FVector::ZeroVector) {
+		return;
+	}
 	m_xTargetLocation = loc;
 	m_xTargetLocationType = targetType;
 }
@@ -68,8 +71,9 @@ void APigAIController::OnTargetLoacationEvent(bool success) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedSleepingSpot : EPigAIControllerEvent::FailedToReachSleepingSpot);
 	}
 
-	m_xTargetLocation = FVector::ZeroVector;
-	m_xTargetLocationType = ETargetLocationTypes::None;
+	// temp comented, will be uncomented once custom move system will be designed
+	//m_xTargetLocation = FVector::ZeroVector;
+	//m_xTargetLocationType = ETargetLocationTypes::None;
 
 }
 

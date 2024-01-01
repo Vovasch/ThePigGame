@@ -146,7 +146,7 @@ void APig::SetMeshMorphs() {
 void APig::CheckBellyfulLevel() {
 	auto bellyfulLevel = m_xBellyful.GetCurrent();
 
-	if(bellyfulLevel <= m_xInitData.BellyfulLevelToWantToEat && m_pStateMachine->GetCurrentStateType()!=EPigStates::Eating /*also check if not waiting for eating spot*/) {
+	if(bellyfulLevel <= m_xInitData.BellyfulLevelToWantToEat && m_pStateMachine->GetCurrentStateType()!=EPigStates::Eating && !m_bIsWaitingForEatingSpot) {
 		AddTask(ETaskType::GoToEat);
 	} else if(bellyfulLevel >= m_xInitData.BellyfulLevelToStopEating) {
 		m_pStateMachine->TryChangeState(EPigStates::Default);
@@ -319,4 +319,7 @@ void APig::CheckIfAdult() {
 	}
 }
 
+void APig::SetWaitingForEatingSpot(bool isWaiting) {
+	m_bIsWaitingForEatingSpot = isWaiting;
+}
 
