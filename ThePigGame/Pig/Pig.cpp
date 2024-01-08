@@ -14,9 +14,7 @@
 #include "../Levels/MainLevel/MainScreenGameMode.h"
 #include "Tasks/TaskDispatcher.h"
 #include "Components/CapsuleComponent.h"
-//#include "../Utils/StateMachine/StateEvent.h"
 
-// Sets default values
 APig::APig() {
 
 	PigInfo = CreateDefaultSubobject<UTextRenderComponent, UTextRenderComponent>("PigInfo");
@@ -27,12 +25,10 @@ APig::APig() {
 	ConstructorHelpers::FObjectFinder<UAnimBlueprint> AnimObj(TEXT("AnimBlueprint'/Game/Pig/Animation/BigPig/ABP_BigPig.ABP_BigPig'"));
 	m_xAdultAnimBlueprint = AnimObj.Object->GeneratedClass;
 
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void APig::BeginPlay() {
 	Super::BeginPlay();
 	
@@ -41,14 +37,13 @@ void APig::BeginPlay() {
 	CreateStateMachine();
 	CreateTaskDispatcher();
 
-	GetPigAnimInstance()->InitAnimInstance(m_pStateMachine);
-	m_pPigAIController->InitAIController(m_pStateMachine, m_pTaskDispatcher);
+	GetPigAnimInstance()->Init(this);
+	GetPigAIController()->Init();
 
 	SubscribeOnAnimations();
 	SubscribeOnAIController();
 }
 
-// Called every frame
 void APig::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
@@ -228,7 +223,7 @@ UPigStateMachine* APig::GetPigStateMachine() {
 
 void APig::CreateStateMachine() {
 	m_pStateMachine = NewObject<UPigStateMachine>();
-	m_pStateMachine->SetPigOwner(this);
+	m_pStateMachine->Init(this);
 	SubscribeOnStatesEvents();
 }
 
@@ -294,7 +289,7 @@ void APig::AddTask(ETaskType taskType) {
 
 void APig::SubscribeOnAIController() {
 	m_pPigAIController->Subscribe(EPigAIControllerEvent::CanStartEating, [this]() {
-			m_pStateMachine->TryChangeState(EPigStates::Eating);
+		m_pStateMachine->TryChangeState(EPigStates::Eating);
 	});
 
 	m_pPigAIController->Subscribe(EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
@@ -310,12 +305,12 @@ void APig::CheckIfAdult() {
 		m_xScale.GetMinMaxType().SetMinMax(m_xInitData.AdultMinScale, m_xInitData.AdultMaxScale);
 		m_xScale.CalcCoeff(m_xAge.GetCurrentPtr(), m_fAgeWhenAdultSeconds, m_fMaxSizesAtSeconds);
 
-		GetPigAnimInstance()->DisengageAnimInstance(m_pStateMachine);
+		GetPigAnimInstance()->DisengageAnimInstance();
 
 		GetMesh()->SetSkeletalMesh(m_xAdultMesh);
 		GetMesh()->SetAnimInstanceClass(m_xAdultAnimBlueprint);
 
-		GetPigAnimInstance()->InitAnimInstance(m_pStateMachine);
+		GetPigAnimInstance()->Init(this);
 	}
 }
 

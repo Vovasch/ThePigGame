@@ -12,5 +12,5 @@ class TGoToEatTask : public TBaseTask {
 	public:
 	virtual void Start() override;
 	void OnNoEatingSpotAvailable();
-	void OnFailedToReachEatingSpot();
+	void RestartTask();
 };

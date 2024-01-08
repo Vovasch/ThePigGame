@@ -24,11 +24,9 @@ UCLASS(Blueprintable)
 class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, public TEventHandler<EPigEvent> {
 	GENERATED_BODY()
 
-	// Sets default values for this character's properties
 	public:
 	APig();
 
-	// Called every frame
 	public:	
 	virtual void Tick(float DeltaTime) override;
 	

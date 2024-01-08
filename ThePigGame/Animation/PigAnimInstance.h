@@ -6,18 +6,19 @@
 #include "Animation/AnimInstance.h"
 #include "../Pig/PigStateMachine/PigStates.h"
 #include "../Utils/EventHandler/TEventHandler.h"
+#include "../Utils/PigDataUser/IPigDataUser.h"
 #include "PigAnimInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandler<EPigStates> {
+class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandler<EPigStates>, public ICachedPigDataUser {
 	GENERATED_BODY()
 	
 	public:
-	void InitAnimInstance(UPigStateMachine* stateMachine);
-	void DisengageAnimInstance(UPigStateMachine* stateMachine);
+	virtual void Init(APig* pig) override;
+	void DisengageAnimInstance();
 
 	protected:
 	void SetPigState(EPigStates pigState);

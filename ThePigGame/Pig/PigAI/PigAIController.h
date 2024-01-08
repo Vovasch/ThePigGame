@@ -24,9 +24,7 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	GENERATED_BODY()
 
 	public:
-	void InitAIController(UPigStateMachine* pigStateMachine, UTaskDispatcher* pigTaskDispatcher);
-
-	public:
+	void Init();
 	virtual APig* GetPig() override;
 
 	public:

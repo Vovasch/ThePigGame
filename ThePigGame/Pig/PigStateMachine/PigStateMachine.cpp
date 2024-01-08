@@ -25,7 +25,7 @@ UPigStateMachine::UPigStateMachine() {
 
 }
 
-void UPigStateMachine::SetPigOwner(APig* pigOwner) {
-	m_pPigOwner = pigOwner;
+void UPigStateMachine::Init(APig* pigOwner) {
+	ICachedPigDataUser::Init(pigOwner);
 	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());	
 }

@@ -14,7 +14,9 @@ void UPigAnimInstance::OnStateFinished(EPigStates pigState) {
 }
 
 
-void UPigAnimInstance::InitAnimInstance(UPigStateMachine* stateMachine) {
+void UPigAnimInstance::Init(APig* pig) {
+	ICachedPigDataUser::Init(pig);
+	auto stateMachine = GetStateMachine();
 	stateMachine->Subscribe(this, EStateMachineEvent::StateChanged, [this](EPigStates oldState, EPigStates newState) {
 		SetPigState(newState);
 	});
@@ -22,6 +24,6 @@ void UPigAnimInstance::InitAnimInstance(UPigStateMachine* stateMachine) {
 }
 
 
-void UPigAnimInstance::DisengageAnimInstance(UPigStateMachine* stateMachine) {
-	stateMachine->Unsibscribe(this);
+void UPigAnimInstance::DisengageAnimInstance() {
+	GetStateMachine()->Unsibscribe(this);
 }

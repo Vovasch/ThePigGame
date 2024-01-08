@@ -13,22 +13,22 @@ namespace NPigBlackBoardKeys {
 	const FName PigTask = TEXT("PigTask");
 }
 
-void APigAIController::InitAIController(UPigStateMachine* pigStateMachine, UTaskDispatcher* pigTaskDispatcher) {
-
+void APigAIController::Init() {
 	// update enum variable "PigState" in blackboard
-	pigStateMachine->Subscribe(EStateMachineEvent::StateChanged, [this](EPigStates oldState, EPigStates newState) {
+	GetStateMachine()->Subscribe(EStateMachineEvent::StateChanged, [this](EPigStates oldState, EPigStates newState) {
 		SetPigState(newState);
 	});
 
+	auto taskDispatcher = GetTaskDispatcher();
+
 	// update enum variable "PigTask" in blackboard
-	pigTaskDispatcher->Subscribe(ETaskDispatcherEvent::TaskStarted, [this](ETaskType taskType) {
+	taskDispatcher->Subscribe(ETaskDispatcherEvent::TaskStarted, [this](ETaskType taskType) {
 		SetPigTask(taskType);
 	});
 
-	pigTaskDispatcher->Subscribe(ETaskDispatcherEvent::TaskFinished, [this](ETaskType taskType) {
+	taskDispatcher->Subscribe(ETaskDispatcherEvent::TaskFinished, [this](ETaskType taskType) {
 		SetPigTask(ETaskType::None);
 	});
-	
 }
 
 void APigAIController::SetPigState(EPigStates pigState) {
@@ -100,7 +100,6 @@ void APigAIController::OnFinishedEating() {
 
 
 void APigAIController::BindOnEvents() {
-
 	Subscribe(EPigAIControllerEvent::ReachedEatingSpot, [this]() {
 		if (CanStartEating()) {
 			OnEvent(EPigAIControllerEvent::CanStartEating);
