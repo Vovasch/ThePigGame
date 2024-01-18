@@ -60,10 +60,10 @@ void AFarm::BeginPlay() {
 		FVector boxExtent;
 		this->GetActorBounds(false, origin, boxExtent);
 
-		auto uclass = LoadObject<UClass>(nullptr, UTF8_TO_TCHAR("Blueprint'/Game/Pig/BP_BigPig.BP_BigPig_C'"));
+		auto uclass = LoadObject<UClass>(nullptr, UTF8_TO_TCHAR("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
 
 		origin.Z = 87.2f;
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < 5; i++) {
 			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
 			origin.X += 70;
 			if(!pig) continue;

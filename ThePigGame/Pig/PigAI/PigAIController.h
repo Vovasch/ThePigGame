@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "UObject/UObjectGlobals.h"
 #include "../PigStateMachine/PigStates.h"
 #include "../Tasks/TaskType.h"
 #include "../TargetLocationTypes.h"
@@ -22,6 +23,9 @@ class UTaskDispatcher;
 UCLASS()
 class THEPIGGAME_API APigAIController : public AAIController, public TEventHandler<EPigAIControllerEvent>, public INoCachePigDataUser {
 	GENERATED_BODY()
+
+	public:
+	APigAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	public:
 	void Init();

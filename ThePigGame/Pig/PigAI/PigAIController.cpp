@@ -7,10 +7,16 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../PigStateMachine/PigStateMachine.h"
 #include "../Tasks/TaskDispatcher.h"
+#include "Navigation/CrowdFollowingComponent.h"
 
 namespace NPigBlackBoardKeys {
 	const FName PigState = TEXT("PigState");
 	const FName PigTask = TEXT("PigTask");
+}
+
+APigAIController::APigAIController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>(TEXT("PathFollowingComponent"))) {
+
 }
 
 void APigAIController::Init() {

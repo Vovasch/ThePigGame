@@ -19,6 +19,8 @@ APig::APig() {
 
 	PigInfo = CreateDefaultSubobject<UTextRenderComponent, UTextRenderComponent>("PigInfo");
 	PigInfo->SetupAttachment(GetRootComponent());
+	PigInfo->bHiddenInGame = true;
+
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("SkeletalMesh'/Game/Animalia/Pig_F/Meshes/Pig_F.Pig_F'"));
 	m_xAdultMesh = MeshAsset.Object.Get();
 
@@ -52,9 +54,9 @@ void APig::Tick(float DeltaTime) {
 	m_pStateMachine->Tick(DeltaTime);
 	m_pTaskDispatcher->Tick(DeltaTime);
 
+	CheckIfAdult();
 	SetPigScale();
 	SetMeshMorphs();
-	CheckIfAdult();
 
 	CheckBellyfulLevel();
 	CheckEnergyLevel();
@@ -130,8 +132,8 @@ void APig::SetPigAIController(APigAIController* AIContoller) {
 
 void APig::SetPigScale() {
 	auto currScale = m_xScale.GetCurrent();
-	GetCapsuleComponent()->SetWorldScale3D({ currScale, currScale, currScale });
-	//GetMesh()->SetWorldScale3D({ currScale, currScale, currScale });
+	//GetCapsuleComponent()->SetWorldScale3D({ currScale, currScale, currScale });
+	GetMesh()->SetWorldScale3D({ currScale, currScale, currScale });
 }
 
 void APig::SetMeshMorphs() {
@@ -307,7 +309,8 @@ void APig::CheckIfAdult() {
 
 		GetPigAnimInstance()->DisengageAnimInstance();
 
-		GetMesh()->SetSkeletalMesh(m_xAdultMesh);
+
+		GetMesh()->SetSkeletalMesh(m_xAdultMesh, false);
 		GetMesh()->SetAnimInstanceClass(m_xAdultAnimBlueprint);
 
 		GetPigAnimInstance()->Init(this);
