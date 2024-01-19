@@ -3,9 +3,11 @@
 
 #include "Farm.h"
 #include "../Pig/Pig.h"
+#include "../Pig/PigStateMachine/PigStateMachine.h"
 #include "EatingSpot.h"
 #include "Engine/World.h"
 #include "Trough.h"
+#include "SleepingArea/SleepingArea.h"
 
 // Sets default values
 AFarm::AFarm() {
@@ -54,6 +56,11 @@ void AFarm::BeginPlay() {
 
 	}
 
+	// get pointer to Sleeping Area
+
+	m_pSleepingArea = GetComponentByClass<USleepingArea>();
+
+
 	// spawn pigs
 	{
 		FVector origin;
@@ -65,10 +72,11 @@ void AFarm::BeginPlay() {
 		origin.Z = 87.2f;
 		for(int i = 0; i < 5; i++) {
 			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
-			origin.X += 70;
 			if(!pig) continue;
+			origin.X += 70;
 			m_vPigs.Add(pig);
 			pig->SetOwner(this);
+			BindOnPig(pig);
 		}
 	}
 
@@ -88,4 +96,19 @@ UEatingSpot* AFarm::GetAvailableEatingSpot() {
 	}
 
 	return nullptr;
+}
+
+
+const USleepingArea* AFarm::GetSleepingArea() {
+	return m_pSleepingArea;
+}
+
+void AFarm::BindOnPig(APig* pig) {
+	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::Start, [this, pig]() {
+		m_pSleepingArea->OnPigStartedSleeping(pig);
+	});
+
+	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::End, [this, pig]() {
+		m_pSleepingArea->OnPigEndedSleeping(pig);
+	});
 }

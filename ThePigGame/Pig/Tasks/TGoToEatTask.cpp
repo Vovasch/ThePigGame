@@ -35,7 +35,7 @@ void TGoToEatTask::Start() {
 	});
 
 
-	aiController->SetTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
+	aiController->MoveToCurrentTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
 	
 	TBaseTask::Start();
 }

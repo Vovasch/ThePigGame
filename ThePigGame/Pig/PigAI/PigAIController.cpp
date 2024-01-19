@@ -57,39 +57,25 @@ APig* APigAIController::GetPig() {
 	return Cast<APig>(GetPawn());
 }
 
-
-void APigAIController::SetTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
-	if (loc == FVector::ZeroVector) {
-		return;
-	}
-	m_xTargetLocation = loc;
-	m_xTargetLocationType = targetType;
-}
-
 void APigAIController::SetTargetEatingSpot(UEatingSpot* eatingSpot) {
 	m_pTargetEatingSpot = eatingSpot;
 }
 
-void APigAIController::OnTargetLoacationEvent(bool success) {
-	if(m_xTargetLocationType == ETargetLocationTypes::EatingSpot) {
+void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bool success) {
+	if(targetType == ETargetLocationTypes::EatingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
-	} else if(m_xTargetLocationType == ETargetLocationTypes::SleepingSpot) {
+	} else if(targetType == ETargetLocationTypes::SleepingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedSleepingSpot : EPigAIControllerEvent::FailedToReachSleepingSpot);
 	}
-
-	// temp comented, will be uncomented once custom move system will be designed
-	//m_xTargetLocation = FVector::ZeroVector;
-	//m_xTargetLocationType = ETargetLocationTypes::None;
-
 }
 
 
-void APigAIController::OnTargetLocationReached() {
-	OnTargetLoacationEvent(true);
+void APigAIController::OnTargetLocationReached(ETargetLocationTypes targetType) {
+	OnTargetLocationEvent(targetType, true);
 }
 
-void APigAIController::OnMoveToTargetLocationFailed() {
-	OnTargetLoacationEvent(false);
+void APigAIController::OnMoveToTargetLocationFailed(ETargetLocationTypes targetType) {
+	OnTargetLocationEvent(targetType, false);
 }
 
 bool APigAIController::CanStartEating() {

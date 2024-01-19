@@ -10,6 +10,8 @@
 
 class ATrough;
 class UEatingSpot;
+class USleepingArea;
+class APig;
 
 UCLASS()
 class THEPIGGAME_API AFarm : public AActor, public TEventHandler<EFarmEvent> {
@@ -26,15 +28,25 @@ class THEPIGGAME_API AFarm : public AActor, public TEventHandler<EFarmEvent> {
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	public:
+	const USleepingArea* GetSleepingArea();
+
 	protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	protected:
+	void BindOnPig(APig* pig);
+
+	protected:
+	UPROPERTY()
 	TArray<class APig*> m_vPigs;
 
 	protected:
 	TArray<ATrough*> m_vTroughs;
+
+	protected:
+	USleepingArea* m_pSleepingArea = nullptr;
 
 	protected:
 	int32 m_iTotalEatingSpots = 0;

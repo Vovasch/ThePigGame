@@ -32,12 +32,15 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	virtual APig* GetPig() override;
 
 	public:
-	void SetTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
 	void SetTargetEatingSpot(UEatingSpot* eatingSpot);
 
 	public:
 	void OnStartedEating();
 	void OnFinishedEating();
+
+	public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
 
 	protected:
 	bool CanStartEating();
@@ -54,21 +57,14 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	UFUNCTION(BlueprintCallable)
-	void OnTargetLocationReached();
+	void OnTargetLocationReached(ETargetLocationTypes targetType);
 
 	protected:
 	UFUNCTION(BlueprintCallable)
-	void OnMoveToTargetLocationFailed();
+	void OnMoveToTargetLocationFailed(ETargetLocationTypes targetType);
 
 	protected:
-	void OnTargetLoacationEvent(bool succes);
-
-	protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector m_xTargetLocation = FVector::ZeroVector;
-
-	protected:
-	ETargetLocationTypes m_xTargetLocationType = ETargetLocationTypes::None;
+	void OnTargetLocationEvent(ETargetLocationTypes targetType, bool succes);
 
 	protected:
 	UEatingSpot* m_pTargetEatingSpot = nullptr;
