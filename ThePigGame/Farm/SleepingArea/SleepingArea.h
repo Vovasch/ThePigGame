@@ -21,7 +21,7 @@ class THEPIGGAME_API USleepingArea : public UStaticMeshComponent {
 	void OnPigEndedSleeping(APig* pig);
 
 	public:
-	APig* GetAnySleepingPig();
+	APig* GetAnySleepingPig() const;
 
 	protected:
 	virtual void BeginPlay() override;

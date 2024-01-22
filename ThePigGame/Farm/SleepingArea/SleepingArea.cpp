@@ -35,7 +35,9 @@ void USleepingArea::OnPigEndedSleeping(APig* pig) {
 	m_vSleepingPigs.Remove(pig);
 }
 
-APig* USleepingArea::GetAnySleepingPig() {
+APig* USleepingArea::GetAnySleepingPig() const {
+	// TODO: check if pig is still valid.
+
 	if(m_vSleepingPigs.IsEmpty()) return nullptr;
 	return *m_vSleepingPigs.begin();
 }
