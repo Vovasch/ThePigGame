@@ -63,10 +63,12 @@ void APig::Tick(float DeltaTime) {
 
 	if(m_xWeight.GetCurrent() <= m_xCriticalWeight.GetCurrent()) {
 		// confisacate pig
+		//OnEvent(EPigEvent::RemovedFromFarm);
 	}
 
 	if(m_xAge.GetCurrent() >= m_fMaxAgeAtSeconds) {
 		// take pig out of bussiness into hospice
+		//OnEvent(EPigEvent::RemovedFromFarm);
 	}
 	
 	FillPigInfo();

@@ -13,23 +13,17 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THEPIGGAME_API USleepingArea : public UStaticMeshComponent {
 	GENERATED_BODY()
 
-	public:		
-	USleepingArea();
-
 	public:
 	void OnPigStartedSleeping(APig* pig);
 	void OnPigEndedSleeping(APig* pig);
+	void OnPigRemovedFromFarm(APig* pig);
+
+	protected:
+	void RemovePig(APig* pig);
 
 	public:
 	APig* GetAnySleepingPig() const;
 
 	protected:
-	virtual void BeginPlay() override;
-
-	public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	protected:
-	TSet<APig*> m_vSleepingPigs;
-	
+	TSet<APig*> m_vSleepingPigs;	
 };

@@ -33,28 +33,31 @@ void TGoToSleepTask::OnEnd() {
 
 void TGoToSleepTask::Tick(float delta) {
 	TBaseTask::Tick(delta);
-
-	// TODO:
-	//if(m_pAnotherSleepingPig->BecomeInvalid?
+	
+	if(!m_pAnotherSleepingPig.IsValid()) {
+		FindPlaceForSleeping();
+	}
 }
 
 void TGoToSleepTask::FindPlaceForSleeping() {
-	auto sleepingArea = GetPig()->GetOwnerFarm()->GetSleepingArea();
+	auto sleepingArea = GetFarm()->GetSleepingArea();
 	m_pAnotherSleepingPig = sleepingArea->GetAnySleepingPig();
 	
 	auto moveToLocation = FVector::ZeroVector;
 
-	if(m_pAnotherSleepingPig) {
+	if(m_pAnotherSleepingPig.IsValid()) {
 		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::End, [this]() {
 			this->OnAnotherSleepingPigEndedSleeping();
 		});
 
 		moveToLocation = m_pAnotherSleepingPig->GetActorLocation();
-	} else {
+		m_xSleepingSpotType = ESleepingSpotType::AnotherPig;
+	} else if(m_xSleepingSpotType==ESleepingSpotType::None){
 
 		auto box = FBox();
 		// TODO: decrease box by half bounds of pig.
 		moveToLocation = FMath::RandPointInBox(box.TransformBy(sleepingArea->GetComponentTransform()));
+		m_xSleepingSpotType = ESleepingSpotType::RandomPlace;
 	}
 
 	auto aiController = GetAIController();	
@@ -79,9 +82,12 @@ void TGoToSleepTask::OnAnotherSleepingPigEndedSleeping() {
 }
 
 void TGoToSleepTask::UnsubscribeFromAnotherSleepingPig() {
-	if(m_pAnotherSleepingPig) {
+	if(m_pAnotherSleepingPig.IsValid()) {
 		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Unsibscribe(this);
 	}
+
+	m_pAnotherSleepingPig = nullptr;
+	m_xSleepingSpotType = ESleepingSpotType::None;
 }
 
 void TGoToSleepTask::OnFailedToReachSleepingPlace() {
@@ -95,9 +101,8 @@ void TGoToSleepTask::OnFailedToReachSleepingPlace() {
 		Complete();
 	} else {
 
-		// TODO:
-		// here we check if pig can't can't onto sleepng area because of other pigs
-		// if so this pig should make load sound. than other pigs will changed their possitons of sleeping
+		// TODO: here we check if pig can't get onto sleeping area because of other pigs
+		// if so this pig should make load sound. than other pigs will changed their positions of sleeping
 		// to let this pig get onto sleeping area.
 		FindPlaceForSleeping();
 	}

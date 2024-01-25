@@ -15,8 +15,12 @@ class TGoToSleepTask : public TBaseTask {
 	// has already started sleeping, she to goes random place inside sleeping area
 	// and while going there pig is checking if any another pig started sleeping
 
-	// TODO:
-	// try find any another sleeping pig while going to sleeping area
+	protected:
+	enum class ESleepingSpotType {
+		None,
+		AnotherPig,
+		RandomPlace
+	};
 
 	public:
 	TGoToSleepTask();
@@ -46,6 +50,9 @@ class TGoToSleepTask : public TBaseTask {
 	void OnFailedToReachSleepingPlace();
 
 	protected:
-	APig* m_pAnotherSleepingPig = nullptr;
+	TWeakObjectPtr<APig> m_pAnotherSleepingPig = nullptr;
+
+	protected:
+	ESleepingSpotType m_xSleepingSpotType = ESleepingSpotType::None;
 
 };
