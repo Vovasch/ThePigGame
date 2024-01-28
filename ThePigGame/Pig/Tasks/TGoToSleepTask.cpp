@@ -6,6 +6,7 @@
 #include "../../Pig/PigStateMachine/PigStateMachine.h"
 #include "../../Pig/PigStateMachine/PigSleepingState.h"
 #include "Math/Box.h"
+#include "../../Utils/Misc/TMiscUtils.h"
 
 TGoToSleepTask::TGoToSleepTask() {
 	m_xTaskType = ETaskType::GoToSleep;
@@ -46,29 +47,52 @@ void TGoToSleepTask::FindPlaceForSleeping() {
 	auto moveToLocation = FVector::ZeroVector;
 
 	if(m_pAnotherSleepingPig.IsValid()) {
-		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::End, [this]() {
+		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(this, EStateEvent::End, [this]() {
 			this->OnAnotherSleepingPigEndedSleeping();
 		});
 
-		moveToLocation = m_pAnotherSleepingPig->GetActorLocation();
+		auto thisPigExtent = utils::GetActorExtent(GetPig());
+		auto anotherPigExtent = utils::GetActorExtent(m_pAnotherSleepingPig.Get());
+
+		thisPigExtent += anotherPigExtent;
+		thisPigExtent.Z = 0;
+
+	/*	auto cc = m_pAnotherSleepingPig->GetActorLocation();
+		auto cc2 = thisPigExtent.Length();*/
+
+
+		moveToLocation = utils::CutSegment2D(GetPig()->GetActorLocation(), m_pAnotherSleepingPig->GetActorLocation(), thisPigExtent.Length());
+		//auto cc3 = FVector::Dist2D(cc, moveToLocation);
+
 		m_xSleepingSpotType = ESleepingSpotType::AnotherPig;
+
 	} else if(m_xSleepingSpotType==ESleepingSpotType::None){
 
-		auto box = FBox();
-		// TODO: decrease box by half bounds of pig.
-		moveToLocation = FMath::RandPointInBox(box.TransformBy(sleepingArea->GetComponentTransform()));
+		static const auto extent = sleepingArea->GetStaticMesh()->GetBounds().BoxExtent / 2;
+		static const auto sleepingAreaLocation = sleepingArea->GetComponentLocation();
+		static const auto box = FBox(sleepingAreaLocation - extent, sleepingAreaLocation + extent);
+
+		auto pigExtent = utils::GetActorExtent(GetPig());
+
+		auto shrinkedBox = box;
+		shrinkedBox.Min += pigExtent;
+		shrinkedBox.Max -= pigExtent;
+
+		moveToLocation = FMath::RandPointInBox(shrinkedBox);
 		m_xSleepingSpotType = ESleepingSpotType::RandomPlace;
+	} else {
+		return;
 	}
 
 	auto aiController = GetAIController();	
 
 	aiController->MoveToCurrentTargetLocation(moveToLocation, ETargetLocationTypes::SleepingSpot);
 
-	aiController->Subscribe(EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
+	aiController->Subscribe(this, EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
 		Complete();
 	});
 
-	aiController->Subscribe(EPigAIControllerEvent::FailedToReachSleepingSpot, [this]() {
+	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachSleepingSpot, [this]() {
 		OnFailedToReachSleepingPlace();
 	});
 

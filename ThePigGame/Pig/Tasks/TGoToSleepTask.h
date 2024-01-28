@@ -6,7 +6,7 @@ class TGoToSleepTask : public TBaseTask {
 	// main idea of this task
 	// pig that got task to sleep tries to find any another pig
 	// that has already started sleeping in order to lay down near her
-	// if pig has found another sleepng pig to sleep near,
+	// if pig has found another sleeping pig to sleep near,
 	// she goes to here
 	// but while pig is going to another sleeping pig this pig can
 	// wake up. so we subscribe to such event

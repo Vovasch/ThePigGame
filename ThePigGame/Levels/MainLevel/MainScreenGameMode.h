@@ -40,6 +40,10 @@ class THEPIGGAME_API AMainScreenGameMode : public AGameModeBase, public TEventHa
 	float m_fDayLengthInSeconds = 20.f;
 
 	protected:
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "100"))
+	float m_fDayProgressOnBeginPlayInPercentages = 0.f;
+
+	protected:
 	UPROPERTY(VisibleAnywhere)
 	float m_fCurrentDayProgress = 0.f;
 

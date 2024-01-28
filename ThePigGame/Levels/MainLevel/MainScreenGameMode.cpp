@@ -18,6 +18,7 @@ void AMainScreenGameMode::BeginPlay() {
 	m_fStartOfMorningSeconds = quarter - num;
 	m_fStartOfNightSeconds = half + quarter + num;
 
+	m_fCurrentDayProgress = m_fDayLengthInSeconds * m_fDayProgressOnBeginPlayInPercentages / 100;
 }
 
 void AMainScreenGameMode::Tick(float DeltaSeconds) {

@@ -8,6 +8,7 @@
 #include "../PigStateMachine/PigStateMachine.h"
 #include "../Tasks/TaskDispatcher.h"
 #include "Navigation/CrowdFollowingComponent.h"
+#include "../../Levels/MainLevel/MainScreenGameMode.h"
 
 namespace NPigBlackBoardKeys {
 	const FName PigState = TEXT("PigState");
@@ -61,7 +62,15 @@ void APigAIController::SetTargetEatingSpot(UEatingSpot* eatingSpot) {
 	m_pTargetEatingSpot = eatingSpot;
 }
 
+void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
+	++m_uMoveRequestCounter;
+	BPMoveToCurrentTargetLocation(loc, targetType);
+}
+
 void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bool success) {
+	--m_uMoveRequestCounter;
+	if(m_uMoveRequestCounter != 0) return;
+
 	if(targetType == ETargetLocationTypes::EatingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
 	} else if(targetType == ETargetLocationTypes::SleepingSpot) {
@@ -99,5 +108,17 @@ void APigAIController::BindOnEvents() {
 			OnEvent(EPigAIControllerEvent::UnableToStartEating);
 		}
 	});
+
+	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
+
+	gameMode->Subscribe(this, EGameModeEvent::NightStarted, [this]() {
+		GetPig()->GoToSleep();
+	});
+
+	gameMode->Subscribe(this, EGameModeEvent::MorningStarted, [this]() {
+		GetPig()->WakeUp();
+	});
+
+
 }
 

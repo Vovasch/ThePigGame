@@ -104,11 +104,15 @@ const USleepingArea* AFarm::GetSleepingArea() {
 }
 
 void AFarm::BindOnPig(APig* pig) {
-	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::Start, [this, pig]() {
+	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(this, EStateEvent::Start, [this, pig]() {
 		m_pSleepingArea->OnPigStartedSleeping(pig);
 	});
 
-	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(EStateEvent::End, [this, pig]() {
+	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(this, EStateEvent::End, [this, pig]() {
 		m_pSleepingArea->OnPigEndedSleeping(pig);
+	});
+
+	pig->Subscribe(this, EPigEvent::RemovedFromFarm, [this, pig]() {
+		m_pSleepingArea->OnPigRemovedFromFarm(pig);
 	});
 }

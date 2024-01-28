@@ -42,7 +42,7 @@ void APig::BeginPlay() {
 	GetPigAnimInstance()->Init(this);
 	GetPigAIController()->Init();
 
-	SubscribeOnAnimations();
+	SubscribeOnAnimInstance();
 	SubscribeOnAIController();
 }
 
@@ -83,6 +83,8 @@ void APig::Init() {
 	m_fWeightDeltaPerTick = (m_xInitData.CriticalWeightAtMaxAge - m_xInitData.CriticalWeightAtMinAge) / m_fMaxSizesAtSeconds;
 	m_fWeightDeltaPerTick *= 1.5f;
 	
+	//m_fWeightDeltaPerTick = 0;
+
 	m_fAgeWhenAdultSeconds = m_xInitData.AgeOfAdultYears * gameMode->GetOneYearInSeconds();
 
 	m_xAge.Init(this);
@@ -97,7 +99,7 @@ void APig::Init() {
 	m_xBellyful.Init(this);
 	m_xBellyful.GetMinMaxType().SetMinMax(m_xInitData.MinBellyful, m_xInitData.MaxBellyful);
 	m_xBellyful.SetDelta(-m_fWeightDeltaPerTick);
-	m_xBellyful.GetCurrentModifycationType().Set(41.f);
+	m_xBellyful.GetCurrentModifycationType().Set(100.f);
 
 
 	m_xCriticalWeight.Init(this);
@@ -148,7 +150,7 @@ void APig::CheckBellyfulLevel() {
 	if(bellyfulLevel <= m_xInitData.BellyfulLevelToWantToEat && m_pStateMachine->GetCurrentStateType()!=EPigStates::Eating && !m_bIsWaitingForEatingSpot) {
 		AddTask(ETaskType::GoToEat);
 	} else if(bellyfulLevel >= m_xInitData.BellyfulLevelToStopEating) {
-		m_pStateMachine->TryChangeState(EPigStates::Default);
+		//m_pStateMachine->TryChangeState(EPigStates::Default);
 	}
 }
 
@@ -158,7 +160,7 @@ void APig::CheckEnergyLevel() {
 	if(energyLevel <= m_xInitData.EnergyLevelToWantToSleepLevel) {
 		//AddTask(ETaskType::GoToSleep);
 	} else if(energyLevel >= m_xInitData.EnergyLevelSleepedEnought) {
-		m_pStateMachine->TryChangeState(EPigStates::StandingUp);
+		//m_pStateMachine->TryChangeState(EPigStates::StandingUp);
 	}
 }
 
@@ -267,15 +269,19 @@ UPigAnimInstance* APig::GetPigAnimInstance() {
 	return Cast<UPigAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
-void APig::SubscribeOnAnimations() {
+void APig::SubscribeOnAnimInstance() {
 	auto animInstace = GetPigAnimInstance();
-	animInstace->Subscribe(EPigStates::LayingDown, [this]() {
+	animInstace->Subscribe(this, EPigStates::LayingDown, [this]() {
 		m_pStateMachine->TryChangeState(EPigStates::Sleeping);
 	});
 
-	animInstace->Subscribe(EPigStates::StandingUp, [this]() {
+	animInstace->Subscribe(this, EPigStates::StandingUp, [this]() {
 		m_pStateMachine->TryChangeState(EPigStates::Default);
 	});
+}
+
+void APig::UnsubscribeFromAnimInstance() {
+	GetPigAnimInstance()->Unsibscribe(this);
 }
 
 UTaskDispatcher* APig::GetTaskDispatcher() {
@@ -295,10 +301,6 @@ void APig::SubscribeOnAIController() {
 	m_pPigAIController->Subscribe(EPigAIControllerEvent::CanStartEating, [this]() {
 		m_pStateMachine->TryChangeState(EPigStates::Eating);
 	});
-
-	m_pPigAIController->Subscribe(EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
-		m_pStateMachine->TryChangeState(EPigStates::LayingDown);
-	});
 }
 
 
@@ -310,12 +312,13 @@ void APig::CheckIfAdult() {
 		m_xScale.CalcCoeff(m_xAge.GetCurrentPtr(), m_fAgeWhenAdultSeconds, m_fMaxSizesAtSeconds);
 
 		GetPigAnimInstance()->DisengageAnimInstance();
-
+		UnsubscribeFromAnimInstance();
 
 		GetMesh()->SetSkeletalMesh(m_xAdultMesh, false);
 		GetMesh()->SetAnimInstanceClass(m_xAdultAnimBlueprint);
 
 		GetPigAnimInstance()->Init(this);
+		SubscribeOnAnimInstance();
 	}
 }
 
@@ -323,3 +326,10 @@ void APig::SetWaitingForEatingSpot(bool isWaiting) {
 	m_bIsWaitingForEatingSpot = isWaiting;
 }
 
+void APig::GoToSleep() {
+	AddTask(ETaskType::GoToSleep);
+}
+
+void APig::WakeUp() {
+	m_pStateMachine->TryChangeState(EPigStates::StandingUp);
+}

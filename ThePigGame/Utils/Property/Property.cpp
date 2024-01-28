@@ -56,7 +56,7 @@ void TInstantTicking::Tick(float delta) {
 
 void TInstantTicking::Init(IPropertyTickProvider* tickProvider) {
 	m_pTickProvider = tickProvider;
-	m_pTickProvider->Subscribe(this);
+	m_pTickProvider->SubscribeOnTick(this);
 }
 
 void TInstantTicking::Subscribe(TTickingFunction function) {
@@ -68,11 +68,11 @@ void TEventualTicking::Init(IPropertyTickProvider* tickProvider) {
 }
 
 void TEventualTicking::StartTicking() {
-	m_pTickProvider->Subscribe(this);
+	m_pTickProvider->SubscribeOnTick(this);
 }
 
 void TEventualTicking::StopTicking() {
-	m_pTickProvider->Unsubscribe(this);
+	m_pTickProvider->UnsubscribeFromTick(this);
 }
 
 void TConditionalTicking::Tick(float delta) {
@@ -83,11 +83,11 @@ void TConditionalTicking::SetCondition(TCondition condition) {
 	m_xCondition = condition;
 }
 
-void IPropertyTickProvider::Subscribe(TInstantTicking* tickSub) {
+void IPropertyTickProvider::SubscribeOnTick(TInstantTicking* tickSub) {
 	m_xSubs.Add(tickSub);
 }
 
-void IPropertyTickProvider::Unsubscribe(TInstantTicking* tickSub) {
+void IPropertyTickProvider::UnsubscribeFromTick(TInstantTicking* tickSub) {
 	for(auto sub : m_xSubs) {
 		if(sub == tickSub) {
 			m_xSubs.Remove(sub);

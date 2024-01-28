@@ -363,8 +363,8 @@ class IPropertyTickProvider {
 	IPropertyTickProvider() = default;
 
 	public:
-	void Subscribe(TInstantTicking* tickSub);
-	void Unsubscribe(TInstantTicking* tickSub);
+	void SubscribeOnTick(TInstantTicking* tickSub);
+	void UnsubscribeFromTick(TInstantTicking* tickSub);
 
 	public:
 	void TickProviderTick(float delta);

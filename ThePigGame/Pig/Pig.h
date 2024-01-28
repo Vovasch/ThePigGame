@@ -87,7 +87,8 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	UPigAnimInstance* GetPigAnimInstance();
 
 	protected:
-	void SubscribeOnAnimations();
+	void SubscribeOnAnimInstance();
+	void UnsubscribeFromAnimInstance();
 
 	// task dispatcher
 
@@ -103,6 +104,9 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	public:
 	void SetWaitingForEatingSpot(bool isWaiting);
 
+	public:
+	void GoToSleep();
+	void WakeUp();
 
 	protected:
 	Age m_xAge;

@@ -39,8 +39,11 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	void OnFinishedEating();
 
 	public:
-	UFUNCTION(BlueprintImplementableEvent)
 	void MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
+
+	protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPMoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
 
 	protected:
 	bool CanStartEating();
@@ -68,5 +71,8 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	UEatingSpot* m_pTargetEatingSpot = nullptr;
+
+	protected:
+	uint8 m_uMoveRequestCounter = 0;
 		
 };
