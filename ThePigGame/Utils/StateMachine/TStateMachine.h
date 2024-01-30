@@ -52,9 +52,8 @@ class TStateMachine : public TEventHandler<EStateMachineEvent, EnumType, EnumTyp
 	}
 
 	protected:
-	bool AddState(TSharedPtr<TStateType> state) {
+	void AddState(TSharedPtr<TStateType> state) {
 		m_vAllStates.Add(state->StateType(), state);
-		return true;
 	}
 
 	protected:

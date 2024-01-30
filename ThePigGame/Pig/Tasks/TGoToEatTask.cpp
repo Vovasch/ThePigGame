@@ -4,6 +4,7 @@
 #include "../PigAI/PigAIController.h"
 #include "../../Farm/Farm.h"
 #include "../../Farm/EatingSpot.h"
+#include "../PigStateMachine/PigStateMachine.h"
 
 
 
@@ -22,6 +23,7 @@ void TGoToEatTask::Start() {
 	}
 
 	aiController->Subscribe(this, EPigAIControllerEvent::CanStartEating, [this, aiController]() {
+		GetPig()->StartEating();
 		GetAIController()->Unsibscribe(this);
 		this->Complete();
 	});

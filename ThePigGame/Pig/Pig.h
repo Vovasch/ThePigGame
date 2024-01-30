@@ -43,9 +43,6 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	void SetPigAIController(APigAIController* AIContoller);
 	APigAIController* GetPigAIController();
 
-	protected:
-	void SubscribeOnAIController();
-
 	public:
 	bool CanWeightTick();
 
@@ -107,6 +104,16 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	public:
 	void GoToSleep();
 	void WakeUp();
+
+	public:
+	void StartEating();
+	void StopEating();
+
+	// property getters
+	public:
+	float GetCurrentBellyful();
+
+	float GetBellyfulLevelToStopEating();
 
 	protected:
 	Age m_xAge;

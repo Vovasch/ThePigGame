@@ -17,6 +17,10 @@ UCLASS()
 class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETaskDispatcherEvent, ETaskType>, public ICachedPigDataUser {
 	GENERATED_BODY()
 
+	// Simultaneously only one task can be executed
+	// Tasks can't start during the non DefaultPigState
+	// So it's ok not to have any InProgress task in queue.
+
 	public:
 	UTaskDispatcher();
 
@@ -35,7 +39,10 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	TSharedPtr<TBaseTask> GetCurrentInProgressTask();
 
 	protected:
-	void OnStartTask(ETaskType taskType);
+	void TryStartNewTask();
+
+	protected:
+	void OnTaskStarted(ETaskType taskType);
 	void OnEndTask(ETaskType taskType);
 
 	protected:
@@ -54,7 +61,6 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 		InProgress
 	};
 
-
 	protected:
 	struct TTaskData {
 		TSharedPtr<TBaseTask> Task = nullptr;
@@ -62,7 +68,7 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	};
 
 	protected:
-	// tail is current in progress
+	// tail is next to start or current in progress
 	TQueue<ETaskType> m_xTaskQue;
 	TStaticArray<TTaskData, (int32)ETaskType::Size> m_vAllTasks;
 

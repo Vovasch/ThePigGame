@@ -2,7 +2,8 @@
 
 #include "TGoToEatTask.h"
 #include "TGoToSleepTask.h"
-#include "memory"
+#include "../PigStateMachine/PigStateMachine.h"
+#include "../PigStateMachine/PigDefaultState.h"
 
 UTaskDispatcher::UTaskDispatcher() {
 	CreateTask<TGoToEatTask>();
@@ -14,9 +15,14 @@ void UTaskDispatcher::Init(APig* pig) {
 	for(auto& taskData : m_vAllTasks) {
 		if(taskData.Task) taskData.Task->Init(pig);
 	}
+
+	GetStateMachine()->GetState(EPigStates::Default)->Subscribe(this, EStateEvent::Start, [this]() {
+		TryStartNewTask();
+	});
+
 }
 
-void UTaskDispatcher::OnStartTask(ETaskType taskType) {
+void UTaskDispatcher::OnTaskStarted(ETaskType taskType) {
 	m_vAllTasks[uint32(taskType)].State = ETaskState::InProgress;
 	OnEvent(ETaskDispatcherEvent::TaskStarted, taskType);
 }
@@ -25,33 +31,21 @@ void UTaskDispatcher::OnEndTask(ETaskType taskType) {
 	auto currentTask = GetCurrentInProgressTask();
 	if(!currentTask || currentTask->GetTaskType()!=taskType) return;
 
-	// finish current task
 	m_xTaskQue.Pop();
 	m_vAllTasks[uint32(taskType)].State = ETaskState::None;
 	OnEvent(ETaskDispatcherEvent::TaskFinished, currentTask->GetTaskType());
 	
-	// start new task if such in task queue.
-	auto newCurrentTask = GetCurrentInProgressTask();
-	if(newCurrentTask) {
-		newCurrentTask->Start();
-		OnStartTask(newCurrentTask->GetTaskType());
-	}
+	TryStartNewTask();
 }
 
 void UTaskDispatcher::AddTask(ETaskType taskType) {
 	auto& taskData = m_vAllTasks[(uint32)taskType];
 	if(taskData.State!=ETaskState::None) return;
 
-	auto startNow = m_xTaskQue.IsEmpty();
 	m_xTaskQue.Enqueue(taskType);
 	taskData.State = ETaskState::InQueue;
-	auto newTask = GetTaskByType(taskType);
 
-	if(startNow) {
-		newTask->Start();
-		OnStartTask(newTask->GetTaskType());
-	}
-
+	TryStartNewTask();
 }
 
 void UTaskDispatcher::Tick(float delta) {
@@ -60,7 +54,6 @@ void UTaskDispatcher::Tick(float delta) {
 	}
 }
 
-
 TSharedPtr<TBaseTask> UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 	if(taskType==ETaskType::None || taskType == ETaskType::Size) return nullptr;
 	return m_vAllTasks[(uint32)taskType].Task;
@@ -68,5 +61,22 @@ TSharedPtr<TBaseTask> UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 
 TSharedPtr<TBaseTask> UTaskDispatcher::GetCurrentInProgressTask() {
 	if(m_xTaskQue.IsEmpty()) return nullptr;
-	return GetTaskByType(*m_xTaskQue.Peek());
+
+
+	auto potentialInProgress = *m_xTaskQue.Peek();
+
+	if(m_vAllTasks[(uint32)potentialInProgress].State==ETaskState::InProgress) return GetTaskByType(potentialInProgress);
+
+	return nullptr;
+}
+
+void UTaskDispatcher::TryStartNewTask() {
+	if(m_xTaskQue.IsEmpty()) return;
+	if(GetStateMachine()->GetCurrentStateType() != EPigStates::Default) return;
+	if(auto inProgressTask = GetCurrentInProgressTask()) return;
+
+	auto taskTypeToStart = *m_xTaskQue.Peek();
+
+	GetTaskByType(taskTypeToStart)->Start();
+	OnTaskStarted(taskTypeToStart);
 }

@@ -2,9 +2,10 @@
 
 #include "StateEvent.h"
 #include "../EventHandler/TEventHandler.h"
+#include "../PigDataUser/IPigDataUser.h"
 
 template<typename EnumType>
-class TStateBase : public TEventHandler<EStateEvent> {
+class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser {
 	public:
 	TStateBase(TArray<EnumType>&& transitions) {
 		m_vTransitions = transitions;
@@ -32,7 +33,7 @@ class TStateBase : public TEventHandler<EStateEvent> {
 	}
 
 	protected:
-	void Init(EnumType enumVal) {
+	void SetStateType(EnumType enumVal) {
 		m_xStateType = enumVal;
 	}
 

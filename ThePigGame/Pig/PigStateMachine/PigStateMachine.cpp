@@ -11,7 +11,8 @@
 #include "PigStandingUpState.h"
 
 
-UPigStateMachine::UPigStateMachine() {
+void UPigStateMachine::Init(APig* pigOwner) {
+	ICachedPigDataUser::Init(pigOwner);
 
 	AddState(MakeShared<UPigDefaultState>(TArray{ EPigStates::Eating, EPigStates::LayingDown }));
 	
@@ -21,11 +22,11 @@ UPigStateMachine::UPigStateMachine() {
 	AddState(MakeShared<UPigSleepingState>(TArray{ EPigStates::StandingUp }));
 	AddState(MakeShared<UPigStandingUpState>(TArray{ EPigStates::Default }));
 
+
+	for(auto& pigState : m_vAllStates) {
+		pigState.Value->Init(GetPig());
+	}
+
 	m_pCurrentState = GetState(EPigStates::Default);
-
-}
-
-void UPigStateMachine::Init(APig* pigOwner) {
-	ICachedPigDataUser::Init(pigOwner);
 	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());	
 }

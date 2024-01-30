@@ -20,9 +20,9 @@ void TGoToSleepTask::Start() {
 }
 
 void TGoToSleepTask::Complete() {
+	GetStateMachine()->TryChangeState(EPigStates::LayingDown);
 	TBaseTask::Complete();
 
-	GetStateMachine()->TryChangeState(EPigStates::LayingDown);
 }
 
 void TGoToSleepTask::OnEnd() {

@@ -13,8 +13,5 @@ class THEPIGGAME_API UPigStateMachine : public UObject, public TStateMachine<EPi
 	GENERATED_BODY()
 
 	public:
-	UPigStateMachine();
-
-	public:
 	virtual void Init(APig* pig) override;
 };
