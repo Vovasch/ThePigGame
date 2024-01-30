@@ -144,9 +144,7 @@ void APig::SetMeshMorphs() {
 }
 
 void APig::CheckBellyfulLevel() {
-	auto bellyfulLevel = m_xBellyful.GetCurrent();
-
-	if(bellyfulLevel <= m_xInitData.BellyfulLevelToWantToEat && m_pStateMachine->GetCurrentStateType() != EPigStates::Eating && !m_bIsWaitingForEatingSpot) {
+	if(m_xBellyful.GetCurrent() <= m_xInitData.BellyfulLevelToWantToEat && m_pStateMachine->GetCurrentStateType() != EPigStates::Eating && !m_bIsWaitingForEatingSpot) {
 		AddTask(ETaskType::GoToEat);
 	}
 }
@@ -295,8 +293,6 @@ void APig::CreateTaskDispatcher() {
 void APig::AddTask(ETaskType taskType) {
 	m_pTaskDispatcher->AddTask(taskType);
 }
-
-
 
 void APig::CheckIfAdult() {
 	if(!m_bIsAdult && m_xAge.GetCurrent() >= m_fAgeWhenAdultSeconds) {
