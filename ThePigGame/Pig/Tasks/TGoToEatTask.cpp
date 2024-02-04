@@ -6,13 +6,34 @@
 #include "../../Farm/EatingSpot.h"
 #include "../PigStateMachine/PigStateMachine.h"
 
-
-
 TGoToEatTask::TGoToEatTask() {
 	m_xTaskType = ETaskType::GoToEat;
 }
 
 void TGoToEatTask::Start() {
+	UE_LOG(LogTemp, Warning, TEXT("Go To Eat Start %s"), *GetPig()->GetName());
+	TBaseTask::Start();
+	TryGoToEatingSpot();
+}
+
+void TGoToEatTask::OnEnd() {
+	UnsubscribeAll();
+	TBaseTask::OnEnd();
+	UE_LOG(LogTemp, Warning, TEXT("Go To Eat End %s"), *GetPig()->GetName());
+}
+
+void TGoToEatTask::Tick(float delta) {
+	TBaseTask::Tick(delta);
+
+	// while going to eating spot another pig took our eating spot
+	// so we try to find new one
+	if(!GetAIController()->GetTargetEatingSpot()->IsAvailable()) {
+		TryGoToEatingSpot();
+	}
+}
+
+void TGoToEatTask::TryGoToEatingSpot() {
+	UnsubscribeAll();
 	auto aiController = GetAIController();
 
 	auto targetEatingSpot = GetFarm()->GetAvailableEatingSpot();
@@ -22,24 +43,21 @@ void TGoToEatTask::Start() {
 		return;
 	}
 
-	aiController->Subscribe(this, EPigAIControllerEvent::CanStartEating, [this, aiController]() {
-		GetPig()->StartEating();
-		GetAIController()->Unsibscribe(this);
-		this->Complete();
-	});
-
-	aiController->Subscribe(this, EPigAIControllerEvent::UnableToStartEating, [this, aiController]() {
-		this->RestartTask();
+	aiController->Subscribe(this, EPigAIControllerEvent::ReachedEatingSpot, [this, aiController]() {
+		if(GetAIController()->GetTargetEatingSpot()->IsAvailable()) {
+			GetPig()->StartEating();
+			this->Complete();
+		} else {
+			TryGoToEatingSpot();
+		}
+		
 	});
 
 	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachEatingSpot, [this, aiController]() {
-		this->RestartTask();
+		//this->TryGoToEatingSpot();
 	});
 
-
 	aiController->MoveToCurrentTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
-	
-	TBaseTask::Start();
 }
 
 void TGoToEatTask::OnNoEatingSpotAvailable() {
@@ -53,12 +71,8 @@ void TGoToEatTask::OnNoEatingSpotAvailable() {
 		GetPig()->SetWaitingForEatingSpot(false);
 		GetPig()->AddTask(ETaskType::GoToEat);
 	});
-
-
 }
 
-void TGoToEatTask::RestartTask() {
+void TGoToEatTask::UnsubscribeAll() {
 	GetAIController()->Unsibscribe(this);
-	Fail();
-	GetPig()->AddTask(ETaskType::GoToEat);
 }

@@ -227,39 +227,6 @@ UPigStateMachine* APig::GetPigStateMachine() {
 void APig::CreateStateMachine() {
 	m_pStateMachine = NewObject<UPigStateMachine>();
 	m_pStateMachine->Init(this);
-	SubscribeOnStatesEvents();
-}
-
-void APig::SubscribeOnStatesEvents() {
-	SubscribeOnEatingState();
-	SubscribeOnSleepingState();
-}
-
-void APig::SubscribeOnSleepingState() {
-	auto pigSleepingState = m_pStateMachine->GetState(EPigStates::Sleeping);
-
-	pigSleepingState->Subscribe(EStateEvent::Start, [this]() {
-		m_xEnergy.SetDelta(m_xInitData.GainignEnergyDelta);
-	});
-
-	pigSleepingState->Subscribe(EStateEvent::End, [this]() {
-		m_xEnergy.SetDelta(m_xInitData.LoosingEnergyDelta);
-	});
-}
-
-
-void APig::SubscribeOnEatingState() {
-	auto pigEatState = m_pStateMachine->GetState(EPigStates::Eating);
-
-	pigEatState->Subscribe(EStateEvent::Start, [this]() {
-		m_xBellyful.SetDelta(2);
-		m_pPigAIController->OnStartedEating();
-	});
-
-	pigEatState->Subscribe(EStateEvent::End, [this]() {
-		m_xBellyful.SetDelta(-m_fWeightDeltaPerTick);
-		m_pPigAIController->OnFinishedEating();
-	});
 }
 
 UPigAnimInstance* APig::GetPigAnimInstance() {
@@ -317,19 +284,25 @@ void APig::SetWaitingForEatingSpot(bool isWaiting) {
 }
 
 void APig::GoToSleep() {
+	m_xEnergy.SetDelta(m_xInitData.GainignEnergyDelta);
 	AddTask(ETaskType::GoToSleep);
 }
 
 void APig::WakeUp() {
+	m_xEnergy.SetDelta(m_xInitData.LoosingEnergyDelta);
 	m_pStateMachine->TryChangeState(EPigStates::StandingUp);
 }
 
 void APig::StartEating() {
+	m_pPigAIController->OnStartedEating();
 	m_pStateMachine->TryChangeState(EPigStates::Eating);
+	m_xBellyful.SetDelta(2);
 }
 
 void APig::StopEating() {
+	m_pPigAIController->OnFinishedEating();
 	m_pStateMachine->TryChangeState(EPigStates::Default);
+	m_xBellyful.SetDelta(-m_fWeightDeltaPerTick);
 }
 
 float APig::GetCurrentBellyful() {

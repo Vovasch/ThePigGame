@@ -8,9 +8,6 @@ enum class EPigAIControllerEvent: uint8 {
 	ReachedEatingSpot,
 	FailedToReachEatingSpot,
 
-	CanStartEating,
-	UnableToStartEating,
-
 	ReachedSleepingSpot,
 	FailedToReachSleepingSpot,
 

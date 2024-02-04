@@ -5,6 +5,6 @@
 
 UENUM(BlueprintType)
 enum class EFarmEvent : uint8 {
-	EatingSpotFreed,
+	EatingSpotFreed, // fires if all eating spots were occupied and than one become available
 	Size
 };

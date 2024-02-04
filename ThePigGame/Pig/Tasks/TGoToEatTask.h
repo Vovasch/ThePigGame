@@ -11,6 +11,15 @@ class TGoToEatTask : public TBaseTask {
 
 	public:
 	virtual void Start() override;
+	virtual void OnEnd() override;
+	virtual void Tick(float delta) override;
+
+	protected:
+	void TryGoToEatingSpot();
+
+	protected:
 	void OnNoEatingSpotAvailable();
-	void RestartTask();
+
+	protected:
+	void UnsubscribeAll();
 };

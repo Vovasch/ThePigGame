@@ -62,14 +62,21 @@ void APigAIController::SetTargetEatingSpot(UEatingSpot* eatingSpot) {
 	m_pTargetEatingSpot = eatingSpot;
 }
 
+UEatingSpot* APigAIController::GetTargetEatingSpot() {
+	return m_pTargetEatingSpot;
+}
+
 void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
-	++m_uMoveRequestCounter;
+	UE_LOG(LogTemp, Warning, TEXT("Start Move To %s"), *this->GetName());
 	BPMoveToCurrentTargetLocation(loc, targetType);
 }
 
 void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bool success) {
-	--m_uMoveRequestCounter;
-	if(m_uMoveRequestCounter != 0) return;
+	if(success) {
+		UE_LOG(LogTemp, Warning, TEXT("Success Move To %s"), *this->GetName());
+	} else { 
+		UE_LOG(LogTemp, Warning, TEXT("Fail Move To %s"), *this->GetName());
+	}
 
 	if(targetType == ETargetLocationTypes::EatingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
@@ -87,28 +94,18 @@ void APigAIController::OnMoveToTargetLocationFailed(ETargetLocationTypes targetT
 	OnTargetLocationEvent(targetType, false);
 }
 
-bool APigAIController::CanStartEating() {
-	return m_pTargetEatingSpot && m_pTargetEatingSpot->IsAvailable();
-}
-
 void APigAIController::OnStartedEating() {
+	//UE_LOG(LogTemp, Warning, TEXT("Started eating"), *this->GetName());
 	if(m_pTargetEatingSpot) m_pTargetEatingSpot->SetAvailable(false);
 }
 
 void APigAIController::OnFinishedEating() {
+	//UE_LOG(LogTemp, Warning, TEXT("Ended Eating"), *this->GetName());
 	if(m_pTargetEatingSpot) m_pTargetEatingSpot->SetAvailable(true);
 }
 
 
 void APigAIController::BindOnEvents() {
-	Subscribe(EPigAIControllerEvent::ReachedEatingSpot, [this]() {
-		if (CanStartEating()) {
-			OnEvent(EPigAIControllerEvent::CanStartEating);
-		} else {
-			OnEvent(EPigAIControllerEvent::UnableToStartEating);
-		}
-	});
-
 	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
 
 	gameMode->Subscribe(this, EGameModeEvent::NightStarted, [this]() {

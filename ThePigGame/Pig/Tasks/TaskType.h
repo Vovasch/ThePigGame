@@ -8,5 +8,6 @@ enum class ETaskType : uint8 {
 	None,
 	GoToEat,
 	GoToSleep,
+	GoToRandomLocation,
 	Size
 };

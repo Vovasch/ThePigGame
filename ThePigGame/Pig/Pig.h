@@ -72,13 +72,6 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	protected:
 	void CreateStateMachine();
 
-	protected:
-	void SubscribeOnStatesEvents();
-
-	protected:
-	void SubscribeOnSleepingState();
-	void SubscribeOnEatingState();
-
 	// animations
 	public:
 	UPigAnimInstance* GetPigAnimInstance();

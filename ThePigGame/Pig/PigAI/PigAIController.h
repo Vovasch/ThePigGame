@@ -33,6 +33,7 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	public:
 	void SetTargetEatingSpot(UEatingSpot* eatingSpot);
+	UEatingSpot* GetTargetEatingSpot();
 
 	public:
 	void OnStartedEating();
@@ -44,9 +45,6 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPMoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
-
-	protected:
-	bool CanStartEating();
 
 	protected:
 	void SetPigState(EPigStates pigState);
@@ -71,8 +69,5 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	UEatingSpot* m_pTargetEatingSpot = nullptr;
-
-	protected:
-	uint8 m_uMoveRequestCounter = 0;
 		
 };
