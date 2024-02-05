@@ -20,12 +20,6 @@ class TEventHandler {
 	using THandlerFunc = TFunction<void(Args...)>;
 
 	public:
-	void Subscribe(EnumType enumVal, THandlerFunc func) {
-		auto& handlersArray = m_vHandlers[(uint32)enumVal];
-		handlersArray.emplace(nullptr, func);
-	}
-
-	public:
 	void Subscribe(void* owner, EnumType enumVal, THandlerFunc func) {
 		auto& handlersArray = m_vHandlers[(uint32)enumVal];
 		handlersArray.emplace(owner, func);

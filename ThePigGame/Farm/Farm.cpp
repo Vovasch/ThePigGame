@@ -37,11 +37,11 @@ void AFarm::BeginPlay() {
 				m_iTotalEatingSpots += eatingSpots.Num();
 
 				for(auto eatingSpot : eatingSpots) {
-					eatingSpot->Subscribe(EEatingSpotEvent::Occupied, [this]() {
+					eatingSpot->Subscribe(this, EEatingSpotEvent::Occupied, [this]() {
 						--m_iAvailableEatingSpots;
 					});
 
-					eatingSpot->Subscribe(EEatingSpotEvent::Freed, [this]() {
+					eatingSpot->Subscribe(this, EEatingSpotEvent::Freed, [this]() {
 						auto noneWereAvailable = m_iAvailableEatingSpots == 0;
 
 						++m_iAvailableEatingSpots;

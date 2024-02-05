@@ -22,18 +22,18 @@ APigAIController::APigAIController(const FObjectInitializer& ObjectInitializer)
 
 void APigAIController::Init() {
 	// update enum variable "PigState" in blackboard
-	GetStateMachine()->Subscribe(EStateMachineEvent::StateChanged, [this](EPigStates oldState, EPigStates newState) {
+	GetStateMachine()->Subscribe(this, EStateMachineEvent::StateChanged, [this](EPigStates oldState, EPigStates newState) {
 		SetPigState(newState);
 	});
 
 	auto taskDispatcher = GetTaskDispatcher();
 
 	// update enum variable "PigTask" in blackboard
-	taskDispatcher->Subscribe(ETaskDispatcherEvent::TaskStarted, [this](ETaskType taskType) {
+	taskDispatcher->Subscribe(this, ETaskDispatcherEvent::TaskStarted, [this](ETaskType taskType) {
 		SetPigTask(taskType);
 	});
 
-	taskDispatcher->Subscribe(ETaskDispatcherEvent::TaskFinished, [this](ETaskType taskType) {
+	taskDispatcher->Subscribe(this, ETaskDispatcherEvent::TaskFinished, [this](ETaskType taskType) {
 		SetPigTask(ETaskType::None);
 	});
 }

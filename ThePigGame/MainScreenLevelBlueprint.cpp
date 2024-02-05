@@ -14,11 +14,11 @@ void AMainScreenLevelBlueprint::BeginPlay() {
 	m_xLightRotation.CalcCoeff(gameMode->GetDayProgressPtr(), 0.f, gameMode->GetDayLengthInSeconds());
 	m_xLightRotation.GetCurrentModifycationType().Set(m_fLightMinRotation);
 
-	gameMode->Subscribe(EGameModeEvent::MorningStarted, [this]() {
+	gameMode->Subscribe(this, EGameModeEvent::MorningStarted, [this]() {
 		this->OnMorningStarted();
 	});
 
-	gameMode->Subscribe(EGameModeEvent::NightStarted, [this]() {
+	gameMode->Subscribe(this, EGameModeEvent::NightStarted, [this]() {
 		this->OnNightStarted();
 	});
 	

@@ -51,7 +51,7 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 		static_assert(std::is_base_of_v<TBaseTask, TaskType>, "TaskType must be derived from TBaseTask");
 
 		auto task = MakeShared<TaskType>();
-		task->Subscribe(ETaskEvent::End, [this](ETaskType taskType) { this->OnEndTask(taskType); });
+		task->Subscribe(this, ETaskEvent::End, [this](ETaskType taskType) { this->OnEndTask(taskType); });
 		m_vAllTasks[(uint32)task->GetTaskType()] = { task, ETaskState::None };
 	}
 
