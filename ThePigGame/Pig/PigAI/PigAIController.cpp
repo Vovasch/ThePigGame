@@ -10,6 +10,8 @@
 #include "Navigation/CrowdFollowingComponent.h"
 #include "../../Levels/MainLevel/MainScreenGameMode.h"
 
+DEFINE_LOG_CATEGORY_STATIC(AIControllerLog, Log, All)
+
 namespace NPigBlackBoardKeys {
 	const FName PigState = TEXT("PigState");
 	const FName PigTask = TEXT("PigTask");
@@ -67,17 +69,11 @@ UEatingSpot* APigAIController::GetTargetEatingSpot() {
 }
 
 void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
-	UE_LOG(LogTemp, Warning, TEXT("Start Move To %s"), *this->GetName());
+	UE_LOG(AIControllerLog, Log, TEXT("Request move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
 	BPMoveToCurrentTargetLocation(loc, targetType);
 }
 
 void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bool success) {
-	if(success) {
-		UE_LOG(LogTemp, Warning, TEXT("Success Move To %s"), *this->GetName());
-	} else { 
-		UE_LOG(LogTemp, Warning, TEXT("Fail Move To %s"), *this->GetName());
-	}
-
 	if(targetType == ETargetLocationTypes::EatingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
 	} else if(targetType == ETargetLocationTypes::SleepingSpot) {
@@ -88,22 +84,21 @@ void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bo
 
 void APigAIController::OnTargetLocationReached(ETargetLocationTypes targetType) {
 	OnTargetLocationEvent(targetType, true);
+	UE_LOG(AIControllerLog, Log, TEXT("Success move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
 }
 
 void APigAIController::OnMoveToTargetLocationFailed(ETargetLocationTypes targetType) {
 	OnTargetLocationEvent(targetType, false);
+	UE_LOG(AIControllerLog, Log, TEXT("Fail move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
 }
 
 void APigAIController::OnStartedEating() {
-	//UE_LOG(LogTemp, Warning, TEXT("Started eating"), *this->GetName());
 	if(m_pTargetEatingSpot) m_pTargetEatingSpot->SetAvailable(false);
 }
 
 void APigAIController::OnFinishedEating() {
-	//UE_LOG(LogTemp, Warning, TEXT("Ended Eating"), *this->GetName());
 	if(m_pTargetEatingSpot) m_pTargetEatingSpot->SetAvailable(true);
 }
-
 
 void APigAIController::BindOnEvents() {
 	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
@@ -115,7 +110,5 @@ void APigAIController::BindOnEvents() {
 	gameMode->Subscribe(this, EGameModeEvent::MorningStarted, [this]() {
 		GetPig()->WakeUp();
 	});
-
-
 }
 

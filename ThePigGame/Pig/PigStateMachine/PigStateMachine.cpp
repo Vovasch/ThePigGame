@@ -10,6 +10,7 @@
 #include "PigLayingDownState.h"
 #include "PigStandingUpState.h"
 
+DEFINE_LOG_CATEGORY_STATIC(StateMachineLog, Log, All)
 
 void UPigStateMachine::Init(APig* pigOwner) {
 	ICachedPigDataUser::Init(pigOwner);
@@ -29,4 +30,11 @@ void UPigStateMachine::Init(APig* pigOwner) {
 
 	m_pCurrentState = GetState(EPigStates::Default);
 	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());	
+}
+
+bool UPigStateMachine::TryChangeState(EPigStates newState) {
+	auto prevStateType = m_pCurrentState->StateType();
+	auto res = TStateMachine<EPigStates>::TryChangeState(newState);
+	UE_LOG(StateMachineLog, Log, TEXT("State changed from %s to %s. %s"), *UEnum::GetValueAsString<EPigStates>(prevStateType), *UEnum::GetValueAsString<EPigStates>(newState), *GetPig()->GetName());
+	return res;
 }

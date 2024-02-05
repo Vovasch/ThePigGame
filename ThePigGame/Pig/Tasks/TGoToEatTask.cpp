@@ -11,7 +11,6 @@ TGoToEatTask::TGoToEatTask() {
 }
 
 void TGoToEatTask::Start() {
-	UE_LOG(LogTemp, Warning, TEXT("Go To Eat Start %s"), *GetPig()->GetName());
 	TBaseTask::Start();
 	TryGoToEatingSpot();
 }
@@ -19,7 +18,6 @@ void TGoToEatTask::Start() {
 void TGoToEatTask::OnEnd() {
 	UnsubscribeAll();
 	TBaseTask::OnEnd();
-	UE_LOG(LogTemp, Warning, TEXT("Go To Eat End %s"), *GetPig()->GetName());
 }
 
 void TGoToEatTask::Tick(float delta) {

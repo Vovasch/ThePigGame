@@ -14,4 +14,7 @@ class THEPIGGAME_API UPigStateMachine : public UObject, public TStateMachine<EPi
 
 	public:
 	virtual void Init(APig* pig) override;
+
+	public:
+	virtual bool TryChangeState(EPigStates newState) override;
 };

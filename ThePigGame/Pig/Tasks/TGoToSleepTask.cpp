@@ -13,11 +13,8 @@ TGoToSleepTask::TGoToSleepTask() {
 }
 
 void TGoToSleepTask::Start() {
-	UE_LOG(LogTemp, Warning, TEXT("Go To Sleep Start %s"), *GetPig()->GetName());
 	TBaseTask::Start();
-
 	FindPlaceForSleeping();
-
 }
 
 void TGoToSleepTask::Complete() {
@@ -29,7 +26,6 @@ void TGoToSleepTask::OnEnd() {
 	UnsubscribeFromAnotherSleepingPig();
 
 	GetAIController()->Unsibscribe(this);
-	UE_LOG(LogTemp, Warning, TEXT("Go To Sleep End %s"), *GetPig()->GetName());
 	TBaseTask::OnEnd();
 }
 
