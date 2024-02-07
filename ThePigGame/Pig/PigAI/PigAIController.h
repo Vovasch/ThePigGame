@@ -7,7 +7,7 @@
 #include "UObject/UObjectGlobals.h"
 #include "../PigStateMachine/PigStates.h"
 #include "../Tasks/Derived/TaskType.h"
-#include "../TargetLocationTypes.h"
+#include "TargetLocationTypes.h"
 #include "../../Utils/EventHandler/TEventHandler.h"
 #include "PigAIControllerEvent.h"
 #include "../../Farm/EatingSpot.h"
