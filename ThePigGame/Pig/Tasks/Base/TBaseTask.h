@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Utils/EventHandler/TEventHandler.h"
-#include "../../Utils/PigDataUser/IPigDataUser.h"
+#include "../../../Utils/EventHandler/TEventHandler.h"
+#include "../../../Utils/PigDataUser/IPigDataUser.h"
 #include "TaskEvent.h"
-#include "TaskType.h"
+#include "../Derived/TaskType.h"
 
 
 class TBaseTask : public TEventHandler<ETaskEvent, ETaskType>, public ICachedPigDataUser {

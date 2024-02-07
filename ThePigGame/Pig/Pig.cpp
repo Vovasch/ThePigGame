@@ -12,7 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Levels/MainLevel/GameMainPlayerController.h"
 #include "../Levels/MainLevel/MainScreenGameMode.h"
-#include "Tasks/TaskDispatcher.h"
+#include "Tasks/Base/TaskDispatcher.h"
 #include "Components/CapsuleComponent.h"
 
 APig::APig() {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TBaseTask.h"
+#include "../Base/TBaseTask.h"
 
 class UEatingSpot;
 

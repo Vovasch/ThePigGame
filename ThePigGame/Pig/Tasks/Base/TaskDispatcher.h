@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../Utils/EventHandler/TEventHandler.h"
-#include "../../Utils/PigDataUser/IPigDataUser.h"
+#include "../../../Utils/EventHandler/TEventHandler.h"
+#include "../../../Utils/PigDataUser/IPigDataUser.h"
 #include "TBaseTask.h"
 #include "TaskEvent.h"
-#include "TaskType.h"
+#include "../Derived/TaskType.h"
 #include "Containers/Queue.h"
 #include "type_traits"
 #include "TaskDispatcherEvent.h"

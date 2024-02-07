@@ -1,10 +1,9 @@
 #include "TGoToEatTask.h"
-#include "TaskDispatcher.h"
-#include "../Pig.h"
-#include "../PigAI/PigAIController.h"
-#include "../../Farm/Farm.h"
-#include "../../Farm/EatingSpot.h"
-#include "../PigStateMachine/PigStateMachine.h"
+#include "../../Pig.h"
+#include "../../PigAI/PigAIController.h"
+#include "../../../Farm/Farm.h"
+#include "../../../Farm/EatingSpot.h"
+#include "../../PigStateMachine/PigStateMachine.h"
 
 TGoToEatTask::TGoToEatTask() {
 	m_xTaskType = ETaskType::GoToEat;

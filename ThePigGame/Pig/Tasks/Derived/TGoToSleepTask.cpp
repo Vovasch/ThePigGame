@@ -1,12 +1,12 @@
 #include "TGoToSleepTask.h"
-#include "../../Pig/Pig.h"
-#include "../../Farm/Farm.h"
-#include "../../Farm/SleepingArea/SleepingArea.h"
-#include "../../Pig/PigAI/PigAIController.h"
-#include "../../Pig/PigStateMachine/PigStateMachine.h"
-#include "../../Pig/PigStateMachine/PigSleepingState.h"
+#include "../../../Pig/Pig.h"
+#include "../../../Farm/Farm.h"
+#include "../../../Farm/SleepingArea/SleepingArea.h"
+#include "../../../Pig/PigAI/PigAIController.h"
+#include "../../../Pig/PigStateMachine/PigStateMachine.h"
+#include "../../../Pig/PigStateMachine/PigSleepingState.h"
 #include "Math/Box.h"
-#include "../../Utils/Misc/TMiscUtils.h"
+#include "../../../Utils/Misc/TMiscUtils.h"
 
 TGoToSleepTask::TGoToSleepTask() {
 	m_xTaskType = ETaskType::GoToSleep;

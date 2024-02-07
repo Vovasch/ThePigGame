@@ -6,7 +6,7 @@
 #include "../Pig.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../PigStateMachine/PigStateMachine.h"
-#include "../Tasks/TaskDispatcher.h"
+#include "../Tasks/Base/TaskDispatcher.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "../../Levels/MainLevel/MainScreenGameMode.h"
 

@@ -8,7 +8,7 @@
 #include "PigInitData.h"
 #include "../Utils/EventHandler/TEventHandler.h"
 #include "PigEvent.h"
-#include "Tasks/TaskType.h"
+#include "Tasks/Derived/TaskType.h"
 #include "Pig.generated.h"
 
 class USkeletalMeshComponent;

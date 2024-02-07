@@ -1,9 +1,9 @@
 #include "TaskDispatcher.h"
 
-#include "TGoToEatTask.h"
-#include "TGoToSleepTask.h"
-#include "../PigStateMachine/PigStateMachine.h"
-#include "../PigStateMachine/PigDefaultState.h"
+#include "../Derived/TGoToEatTask.h"
+#include "../Derived/TGoToSleepTask.h"
+#include "../../PigStateMachine/PigStateMachine.h"
+#include "../../PigStateMachine/PigDefaultState.h"
 
 UTaskDispatcher::UTaskDispatcher() {
 	CreateTask<TGoToEatTask>();
