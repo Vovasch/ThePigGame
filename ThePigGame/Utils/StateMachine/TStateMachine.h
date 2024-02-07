@@ -43,6 +43,8 @@ class TStateMachine : public TEventHandler<EStateMachineEvent, EnumType, EnumTyp
 
 		OnEvent(EStateMachineEvent::StateChanged, oldState, newState);
 
+		OnStateChanged(oldState, newState);
+
 		return true;
 	}
 
@@ -50,6 +52,9 @@ class TStateMachine : public TEventHandler<EStateMachineEvent, EnumType, EnumTyp
 	void Tick(float deltaTime) {
 		m_pCurrentState->Tick(deltaTime);
 	}
+
+	protected:
+	virtual void OnStateChanged(EnumType oldState, EnumType newState) = 0;
 
 	protected:
 	void AddState(TSharedPtr<TStateType> state) {

@@ -32,9 +32,6 @@ void UPigStateMachine::Init(APig* pigOwner) {
 	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());	
 }
 
-bool UPigStateMachine::TryChangeState(EPigStates newState) {
-	auto prevStateType = m_pCurrentState->StateType();
-	auto res = TStateMachine<EPigStates>::TryChangeState(newState);
-	UE_LOG(StateMachineLog, Log, TEXT("State changed from %s to %s. %s"), *UEnum::GetValueAsString<EPigStates>(prevStateType), *UEnum::GetValueAsString<EPigStates>(newState), *GetPig()->GetName());
-	return res;
+void UPigStateMachine::OnStateChanged(EPigStates oldState, EPigStates newState) {
+	UE_LOG(StateMachineLog, Log, TEXT("State changed from %s to %s. %s"), *UEnum::GetValueAsString<EPigStates>(oldState), *UEnum::GetValueAsString<EPigStates>(newState), *GetPig()->GetName());
 }
