@@ -1,26 +1,26 @@
-#include "TGoToEatTask.h"
+#include "GoToEatTask.h"
 #include "../../Pig.h"
 #include "../../PigAI/PigAIController.h"
 #include "../../../Farm/Farm.h"
 #include "../../../Farm/EatingSpot.h"
 #include "../../PigStateMachine/PigStateMachine.h"
 
-TGoToEatTask::TGoToEatTask() {
+UGoToEatTask::UGoToEatTask() {
 	m_xTaskType = ETaskType::GoToEat;
 }
 
-void TGoToEatTask::Start() {
-	TBaseTask::Start();
+void UGoToEatTask::Start() {
+	UBaseTask::Start();
 	TryGoToEatingSpot();
 }
 
-void TGoToEatTask::OnEnd() {
+void UGoToEatTask::OnEnd() {
 	UnsubscribeAll();
-	TBaseTask::OnEnd();
+	UBaseTask::OnEnd();
 }
 
-void TGoToEatTask::Tick(float delta) {
-	TBaseTask::Tick(delta);
+void UGoToEatTask::Tick(float delta) {
+	UBaseTask::Tick(delta);
 
 	// while going to eating spot another pig took our eating spot
 	// so we try to find new one
@@ -29,7 +29,7 @@ void TGoToEatTask::Tick(float delta) {
 	}
 }
 
-void TGoToEatTask::TryGoToEatingSpot() {
+void UGoToEatTask::TryGoToEatingSpot() {
 	UnsubscribeAll();
 	auto aiController = GetAIController();
 
@@ -57,7 +57,7 @@ void TGoToEatTask::TryGoToEatingSpot() {
 	aiController->MoveToCurrentTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
 }
 
-void TGoToEatTask::OnNoEatingSpotAvailable() {
+void UGoToEatTask::OnNoEatingSpotAvailable() {
 	
 	GetPig()->SetWaitingForEatingSpot(true);
 	GetAIController()->Unsibscribe(this);
@@ -70,6 +70,6 @@ void TGoToEatTask::OnNoEatingSpotAvailable() {
 	});
 }
 
-void TGoToEatTask::UnsubscribeAll() {
+void UGoToEatTask::UnsubscribeAll() {
 	GetAIController()->Unsibscribe(this);
 }

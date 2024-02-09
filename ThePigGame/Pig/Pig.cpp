@@ -34,15 +34,13 @@ APig::APig() {
 void APig::BeginPlay() {
 	Super::BeginPlay();
 	
-	Init();
+	InitProperties();
 
-	CreateStateMachine();
-	CreateTaskDispatcher();
+	CreateObjects();
 
-	GetPigAnimInstance()->Init(this);
-	GetPigAIController()->Init();
+	InitObjects();
 
-	SubscribeOnAnimInstance();
+	AfterInitObjects();
 }
 
 void APig::Tick(float DeltaTime) {
@@ -73,7 +71,7 @@ void APig::Tick(float DeltaTime) {
 	FillPigInfo();
 }
 
-void APig::Init() {
+void APig::InitProperties() {
 	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
 
 	m_fMaxAgeAtSeconds = m_xInitData.MaxAgeYears * gameMode->GetOneYearInSeconds();
@@ -82,7 +80,7 @@ void APig::Init() {
 	m_fWeightDeltaPerTick = (m_xInitData.CriticalWeightAtMaxAge - m_xInitData.CriticalWeightAtMinAge) / m_fMaxSizesAtSeconds;
 	m_fWeightDeltaPerTick *= 1.5f;
 	
-	//m_fWeightDeltaPerTick = 0;
+	m_fWeightDeltaPerTick = 0.5;
 
 	m_fAgeWhenAdultSeconds = m_xInitData.AgeOfAdultYears * gameMode->GetOneYearInSeconds();
 
@@ -127,6 +125,22 @@ void APig::Init() {
 	m_xMorph.Init(this);
 	m_xMorph.GetMinMaxType().SetMinMax(m_xInitData.MorphTargetMinValue, m_xInitData.MorphTargetMaxValue);
 	m_xMorph.CalcCoeff(m_xWeight.GetCurrentPtr(), m_xCriticalWeight.GetCurrentPtr(), m_xMaxWeight.GetCurrentPtr());
+}
+
+void APig::CreateObjects() {
+	m_pStateMachine = NewObject<UPigStateMachine>();
+	m_pTaskDispatcher = NewObject<UTaskDispatcher>();
+}
+void APig::InitObjects() {
+	m_pStateMachine->Init(this);
+	m_pTaskDispatcher->Init(this);
+
+	GetPigAnimInstance()->Init(this);
+	GetPigAIController()->Init();
+}
+void APig::AfterInitObjects() {
+	m_pStateMachine->AfterInit();
+	SubscribeOnAnimInstance();
 }
 
 void APig::SetPigAIController(APigAIController* AIContoller) {
@@ -224,11 +238,6 @@ UPigStateMachine* APig::GetPigStateMachine() {
 	return m_pStateMachine;
 }
 
-void APig::CreateStateMachine() {
-	m_pStateMachine = NewObject<UPigStateMachine>();
-	m_pStateMachine->Init(this);
-}
-
 UPigAnimInstance* APig::GetPigAnimInstance() {
 	return Cast<UPigAnimInstance>(GetMesh()->GetAnimInstance());
 }
@@ -250,11 +259,6 @@ void APig::UnsubscribeFromAnimInstance() {
 
 UTaskDispatcher* APig::GetTaskDispatcher() {
 	return m_pTaskDispatcher;
-}
-
-void APig::CreateTaskDispatcher() {
-	m_pTaskDispatcher = NewObject<UTaskDispatcher>();
-	m_pTaskDispatcher->Init(this);
 }
 
 void APig::AddTask(ETaskType taskType) {

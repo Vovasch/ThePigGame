@@ -42,5 +42,5 @@ class TEventHandler {
 	}
 
 	protected:
-	TStaticArray<std::multimap<void*, THandlerFunc>, (uint32)EnumType::Size> m_vHandlers;
+	TStaticArray<std::unordered_multimap<void*, THandlerFunc>, (uint32)EnumType::Size> m_vHandlers;
 };

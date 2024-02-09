@@ -9,6 +9,7 @@ enum class ETaskEvent : uint8 {
 	End,
 	Success,
 	Fail,
+	Interrupt,
 	Size
 };
 

@@ -41,11 +41,11 @@ void APigAIController::Init() {
 }
 
 void APigAIController::SetPigState(EPigStates pigState) {
-	Blackboard->SetValueAsEnum(NPigBlackBoardKeys::PigState, (uint8)pigState);
+	//Blackboard->SetValueAsEnum(NPigBlackBoardKeys::PigState, (uint8)pigState);
 }
 
 void APigAIController::SetPigTask(ETaskType pigTask) {
-	Blackboard->SetValueAsEnum(NPigBlackBoardKeys::PigTask, (uint8)pigTask);
+	//Blackboard->SetValueAsEnum(NPigBlackBoardKeys::PigTask, (uint8)pigTask);
 }
 
 void APigAIController::OnPossess(APawn* InPawn) {
@@ -69,27 +69,43 @@ UEatingSpot* APigAIController::GetTargetEatingSpot() {
 }
 
 void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
-	UE_LOG(AIControllerLog, Log, TEXT("Request move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
-	BPMoveToCurrentTargetLocation(loc, targetType);
+	m_xCurrentTargetLocationType = targetType;
+	UE_LOG(AIControllerLog, Log, TEXT("Request move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
+	BPMoveToCurrentTargetLocation(loc);
 }
 
-void APigAIController::OnTargetLocationEvent(ETargetLocationTypes targetType, bool success) {
-	if(targetType == ETargetLocationTypes::EatingSpot) {
+void APigAIController::InterruptMovement() {
+	if(m_xCurrentTargetLocationType == ETargetLocationTypes::None) return;
+	UE_LOG(AIControllerLog, Log, TEXT("Interrupt request of move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
+	BPInterruptMovement();
+}
+
+void APigAIController::OnMoveToTargetLocationFinished(bool success) {
+	auto copy = m_xCurrentTargetLocationType;
+
+	// i have to clear it before event
+	// OnEvent can be created new move request
+	// if i will set None after all OnEvent's
+	// i can override existing
+	m_xCurrentTargetLocationType = ETargetLocationTypes::None;
+	if(copy == ETargetLocationTypes::EatingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedEatingSpot : EPigAIControllerEvent::FailedToReachEatingSpot);
-	} else if(targetType == ETargetLocationTypes::SleepingSpot) {
+	} else if(copy == ETargetLocationTypes::SleepingSpot) {
 		OnEvent(success ? EPigAIControllerEvent::ReachedSleepingSpot : EPigAIControllerEvent::FailedToReachSleepingSpot);
+	} else if(copy == ETargetLocationTypes::RandomLocation) {
+		OnEvent(success ? EPigAIControllerEvent::ReachedRandomLocation : EPigAIControllerEvent::FailedToReachRandomLocation);
 	}
 }
 
 
-void APigAIController::OnTargetLocationReached(ETargetLocationTypes targetType) {
-	OnTargetLocationEvent(targetType, true);
-	UE_LOG(AIControllerLog, Log, TEXT("Success move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
+void APigAIController::OnTargetLocationReached() {
+	UE_LOG(AIControllerLog, Log, TEXT("Success move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
+	OnMoveToTargetLocationFinished(true);
 }
 
-void APigAIController::OnMoveToTargetLocationFailed(ETargetLocationTypes targetType) {
-	OnTargetLocationEvent(targetType, false);
-	UE_LOG(AIControllerLog, Log, TEXT("Fail move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(targetType), *GetPig()->GetName());
+void APigAIController::OnMoveToTargetLocationFailed() {
+	UE_LOG(AIControllerLog, Log, TEXT("Fail move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
+	OnMoveToTargetLocationFinished(false);
 }
 
 void APigAIController::OnStartedEating() {

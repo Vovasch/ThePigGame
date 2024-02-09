@@ -7,5 +7,6 @@ UENUM(BlueprintType)
 enum class ETargetLocationTypes : uint8 {
 	None,
 	EatingSpot,
-	SleepingSpot
+	SleepingSpot,
+	RandomLocation
 };

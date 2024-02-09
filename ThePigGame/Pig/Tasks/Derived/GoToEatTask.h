@@ -1,13 +1,15 @@
 #pragma once
 
-#include "../Base/TBaseTask.h"
+#include "../Base/BaseTask.h"
+#include "GoToEatTask.generated.h"
 
 class UEatingSpot;
 
-class TGoToEatTask : public TBaseTask {
-	
+UCLASS()
+class THEPIGGAME_API UGoToEatTask : public UBaseTask {
+	GENERATED_BODY()
 	public:
-	TGoToEatTask();
+	UGoToEatTask();
 
 	public:
 	virtual void Start() override;

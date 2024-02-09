@@ -4,7 +4,6 @@
 #include "../../Animation/PigAnimInstance.h"
 
 #include "PigDefaultState.h"
-
 #include "PigEatingState.h"
 #include "PigSleepingState.h"
 #include "PigLayingDownState.h"
@@ -12,9 +11,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(StateMachineLog, Log, All)
 
-void UPigStateMachine::Init(APig* pigOwner) {
-	ICachedPigDataUser::Init(pigOwner);
-
+UPigStateMachine::UPigStateMachine() {
 	AddState(MakeShared<UPigDefaultState>(TArray{ EPigStates::Eating, EPigStates::LayingDown }));
 	
 	AddState(MakeShared<UPigEatingState>(TArray{ EPigStates::Default }));
@@ -22,6 +19,10 @@ void UPigStateMachine::Init(APig* pigOwner) {
 	AddState(MakeShared<UPigLayingDownState>(TArray{ EPigStates::Sleeping }));
 	AddState(MakeShared<UPigSleepingState>(TArray{ EPigStates::StandingUp }));
 	AddState(MakeShared<UPigStandingUpState>(TArray{ EPigStates::Default }));
+}
+
+void UPigStateMachine::Init(APig* pigOwner) {
+	ICachedPigDataUser::Init(pigOwner);
 
 
 	for(auto& pigState : m_vAllStates) {
@@ -29,9 +30,13 @@ void UPigStateMachine::Init(APig* pigOwner) {
 	}
 
 	m_pCurrentState = GetState(EPigStates::Default);
-	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());	
 }
 
 void UPigStateMachine::OnStateChanged(EPigStates oldState, EPigStates newState) {
 	UE_LOG(StateMachineLog, Log, TEXT("State changed from %s to %s. %s"), *UEnum::GetValueAsString<EPigStates>(oldState), *UEnum::GetValueAsString<EPigStates>(newState), *GetPig()->GetName());
+}
+
+void UPigStateMachine::AfterInit() {
+	m_pCurrentState->Start();
+	OnEvent(EStateMachineEvent::StateChanged, EPigStates::Default, m_pCurrentState->StateType());
 }

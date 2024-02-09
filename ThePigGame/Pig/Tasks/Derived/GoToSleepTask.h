@@ -1,8 +1,10 @@
 #pragma once
 
-#include "../Base/TBaseTask.h"
+#include "../Base/BaseTask.h"
+#include "GoToSleepTask.generated.h"
 
-class TGoToSleepTask : public TBaseTask {
+UCLASS()
+class THEPIGGAME_API UGoToSleepTask : public UBaseTask {
 	// main idea of this task
 	// pig that got task to sleep tries to find any another pig
 	// that has already started sleeping in order to lay down near her
@@ -15,6 +17,8 @@ class TGoToSleepTask : public TBaseTask {
 	// has already started sleeping, she to goes random place inside sleeping area
 	// and while going there pig is checking if any another pig started sleeping
 
+	GENERATED_BODY()
+
 	protected:
 	enum class ESleepingSpotType {
 		None,
@@ -23,7 +27,7 @@ class TGoToSleepTask : public TBaseTask {
 	};
 
 	public:
-	TGoToSleepTask();
+	UGoToSleepTask();
 
 	public:
 	virtual void Start() override;

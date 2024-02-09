@@ -41,10 +41,14 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	public:
 	void MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
+	void InterruptMovement();
 
 	protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPMoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
+	void BPMoveToCurrentTargetLocation(const FVector& loc);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPInterruptMovement();
 
 	protected:
 	void SetPigState(EPigStates pigState);
@@ -58,16 +62,18 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	UFUNCTION(BlueprintCallable)
-	void OnTargetLocationReached(ETargetLocationTypes targetType);
+	void OnTargetLocationReached();
 
 	protected:
 	UFUNCTION(BlueprintCallable)
-	void OnMoveToTargetLocationFailed(ETargetLocationTypes targetType);
+	void OnMoveToTargetLocationFailed();
 
 	protected:
-	void OnTargetLocationEvent(ETargetLocationTypes targetType, bool succes);
+	void OnMoveToTargetLocationFinished(bool succes);
 
 	protected:
 	UEatingSpot* m_pTargetEatingSpot = nullptr;
-		
+
+	protected:
+	ETargetLocationTypes m_xCurrentTargetLocationType = ETargetLocationTypes::None;
 };

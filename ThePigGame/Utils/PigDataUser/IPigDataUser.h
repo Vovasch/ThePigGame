@@ -1,6 +1,6 @@
 #pragma once
 
-class APig;
+#include "../../Pig/Pig.h"
 
 
 class INoCachePigDataUser {	

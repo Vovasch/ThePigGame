@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "../../../Utils/EventHandler/TEventHandler.h"
 #include "../../../Utils/PigDataUser/IPigDataUser.h"
-#include "TBaseTask.h"
+#include "BaseTask.h"
 #include "TaskEvent.h"
 #include "../Derived/TaskType.h"
 #include "Containers/Queue.h"
@@ -33,26 +33,28 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	void Tick(float delta);
 
 	public:
-	TSharedPtr<TBaseTask> GetTaskByType(ETaskType taskType);
+	UBaseTask* GetTaskByType(ETaskType taskType);
 
 	public:
-	TSharedPtr<TBaseTask> GetCurrentInProgressTask();
+	UBaseTask* GetCurrentInProgressTask();
+
+	public:
+	void OnEndTask(ETaskType taskType);
 
 	protected:
 	void TryStartNewTask();
 
 	protected:
 	void OnTaskStarted(ETaskType taskType);
-	void OnEndTask(ETaskType taskType);
 
 	protected:
 	template<typename TaskType>
 	void CreateTask() {
-		static_assert(std::is_base_of_v<TBaseTask, TaskType>, "TaskType must be derived from TBaseTask");
+		static_assert(std::is_base_of_v<UBaseTask, TaskType>, "TaskType must be derived from UBaseTask");
 
-		auto task = MakeShared<TaskType>();
+		auto task = NewObject<TaskType>();
 		task->Subscribe(this, ETaskEvent::End, [this](ETaskType taskType) { this->OnEndTask(taskType); });
-		m_vAllTasks[(uint32)task->GetTaskType()] = { task, ETaskState::None };
+		m_vAllTasks[(uint32)task->GetTaskType()] = task;
 	}
 
 	enum class ETaskState {
@@ -62,16 +64,12 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	};
 
 	protected:
-	struct TTaskData {
-		TSharedPtr<TBaseTask> Task = nullptr;
-		ETaskState State = ETaskState::None;
-	};
-
-	protected:
 	// tail is next to start or current in progress
 	TQueue<ETaskType> m_xTaskQue;
-	TStaticArray<TTaskData, (int32)ETaskType::Size> m_vAllTasks;
 
+	UPROPERTY()
+	TArray<UBaseTask*> m_vAllTasks;
 
+	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskData;
 
 };

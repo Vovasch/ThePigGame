@@ -1,4 +1,4 @@
-#include "TGoToSleepTask.h"
+#include "GoToSleepTask.h"
 #include "../../../Pig/Pig.h"
 #include "../../../Farm/Farm.h"
 #include "../../../Farm/SleepingArea/SleepingArea.h"
@@ -8,36 +8,36 @@
 #include "Math/Box.h"
 #include "../../../Utils/Misc/TMiscUtils.h"
 
-TGoToSleepTask::TGoToSleepTask() {
+UGoToSleepTask::UGoToSleepTask() {
 	m_xTaskType = ETaskType::GoToSleep;
 }
 
-void TGoToSleepTask::Start() {
-	TBaseTask::Start();
+void UGoToSleepTask::Start() {
+	UBaseTask::Start();
 	FindPlaceForSleeping();
 }
 
-void TGoToSleepTask::Complete() {
+void UGoToSleepTask::Complete() {
 	GetStateMachine()->TryChangeState(EPigStates::LayingDown);
-	TBaseTask::Complete();
+	UBaseTask::Complete();
 }
 
-void TGoToSleepTask::OnEnd() {
+void UGoToSleepTask::OnEnd() {
 	UnsubscribeFromAnotherSleepingPig();
 
 	GetAIController()->Unsibscribe(this);
-	TBaseTask::OnEnd();
+	UBaseTask::OnEnd();
 }
 
-void TGoToSleepTask::Tick(float delta) {
-	TBaseTask::Tick(delta);
+void UGoToSleepTask::Tick(float delta) {
+	UBaseTask::Tick(delta);
 	
 	if(!m_pAnotherSleepingPig.IsValid()) {
 		FindPlaceForSleeping();
 	}
 }
 
-void TGoToSleepTask::FindPlaceForSleeping() {
+void UGoToSleepTask::FindPlaceForSleeping() {
 	auto sleepingArea = GetFarm()->GetSleepingArea();
 	m_pAnotherSleepingPig = sleepingArea->GetAnySleepingPig();
 	
@@ -95,14 +95,14 @@ void TGoToSleepTask::FindPlaceForSleeping() {
 
 }
 
-void TGoToSleepTask::OnAnotherSleepingPigEndedSleeping() {
+void UGoToSleepTask::OnAnotherSleepingPigEndedSleeping() {
 	UnsubscribeFromAnotherSleepingPig();
 
 	FindPlaceForSleeping();
 
 }
 
-void TGoToSleepTask::UnsubscribeFromAnotherSleepingPig() {
+void UGoToSleepTask::UnsubscribeFromAnotherSleepingPig() {
 	if(m_pAnotherSleepingPig.IsValid()) {
 		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Unsibscribe(this);
 	}
@@ -111,7 +111,7 @@ void TGoToSleepTask::UnsubscribeFromAnotherSleepingPig() {
 	m_xSleepingSpotType = ESleepingSpotType::None;
 }
 
-void TGoToSleepTask::OnFailedToReachSleepingPlace() {
+void UGoToSleepTask::OnFailedToReachSleepingPlace() {
 	auto pig = GetPig();
 	auto sleepingArea = pig->GetOwnerFarm()->GetSleepingArea();
 

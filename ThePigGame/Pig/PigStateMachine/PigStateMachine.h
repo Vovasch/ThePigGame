@@ -13,7 +13,13 @@ class THEPIGGAME_API UPigStateMachine : public UObject, public TStateMachine<EPi
 	GENERATED_BODY()
 
 	public:
+	UPigStateMachine();
+
+	public:
 	virtual void Init(APig* pig) override;
+
+	public:
+	void AfterInit();
 
 	public:
 	virtual void OnStateChanged(EPigStates oldState, EPigStates newState) override;

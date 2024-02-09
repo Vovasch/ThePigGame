@@ -11,5 +11,8 @@ enum class EPigAIControllerEvent: uint8 {
 	ReachedSleepingSpot,
 	FailedToReachSleepingSpot,
 
+	ReachedRandomLocation,
+	FailedToReachRandomLocation,
+
 	Size
 };

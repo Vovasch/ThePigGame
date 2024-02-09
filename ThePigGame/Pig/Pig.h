@@ -34,7 +34,10 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	virtual void BeginPlay() override;
 
 	protected:
-	void Init();
+	void InitProperties();
+	void CreateObjects();
+	void InitObjects();
+	void AfterInitObjects();
 
 	public:
 	AFarm* GetOwnerFarm();
@@ -69,9 +72,6 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	public:
 	UPigStateMachine* GetPigStateMachine();
 
-	protected:
-	void CreateStateMachine();
-
 	// animations
 	public:
 	UPigAnimInstance* GetPigAnimInstance();
@@ -84,9 +84,6 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 
 	public:
 	UTaskDispatcher* GetTaskDispatcher();
-
-	protected:
-	void CreateTaskDispatcher();
 
 	public:
 	void AddTask(ETaskType taskType);

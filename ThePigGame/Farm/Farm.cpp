@@ -9,14 +9,11 @@
 #include "Trough.h"
 #include "SleepingArea/SleepingArea.h"
 
-// Sets default values
 AFarm::AFarm() {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void AFarm::BeginPlay() {
 	Super::BeginPlay();
 	
@@ -56,8 +53,6 @@ void AFarm::BeginPlay() {
 
 	}
 
-	// get pointer to Sleeping Area
-
 	m_pSleepingArea = GetComponentByClass<USleepingArea>();
 
 
@@ -79,12 +74,8 @@ void AFarm::BeginPlay() {
 			BindOnPig(pig);
 		}
 	}
-
-
-
 }
 
-// Called every frame
 void AFarm::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
