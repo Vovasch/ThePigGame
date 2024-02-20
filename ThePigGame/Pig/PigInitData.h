@@ -26,7 +26,7 @@ struct FPigInitData {
 	float MaxAgeYears = 18.f;	
 
 	UPROPERTY(EditAnywhere)
-	float AgeOfAdultYears = 3.f;
+	float AgeOfAdultYears = 5.f;
 
 	//
 	// SCALE
@@ -67,12 +67,9 @@ struct FPigInitData {
 	UPROPERTY(EditAnywhere)
 	float MaxWeightAtMaxAge = 300.f;
 	
-	
-
 	//
 	// Bellyful
 	//
-
 	
 	UPROPERTY(EditAnyWhere)
 	float MinBellyful = 0.f;
@@ -99,7 +96,7 @@ struct FPigInitData {
 	// At what age of pig it will reach it's max scale and max weight.
 	
 	UPROPERTY(EditAnyWhere)
-	float MaxSizesAtAgeYears = 5.f;
+	float MaxSizesAtAgeYears = 8.f;
 
 	
 
@@ -135,5 +132,50 @@ struct FPigInitData {
 
 	UPROPERTY(EditAnyWhere);
 	float MorphTargetMaxValue = 1.f;
+
+
+	//
+	// Movement
+	//
+
+	// Child
+
+	UPROPERTY(EditAnywhere)
+	float ChildSneakSpeed = 7.43f;
+
+	UPROPERTY(EditAnywhere)
+	float ChildSlowWalkSpeed = 22.44f;
+
+	UPROPERTY(EditAnywhere)
+	float ChildWalkSpeed = 31.07f;
+
+	UPROPERTY(EditAnywhere)
+	float ChildTrotSpeed = 133.6f;
+
+	UPROPERTY(EditAnywhere)
+	float ChildRunSpeed = 225.f;
+
+	UPROPERTY(EditAnywhere)
+	float ChildSprintSpeed = 418.125f;
+
+	// Adult
+
+	UPROPERTY(EditAnywhere)
+	float AdultSneakSpeed = 20.f;
+
+	UPROPERTY(EditAnywhere)
+	float AdultSlowWalkSpeed = 51.9f;
+
+	UPROPERTY(EditAnywhere)
+	float AdultWalkSpeed = 72.04f;
+
+	UPROPERTY(EditAnywhere)
+	float AdultTrotSpeed = 237.61f;
+
+	UPROPERTY(EditAnywhere)
+	float AdultRunSpeed = 514.05f;
+
+	UPROPERTY(EditAnywhere)
+	float AdultSprintSpeed = 820.88f;
 
 };

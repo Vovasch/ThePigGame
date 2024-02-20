@@ -19,6 +19,7 @@ class AFarm;
 class UPigStateMachine;
 class UPigAnimInstance;
 class UTaskDispatcher;
+class UMovementController;
 
 UCLASS(Blueprintable)
 class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, public TEventHandler<EPigEvent> {
@@ -105,6 +106,10 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 
 	float GetBellyfulLevelToStopEating();
 
+	float GetCurrentScale();
+
+	const FPigInitData& GetInitData();
+
 	protected:
 	Age m_xAge;
 
@@ -148,6 +153,9 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	UPROPERTY()
 	UTaskDispatcher* m_pTaskDispatcher = nullptr;
 
+	protected:
+	UPROPERTY()
+	UMovementController* m_pMovementController = nullptr;
 
 	protected:
 	UPROPERTY()

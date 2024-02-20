@@ -27,3 +27,14 @@ void UPigAnimInstance::Init(APig* pig) {
 void UPigAnimInstance::DisengageAnimInstance() {
 	GetStateMachine()->Unsibscribe(this);
 }
+
+void UPigAnimInstance::PreUpdateAnimation(float DeltaSeconds) {
+	Super::PreUpdateAnimation(DeltaSeconds);
+	auto pig = GetPig();
+	if(!pig) {
+		m_fVelocity = 0;
+		return;
+	}
+
+	m_fVelocity = pig->GetVelocity().Length() / pig->GetCurrentScale();
+}

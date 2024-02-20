@@ -14,6 +14,7 @@
 #include "../Levels/MainLevel/MainScreenGameMode.h"
 #include "Tasks/Base/TaskDispatcher.h"
 #include "Components/CapsuleComponent.h"
+#include "Movement/MovementController.h"
 
 APig::APig() {
 
@@ -50,6 +51,7 @@ void APig::Tick(float DeltaTime) {
 
 	m_pStateMachine->Tick(DeltaTime);
 	m_pTaskDispatcher->Tick(DeltaTime);
+	m_pMovementController->UpdateMaxSpeed();
 
 	CheckIfAdult();
 	SetPigScale();
@@ -130,10 +132,13 @@ void APig::InitProperties() {
 void APig::CreateObjects() {
 	m_pStateMachine = NewObject<UPigStateMachine>();
 	m_pTaskDispatcher = NewObject<UTaskDispatcher>();
+	m_pMovementController = NewObject<UMovementController>();
 }
 void APig::InitObjects() {
 	m_pStateMachine->Init(this);
 	m_pTaskDispatcher->Init(this);
+	m_pMovementController->Init(this);
+	m_pMovementController->InitChildMovementSpeeds();
 
 	GetPigAnimInstance()->Init(this);
 	GetPigAIController()->Init();
@@ -149,7 +154,6 @@ void APig::SetPigAIController(APigAIController* AIContoller) {
 
 void APig::SetPigScale() {
 	auto currScale = m_xScale.GetCurrent();
-	//GetCapsuleComponent()->SetWorldScale3D({ currScale, currScale, currScale });
 	GetMesh()->SetWorldScale3D({ currScale, currScale, currScale });
 }
 
@@ -269,6 +273,8 @@ void APig::CheckIfAdult() {
 	if(!m_bIsAdult && m_xAge.GetCurrent() >= m_fAgeWhenAdultSeconds) {
 		m_bIsAdult = true;
 
+		m_pMovementController->InitAdultMovementSpeeds();
+
 		m_xScale.GetMinMaxType().SetMinMax(m_xInitData.AdultMinScale, m_xInitData.AdultMaxScale);
 		m_xScale.CalcCoeff(m_xAge.GetCurrentPtr(), m_fAgeWhenAdultSeconds, m_fMaxSizesAtSeconds);
 
@@ -315,4 +321,12 @@ float APig::GetCurrentBellyful() {
 
 float APig::GetBellyfulLevelToStopEating() {
 	return m_xInitData.BellyfulLevelToStopEating;
+}
+
+float APig::GetCurrentScale() {
+	return m_xScale.GetCurrent();
+}
+
+const FPigInitData& APig::GetInitData() {
+	return m_xInitData;
 }

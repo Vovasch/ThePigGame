@@ -24,8 +24,15 @@ class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandl
 	void SetPigState(EPigStates pigState);
 
 	protected:
+	virtual void PreUpdateAnimation(float DeltaSeconds) override;
+
+	protected:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
 	void OnStateFinished(EPigStates pigState);
+
+	protected:
+	UPROPERTY(BlueprintReadOnly)
+	float m_fVelocity = 0.f;
 
 	protected:
 	UPROPERTY(BlueprintReadOnly)
