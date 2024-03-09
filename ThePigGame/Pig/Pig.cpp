@@ -51,7 +51,7 @@ void APig::Tick(float DeltaTime) {
 
 	m_pStateMachine->Tick(DeltaTime);
 	m_pTaskDispatcher->Tick(DeltaTime);
-	m_pMovementController->UpdateMaxSpeed();
+	m_pMovementController->Tick(DeltaTime);
 
 	CheckIfAdult();
 	SetPigScale();
@@ -154,6 +154,7 @@ void APig::SetPigAIController(APigAIController* AIContoller) {
 
 void APig::SetPigScale() {
 	auto currScale = m_xScale.GetCurrent();
+	//GetMesh()->SetWorldScale3D({ 1,1,1 });
 	GetMesh()->SetWorldScale3D({ currScale, currScale, currScale });
 }
 
@@ -329,4 +330,8 @@ float APig::GetCurrentScale() {
 
 const FPigInitData& APig::GetInitData() {
 	return m_xInitData;
+}
+
+UMovementController* APig::GetMovementController() {
+	return m_pMovementController;
 }

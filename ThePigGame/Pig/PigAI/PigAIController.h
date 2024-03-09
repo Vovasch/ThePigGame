@@ -47,6 +47,7 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPMoveToCurrentTargetLocation(const FVector& loc);
 
+	protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPInterruptMovement();
 

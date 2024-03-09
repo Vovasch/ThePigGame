@@ -100,6 +100,10 @@ class THEPIGGAME_API APig : public ACharacter, public IPropertyTickProvider, pub
 	void StartEating();
 	void StopEating();
 
+	// movement controller
+
+	UMovementController* GetMovementController();
+
 	// property getters
 	public:
 	float GetCurrentBellyful();

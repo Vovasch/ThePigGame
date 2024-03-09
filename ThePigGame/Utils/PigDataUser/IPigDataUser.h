@@ -21,6 +21,11 @@ class INoCachePigDataUser {
 	virtual AFarm* GetFarm() {
 		return GetPig()->GetOwnerFarm();
 	}
+
+	virtual UMovementController* GetMovementController() {
+		return GetPig()->GetMovementController();
+	}
+
 };
 
 class ICachedPigDataUser : public INoCachePigDataUser {

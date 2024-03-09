@@ -3,6 +3,7 @@
 
 #include "PigAnimInstance.h"
 #include "../Pig/PigStateMachine/PigStateMachine.h"
+#include "../Pig/Movement/MovementController.h"
 
 void UPigAnimInstance::SetPigState(EPigStates pigState) {
 	m_xPigState = pigState;
@@ -30,11 +31,13 @@ void UPigAnimInstance::DisengageAnimInstance() {
 
 void UPigAnimInstance::PreUpdateAnimation(float DeltaSeconds) {
 	Super::PreUpdateAnimation(DeltaSeconds);
-	auto pig = GetPig();
-	if(!pig) {
+
+	if(!GetPig()) {
 		m_fVelocity = 0;
+		m_fRotation = 0;
 		return;
 	}
 
-	m_fVelocity = pig->GetVelocity().Length() / pig->GetCurrentScale();
+	m_fVelocity = GetMovementController()->GetVelocity();
+	m_fRotation = GetMovementController()->GetRotation();
 }

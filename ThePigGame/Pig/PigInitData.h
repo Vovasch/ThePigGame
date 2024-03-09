@@ -4,17 +4,22 @@
 #include "PigInitData.generated.h"
 
 USTRUCT()
+struct FPigRotationData {
+	GENERATED_BODY();
+
+	float WalkDeltaX = 0.f;
+	float WalkDeltaY = 0.f;
+	float TimeTaken = 0.f;
+	float DegreesInTime = 0.f;
+};
+
+
+
+USTRUCT()
 struct FPigInitData {
 	GENERATED_BODY();
 
-	// no need
-	// Same as MaxAgeYears, but only in seconds
-	//float MaxAgeSeconds = 0.f;
-	// Same as MaxSizesAtAgeYears, but in seconds.
-	//float MaxSizesAtSeconds = 0.f;
-
-	// How much weight of pig can change per tick
-	//float WeightDeltaPerTick = 0.f;
+	FPigInitData();
 
 	//
 	// AGE 
@@ -177,5 +182,13 @@ struct FPigInitData {
 
 	UPROPERTY(EditAnywhere)
 	float AdultSprintSpeed = 820.88f;
+
+	//
+	// Rotation
+	//
+
+	FPigRotationData ChildRotationData;
+	FPigRotationData AdultRotationData;
+
 
 };

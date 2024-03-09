@@ -36,6 +36,10 @@ class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandl
 
 	protected:
 	UPROPERTY(BlueprintReadOnly)
+	float m_fRotation = 0.f;
+
+	protected:
+	UPROPERTY(BlueprintReadOnly)
 	EPigStates m_xPigState = EPigStates::Default;
 
 };

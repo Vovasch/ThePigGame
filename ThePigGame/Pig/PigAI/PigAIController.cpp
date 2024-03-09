@@ -9,6 +9,7 @@
 #include "../Tasks/Base/TaskDispatcher.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "../../Levels/MainLevel/MainScreenGameMode.h"
+#include "ThePigGame/Pig/Movement/MovementController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AIControllerLog, Log, All)
 
@@ -71,7 +72,16 @@ UEatingSpot* APigAIController::GetTargetEatingSpot() {
 void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
 	m_xCurrentTargetLocationType = targetType;
 	UE_LOG(AIControllerLog, Log, TEXT("Request move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
-	BPMoveToCurrentTargetLocation(loc);
+
+	auto movementController = GetMovementController();
+
+	movementController->Subscribe(this, EMovementControllerEvent::RotationFinished, [this, loc]() {
+		GetMovementController()->Unsibscribe(this);
+		BPMoveToCurrentTargetLocation(loc);
+
+	});
+
+	movementController->RotateTo(loc);
 }
 
 void APigAIController::InterruptMovement() {
