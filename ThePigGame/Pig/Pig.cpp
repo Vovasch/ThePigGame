@@ -34,7 +34,7 @@ APig::APig() {
 
 void APig::BeginPlay() {
 	Super::BeginPlay();
-	
+
 	InitProperties();
 
 	CreateObjects();

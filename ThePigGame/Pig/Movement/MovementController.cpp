@@ -14,6 +14,28 @@ const int s_iRotationToLeft = -180;
 
 const EMovementType s_xRotationMovementType = EMovementType::Walk;
 
+/*void UMovementController::BeginPlay() {
+	
+	FMemMark Mark(FMemStack::Get());
+
+	m_xAnimation = Cast<UAnimSequence>(FSoftObjectPath(TEXT("/Game/Animalia/Pig_Y/Animations/Trans_TurnR90.Trans_TurnR90")).TryLoad());
+
+	
+	FCompactPose m_xOutPose; // This will be set when extracting the pose
+	FBlendedCurve m_xOutCurve;
+	FStackCustomAttributes m_xOutAttr;
+	m_xOutPose.SetBoneContainer(&GetPig()->GetPigAnimInstance()->GetRequiredBones());
+	FAnimationPoseData m_xOutData(m_xOutPose, m_xOutCurve, m_xOutAttr);
+
+	auto framesCount = m_xAnimation->GetNumberOfFrames();
+
+	for(int32 i = 0; i<framesCount; ++i) {
+		m_xAnimation->GetAnimationPose(m_xOutData, FAnimExtractContext(m_xAnimation->GetTimeAtFrame(i)));
+		m_vTrasformAtFrame.Add(m_xOutData.GetPose().GetBones()[0]);		
+	}
+	
+}*/
+
 float UMovementController::GetVelocity() {
 	return m_fVelocity;
 }
@@ -70,7 +92,7 @@ void UMovementController::Tick(float deltaTime) {
 		}
 
 		if(m_fRotationTimeCounter >= m_fTimeToRotate) {
-			EndRotating();
+			TryEndRotating();
 		}
 
 		auto locationDt = SpeedToScale(m_xRotationData.m_dDistance) * deltaTime / m_xRotationData.m_fTime;
@@ -81,7 +103,7 @@ void UMovementController::Tick(float deltaTime) {
 			
 		auto yawDt = m_iRotationMul * m_xRotationData.m_fDegrees * deltaTime / m_xRotationData.m_fTime;
 		auto deltaRotator = FRotator(0, yawDt, 0);
-		GetPig()->AddActorWorldRotation(deltaRotator);		
+		GetPig()->AddActorWorldRotation(deltaRotator);
 
 	} else {
 		m_fVelocity = SpeedFromScale(GetPig()->GetVelocity().Length());
@@ -109,12 +131,18 @@ void UMovementController::RecalcRotationData() {
 
 	auto degreesToRotate = newRotator - pigRotation;
 
-	//degreesToRotate = -130; // for debug
+	//degreesToRotate = 90; // for debug
 
 	if(degreesToRotate > 180) {
 		degreesToRotate -= 360;
 	} else if(degreesToRotate < -180) {
 		degreesToRotate += 360;
+	}
+
+	if(FMath::Abs(degreesToRotate)<=2) {
+		auto deltaRotator = FRotator(0, degreesToRotate, 0);
+		GetPig()->AddActorWorldRotation(deltaRotator);
+		EndRotating();
 	}
 
 	auto timesToRotate = FMath::Abs(degreesToRotate) / m_xRotationData.m_fDegrees;
@@ -127,6 +155,10 @@ void UMovementController::RecalcRotationData() {
 
 	m_fVelocity = m_vMovementSpeeds[uint32(s_xRotationMovementType)];
 	m_fRotation = isRotationToRight ? s_iRotationToRight : s_iRotationToLeft;
+}
+
+void UMovementController::TryEndRotating() {
+	RotateTo(m_xRotatingTo);
 }
 
 void UMovementController::EndRotating() {

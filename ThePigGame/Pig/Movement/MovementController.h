@@ -43,13 +43,12 @@ class THEPIGGAME_API UMovementController : public UObject, public ICachedPigData
 	void UpdateMaxSpeed();
 
 	protected:
+	void TryEndRotating();
 	void EndRotating();
 
 	protected:
 	float SpeedToScale(float baseSpeed);
 	float SpeedFromScale(float speed);
-
-	
 
 	protected:
 	void EndPeriod();

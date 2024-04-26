@@ -65,7 +65,7 @@ void AFarm::BeginPlay() {
 		auto uclass = LoadObject<UClass>(nullptr, UTF8_TO_TCHAR("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
 
 		origin.Z = 88.f;
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 1; i++) {
 			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
 			if(!pig) continue;
 			origin.X += 70;
