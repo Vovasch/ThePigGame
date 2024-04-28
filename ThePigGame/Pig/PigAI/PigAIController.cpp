@@ -69,25 +69,33 @@ UEatingSpot* APigAIController::GetTargetEatingSpot() {
 	return m_pTargetEatingSpot;
 }
 
-void APigAIController::MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
+void APigAIController::MoveToTargetLocation(const FVector& loc, ETargetLocationTypes targetType) {
 	m_xCurrentTargetLocationType = targetType;
 	UE_LOG(AIControllerLog, Log, TEXT("Request move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
 
 	auto movementController = GetMovementController();
 
-	movementController->Subscribe(this, EMovementControllerEvent::RotationFinished, [this, loc]() {
-		GetMovementController()->Unsibscribe(this);
-		BPMoveToCurrentTargetLocation(loc);
+	movementController->Unsubscribe(this);
+
+	movementController->Subscribe(this, EMovementControllerEvent::MovementCompleted, [this]() {
+		GetMovementController()->Unsubscribe(this);
+		OnTargetLocationReached();
 
 	});
 
-	movementController->RotateTo(loc);
+	movementController->Subscribe(this, EMovementControllerEvent::MovementFailed, [this]() {
+		GetMovementController()->Unsubscribe(this);
+		OnMoveToTargetLocationFailed();
+	});
+
+	movementController->MoveTo(loc);
 }
 
 void APigAIController::InterruptMovement() {
 	if(m_xCurrentTargetLocationType == ETargetLocationTypes::None) return;
 	UE_LOG(AIControllerLog, Log, TEXT("Interrupt request of move to %s. %s"), *UEnum::GetValueAsString<ETargetLocationTypes>(m_xCurrentTargetLocationType), *GetPig()->GetName());
-	BPInterruptMovement();
+
+	GetMovementController()->InterruptMovement();
 }
 
 void APigAIController::OnMoveToTargetLocationFinished(bool success) {

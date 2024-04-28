@@ -26,7 +26,7 @@ class TEventHandler {
 	}
 
 	public:
-	void Unsibscribe(void* owner) {
+	void Unsubscribe(void* owner) {
 		if(!owner) return;
 
 		for(auto& handlerPools : m_vHandlers) {

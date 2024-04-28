@@ -11,4 +11,19 @@ FPigInitData::FPigInitData() {
 	AdultRotationData.TimeTaken = 1.1f;
 	AdultRotationData.DegreesInTime = 50.f;
 
+
+	ChildWalkingData.SneakSpeed = 7.43f;
+	ChildWalkingData.SlowWalkSpeed = 22.44f;
+	ChildWalkingData.WalkSpeed = 31.07f;
+	ChildWalkingData.TrotSpeed = 133.6f;
+	ChildWalkingData.RunSpeed = 225.f;
+	ChildWalkingData.SprintSpeed = 418.125f;
+
+	AdultWalkingData.SneakSpeed = 20.f;
+	AdultWalkingData.SlowWalkSpeed = 51.9f;
+	AdultWalkingData.WalkSpeed = 72.04f;
+	AdultWalkingData.TrotSpeed = 237.61f;
+	AdultWalkingData.RunSpeed = 514.05f;
+	AdultWalkingData.SprintSpeed = 820.88f;
+
 }

@@ -51,25 +51,26 @@ void UGoToEatTask::TryGoToEatingSpot() {
 	});
 
 	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachEatingSpot, [this, aiController]() {
+		// TODO: handle failed to move
 		//this->TryGoToEatingSpot();
 	});
 
-	aiController->MoveToCurrentTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
+	aiController->MoveToTargetLocation(targetEatingSpot->GetLocation(), ETargetLocationTypes::EatingSpot);
 }
 
 void UGoToEatTask::OnNoEatingSpotAvailable() {
 	
 	GetPig()->SetWaitingForEatingSpot(true);
-	GetAIController()->Unsibscribe(this);
+	GetAIController()->Unsubscribe(this);
 	Fail();
 
 	GetFarm()->Subscribe(this, EFarmEvent::EatingSpotFreed, [this]() {
-		GetFarm()->Unsibscribe(this);
+		GetFarm()->Unsubscribe(this);
 		GetPig()->SetWaitingForEatingSpot(false);
 		GetPig()->AddTask(ETaskType::GoToEat);
 	});
 }
 
 void UGoToEatTask::UnsubscribeAll() {
-	GetAIController()->Unsibscribe(this);
+	GetAIController()->Unsubscribe(this);
 }

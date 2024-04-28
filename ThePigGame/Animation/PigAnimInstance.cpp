@@ -26,7 +26,7 @@ void UPigAnimInstance::Init(APig* pig) {
 
 
 void UPigAnimInstance::DisengageAnimInstance() {
-	GetStateMachine()->Unsibscribe(this);
+	GetStateMachine()->Unsubscribe(this);
 }
 
 void UPigAnimInstance::PreUpdateAnimation(float DeltaSeconds) {

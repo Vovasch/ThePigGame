@@ -5,6 +5,7 @@
 
 UENUM(BlueprintType)
 enum class EMovementControllerEvent : uint8 {
-	RotationFinished,
+	MovementCompleted,
+	MovementFailed,
 	Size
 };

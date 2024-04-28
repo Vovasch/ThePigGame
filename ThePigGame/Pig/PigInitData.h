@@ -4,8 +4,31 @@
 #include "PigInitData.generated.h"
 
 USTRUCT()
+struct FPigWalkingData {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	float SneakSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float SlowWalkSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float WalkSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float TrotSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float RunSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere)
+	float SprintSpeed = 0.0f;
+};
+
+USTRUCT()
 struct FPigRotationData {
-	GENERATED_BODY();
+	GENERATED_BODY()
 
 	float WalkDeltaX = 0.f;
 	float WalkDeltaY = 0.f;
@@ -17,7 +40,7 @@ struct FPigRotationData {
 
 USTRUCT()
 struct FPigInitData {
-	GENERATED_BODY();
+	GENERATED_BODY()
 
 	FPigInitData();
 
@@ -140,48 +163,14 @@ struct FPigInitData {
 
 
 	//
-	// Movement
+	// Walking
 	//
 
-	// Child
+	UPROPERTY(EditAnyWhere)
+	FPigWalkingData ChildWalkingData;
 
-	UPROPERTY(EditAnywhere)
-	float ChildSneakSpeed = 7.43f;
-
-	UPROPERTY(EditAnywhere)
-	float ChildSlowWalkSpeed = 22.44f;
-
-	UPROPERTY(EditAnywhere)
-	float ChildWalkSpeed = 31.07f;
-
-	UPROPERTY(EditAnywhere)
-	float ChildTrotSpeed = 133.6f;
-
-	UPROPERTY(EditAnywhere)
-	float ChildRunSpeed = 225.f;
-
-	UPROPERTY(EditAnywhere)
-	float ChildSprintSpeed = 418.125f;
-
-	// Adult
-
-	UPROPERTY(EditAnywhere)
-	float AdultSneakSpeed = 20.f;
-
-	UPROPERTY(EditAnywhere)
-	float AdultSlowWalkSpeed = 51.9f;
-
-	UPROPERTY(EditAnywhere)
-	float AdultWalkSpeed = 72.04f;
-
-	UPROPERTY(EditAnywhere)
-	float AdultTrotSpeed = 237.61f;
-
-	UPROPERTY(EditAnywhere)
-	float AdultRunSpeed = 514.05f;
-
-	UPROPERTY(EditAnywhere)
-	float AdultSprintSpeed = 820.88f;
+	UPROPERTY(EditAnyWhere)
+	FPigWalkingData AdultWalkingData;
 
 	//
 	// Rotation

@@ -7,79 +7,51 @@
 #include "MovementControllerEvent.h"
 #include "MovementController.generated.h"
 
+class AWalkingController;
+class URotationController;
+
 UCLASS()
 class THEPIGGAME_API UMovementController : public UObject, public ICachedPigDataUser, public TEventHandler<EMovementControllerEvent> {
 
 	GENERATED_BODY()
 
-	struct SRotationPeriodData {
-		double m_dDistance = 0.0;
-		float m_fTime = 0.f;
-		float m_fDegrees = 0.f;
-	};
+	public:
+	UMovementController();
+	
+	public:
+	virtual void Init(APig* pig) override;
+
+	public:
+	void MoveTo(const FVector& vec);
+	void InterruptMovement();
 
 	public:
 	float GetVelocity();
 	float GetRotation();
 
 	public:
-	void InitChildMovementSpeeds();
-	void InitAdultMovementSpeeds();
-
-	public:
-	void SetMovementType(EMovementType movementType);
+	void InitChildVelocityData();
+	void InitAdultVelocityData();
 
 	public:
 	void Tick(float deltaTime);
 
-	public:
-	void RotateTo(const FVector& location);
-	void RecalcRotationData();
+	protected:
+	void InitVelocityData(bool isAdult);
 
 	protected:
-	void InitMovementSpeeds(bool isAdult);
-	
-	protected:
-	void UpdateMaxSpeed();
+	UPROPERTY()
+	AWalkingController* m_pWalkingController = nullptr;
 
 	protected:
-	void TryEndRotating();
-	void EndRotating();
+	UPROPERTY()
+	URotationController* m_pRotationController = nullptr;
+
 
 	protected:
-	float SpeedToScale(float baseSpeed);
-	float SpeedFromScale(float speed);
+	float m_fLinearVelocityMagnitude = 0.f;
+	float m_fAngularVelocity = 0.f;
 
-	protected:
-	void EndPeriod();
 
-	protected:
-	EMovementType m_xCurrentMovementType = EMovementType::Default;
-
-	protected:
-	TStaticArray<float, (uint32)EMovementType::Size> m_vMovementSpeeds;
-
-	protected:
-	float m_fVelocity = 0.f;
-	float m_fRotation = 0.f;
-
-	protected:
-	bool m_bIsCurrentlyRotating = false;
-
-	protected:
-	float m_fTimeToRotate = 0.f;
-
-	protected:
-	float m_fRotationTimeCounter = 0.f;
-	float m_fTimePerPeriodCounter = 0.f;
-
-	protected:
-	int m_iRotationMul = 1;
-
-	protected:
-	SRotationPeriodData m_xRotationData;
-
-	protected:
-	FVector m_xRotatingTo = FVector::ZeroVector;
 
 };

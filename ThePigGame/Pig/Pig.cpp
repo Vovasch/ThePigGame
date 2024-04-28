@@ -138,7 +138,7 @@ void APig::InitObjects() {
 	m_pStateMachine->Init(this);
 	m_pTaskDispatcher->Init(this);
 	m_pMovementController->Init(this);
-	m_pMovementController->InitChildMovementSpeeds();
+	m_pMovementController->InitChildVelocityData();
 
 	GetPigAnimInstance()->Init(this);
 	GetPigAIController()->Init();
@@ -259,7 +259,7 @@ void APig::SubscribeOnAnimInstance() {
 }
 
 void APig::UnsubscribeFromAnimInstance() {
-	GetPigAnimInstance()->Unsibscribe(this);
+	GetPigAnimInstance()->Unsubscribe(this);
 }
 
 UTaskDispatcher* APig::GetTaskDispatcher() {
@@ -274,7 +274,7 @@ void APig::CheckIfAdult() {
 	if(!m_bIsAdult && m_xAge.GetCurrent() >= m_fAgeWhenAdultSeconds) {
 		m_bIsAdult = true;
 
-		m_pMovementController->InitAdultMovementSpeeds();
+		m_pMovementController->InitAdultVelocityData();
 
 		m_xScale.GetMinMaxType().SetMinMax(m_xInitData.AdultMinScale, m_xInitData.AdultMaxScale);
 		m_xScale.CalcCoeff(m_xAge.GetCurrentPtr(), m_fAgeWhenAdultSeconds, m_fMaxSizesAtSeconds);

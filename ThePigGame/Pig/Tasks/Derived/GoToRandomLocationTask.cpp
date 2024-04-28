@@ -13,12 +13,11 @@ void UGoToRandomLocationTask::Start() {
 	auto targetLoc = FVector::ZeroVector;
 	UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetPig(), GetPig()->GetActorLocation(), targetLoc, 10000.f);
 	
-	GetAIController()->MoveToCurrentTargetLocation(targetLoc, ETargetLocationTypes::RandomLocation);
-
 	GetAIController()->Subscribe(this, EPigAIControllerEvent::ReachedRandomLocation, [this]() {
 		this->Complete();
 	});
 
+	GetAIController()->MoveToTargetLocation(targetLoc, ETargetLocationTypes::RandomLocation);
 }
 
 void UGoToRandomLocationTask::Interrupt() {
@@ -28,6 +27,6 @@ void UGoToRandomLocationTask::Interrupt() {
 }
 
 void UGoToRandomLocationTask::OnEnd() {
-	GetAIController()->Unsibscribe(this);
+	GetAIController()->Unsubscribe(this);
 	UBaseTask::OnEnd();
 }

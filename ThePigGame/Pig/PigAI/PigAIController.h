@@ -14,6 +14,7 @@
 #include "../../Utils/PigDataUser/IPigDataUser.h"
 #include "PigAIController.generated.h"
 
+class AWalkingController;
 class APig;
 class UTaskDispatcher;
 
@@ -23,6 +24,10 @@ class UTaskDispatcher;
 UCLASS()
 class THEPIGGAME_API APigAIController : public AAIController, public TEventHandler<EPigAIControllerEvent>, public INoCachePigDataUser {
 	GENERATED_BODY()
+
+	public:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWalkingController> WalkingControllerBP;
 
 	public:
 	APigAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -40,16 +45,15 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	void OnFinishedEating();
 
 	public:
-	void MoveToCurrentTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
+	void MoveToTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
 	void InterruptMovement();
 
 	protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void BPMoveToCurrentTargetLocation(const FVector& loc);
+	void OnTargetLocationReached();
+	void OnMoveToTargetLocationFailed();
 
 	protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void BPInterruptMovement();
+	void OnMoveToTargetLocationFinished(bool success);
 
 	protected:
 	void SetPigState(EPigStates pigState);
@@ -60,17 +64,6 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	void BindOnEvents();
-
-	protected:
-	UFUNCTION(BlueprintCallable)
-	void OnTargetLocationReached();
-
-	protected:
-	UFUNCTION(BlueprintCallable)
-	void OnMoveToTargetLocationFailed();
-
-	protected:
-	void OnMoveToTargetLocationFinished(bool succes);
 
 	protected:
 	UEatingSpot* m_pTargetEatingSpot = nullptr;

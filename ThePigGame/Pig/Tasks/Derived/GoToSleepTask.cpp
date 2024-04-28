@@ -25,7 +25,7 @@ void UGoToSleepTask::Complete() {
 void UGoToSleepTask::OnEnd() {
 	UnsubscribeFromAnotherSleepingPig();
 
-	GetAIController()->Unsibscribe(this);
+	GetAIController()->Unsubscribe(this);
 	UBaseTask::OnEnd();
 }
 
@@ -83,13 +83,14 @@ void UGoToSleepTask::FindPlaceForSleeping() {
 
 	auto aiController = GetAIController();	
 
-	aiController->MoveToCurrentTargetLocation(moveToLocation, ETargetLocationTypes::SleepingSpot);
+	aiController->MoveToTargetLocation(moveToLocation, ETargetLocationTypes::SleepingSpot);
 
 	aiController->Subscribe(this, EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
 		Complete();
 	});
 
 	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachSleepingSpot, [this]() {
+		// TODO: handle failed to move 
 		//OnFailedToReachSleepingPlace();
 	});
 
@@ -104,7 +105,7 @@ void UGoToSleepTask::OnAnotherSleepingPigEndedSleeping() {
 
 void UGoToSleepTask::UnsubscribeFromAnotherSleepingPig() {
 	if(m_pAnotherSleepingPig.IsValid()) {
-		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Unsibscribe(this);
+		m_pAnotherSleepingPig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Unsubscribe(this);
 	}
 
 	m_pAnotherSleepingPig = nullptr;
