@@ -7,8 +7,4 @@ class UPigEatingState : public TStateBase<EPigStates> {
 
 	public:
 	UPigEatingState(TArray<EPigStates>&& transitions);
-
-	public:
-	virtual void Tick(float delta) override;
-
 };

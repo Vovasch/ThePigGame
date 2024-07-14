@@ -81,13 +81,18 @@ UBaseTask* UTaskDispatcher::GetCurrentInProgressTask() {
 void UTaskDispatcher::TryStartNewTask() {
 	if(m_xTaskQue.IsEmpty()) return;
 	if(GetStateMachine()->GetCurrentStateType() != EPigStates::Default) return;
-	if(auto asInterruptible = Cast<UInterruptibleTask>(GetCurrentInProgressTask())) {
-		// Interrupt will call OnEnd
-		// OnEnd will cal TryStartNewTask
-		// That's why after interrupt goes return
-		asInterruptible->Interrupt();
+
+	auto currentInProgress = GetCurrentInProgressTask();
+
+	if(currentInProgress) {
+		if(auto asInterruptible = Cast<UInterruptibleTask>(currentInProgress)) {
+			// Interrupt will call OnEnd
+			// OnEnd will call TryStartNewTask
+			// That's why after interrupt goes return
+			asInterruptible->Interrupt();
+		}
+
 		return;
-	
 	}
 
 	// if interruptible task is next in queue,

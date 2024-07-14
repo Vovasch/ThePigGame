@@ -10,7 +10,6 @@
 #include "TargetLocationTypes.h"
 #include "../../Utils/EventHandler/TEventHandler.h"
 #include "PigAIControllerEvent.h"
-#include "../../Farm/EatingSpot.h"
 #include "../../Utils/PigDataUser/IPigDataUser.h"
 #include "PigAIController.generated.h"
 
@@ -26,23 +25,10 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 	GENERATED_BODY()
 
 	public:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AWalkingController> WalkingControllerBP;
-
-	public:
 	APigAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	public:
-	void Init();
 	virtual APig* GetPig() override;
-
-	public:
-	void SetTargetEatingSpot(UEatingSpot* eatingSpot);
-	UEatingSpot* GetTargetEatingSpot();
-
-	public:
-	void OnStartedEating();
-	void OnFinishedEating();
 
 	public:
 	void MoveToTargetLocation(const FVector& loc, ETargetLocationTypes targetType);
@@ -54,19 +40,6 @@ class THEPIGGAME_API APigAIController : public AAIController, public TEventHandl
 
 	protected:
 	void OnMoveToTargetLocationFinished(bool success);
-
-	protected:
-	void SetPigState(EPigStates pigState);
-	void SetPigTask(ETaskType pigTask);
-
-	protected:
-	virtual void OnPossess(APawn* InPawn) override;
-
-	protected:
-	void BindOnEvents();
-
-	protected:
-	UEatingSpot* m_pTargetEatingSpot = nullptr;
 
 	protected:
 	ETargetLocationTypes m_xCurrentTargetLocationType = ETargetLocationTypes::None;

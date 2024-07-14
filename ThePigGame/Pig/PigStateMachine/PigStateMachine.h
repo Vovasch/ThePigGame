@@ -23,5 +23,11 @@ class THEPIGGAME_API UPigStateMachine : public UObject, public TStateMachine<EPi
 
 	public:
 	virtual void OnStateChanged(EPigStates oldState, EPigStates newState) override;
-	
+
+	protected:
+	void SubscribeOnAnimInstanceController();
+
+	protected:
+	void SubscribeOnAnimInstance();
+	void UnsubscribeFromAnimInstance();
 };

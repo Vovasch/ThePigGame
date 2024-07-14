@@ -7,6 +7,8 @@
 #include "EatingSpot.generated.h"
 
 
+class ATrough;
+
 UCLASS()
 class THEPIGGAME_API UEatingSpot : public UObject, public TEventHandler<EEatingSpotEvent> {
 	GENERATED_BODY()
@@ -20,12 +22,18 @@ class THEPIGGAME_API UEatingSpot : public UObject, public TEventHandler<EEatingS
 	void SetAvailable(bool isAvailable);
 
 	public:
+	void SetOwnerTrough(ATrough* trough);
+	ATrough* GetOwnerTrough();
+
+	public:
 	const FVector& GetLocation();
 	void SetLocation(const FVector& loc);
 
 	protected:
 	UPROPERTY(VisibleAnywhere)
 	FVector m_xLocation = FVector::ZeroVector;
+
+	TWeakObjectPtr<ATrough> m_pTroughOwner = nullptr;
 
 	protected:
 	bool m_bAvailable = true;

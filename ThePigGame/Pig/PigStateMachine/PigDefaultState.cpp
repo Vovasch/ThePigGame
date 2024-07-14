@@ -11,7 +11,7 @@ UPigDefaultState::UPigDefaultState(TArray<EPigStates>&& transitions) : TStateBas
 void UPigDefaultState::Init(APig* pig) {
 	ParentTaskType::Init(pig);
 
-	GetTaskDispatcher()->GetTaskByType(ETaskType::GoToRandomLocation)->Subscribe(this, ETaskEvent::End, [this](ETaskType taskType) {
+	GetTaskDispatcher()->GetTaskByType(ETaskType::GoToRandomLocation)->Subscribe(this, ETaskEvent::End, [this]() {
 		GetTaskDispatcher()->AddTask(ETaskType::GoToRandomLocation);
 	});
 }

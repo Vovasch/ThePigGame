@@ -63,7 +63,7 @@ void UGoToSleepTask::FindPlaceForSleeping() {
 
 		m_xSleepingSpotType = ESleepingSpotType::AnotherPig;
 
-	} else if(m_xSleepingSpotType==ESleepingSpotType::None){
+	} else if(m_xSleepingSpotType==ESleepingSpotType::None) {
 
 		static const auto extent = sleepingArea->GetStaticMesh()->GetBounds().BoxExtent / 2;
 		static const auto sleepingAreaLocation = sleepingArea->GetComponentLocation();
@@ -124,7 +124,7 @@ void UGoToSleepTask::OnFailedToReachSleepingPlace() {
 	} else {
 
 		// TODO: here we check if pig can't get onto sleeping area because of other pigs
-		// if so this pig should make load sound. than other pigs will changed their positions of sleeping
+		// if so this pig should make load sound. then other pigs will change their positions of sleeping
 		// to let this pig get onto sleeping area.
 		FindPlaceForSleeping();
 	}

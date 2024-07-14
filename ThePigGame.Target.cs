@@ -8,8 +8,8 @@ public class ThePigGameTarget : TargetRules
 	public ThePigGameTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
+		bOverrideBuildEnvironment = true;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
 		ExtraModuleNames.Add("ThePigGame");
 	}
 }

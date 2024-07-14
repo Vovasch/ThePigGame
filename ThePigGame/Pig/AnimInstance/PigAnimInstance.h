@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "../Pig/PigStateMachine/PigStates.h"
-#include "../Utils/EventHandler/TEventHandler.h"
-#include "../Utils/PigDataUser/IPigDataUser.h"
+#include "ThePigGame/Pig/PigStateMachine/PigStates.h"
+#include "ThePigGame/Utils/EventHandler/TEventHandler.h"
+#include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "PigAnimInstance.generated.h"
 
 /**
@@ -18,7 +18,6 @@ class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandl
 	
 	public:
 	virtual void Init(APig* pig) override;
-	void DisengageAnimInstance();
 
 	protected:
 	void SetPigState(EPigStates pigState);

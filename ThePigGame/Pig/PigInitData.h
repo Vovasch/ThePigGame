@@ -3,6 +3,9 @@
 #include "CoreMinimal.h"
 #include "PigInitData.generated.h"
 
+class UPigAnimInstance;
+class AWalkingController;
+
 USTRUCT()
 struct FPigWalkingData {
 	GENERATED_BODY()
@@ -38,17 +41,28 @@ struct FPigRotationData {
 
 
 
-USTRUCT()
-struct FPigInitData {
+UCLASS(Blueprintable, DefaultToInstanced, EditInlineNew)
+class UPigInitData : public UObject {
 	GENERATED_BODY()
 
-	FPigInitData();
+	public:
+
+	UPigInitData();
+
+	UPROPERTY(EditAnywhere)
+	USkeletalMesh* m_xAdultMesh = nullptr;
+
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UPigAnimInstance> m_xAdultAnimBlueprint = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWalkingController> WalkingControllerBP = nullptr;
 
 	//
 	// AGE 
 	//
 
-	
 	// At what age in years pig is old enough to be out of business
 	UPROPERTY(EditAnyWhere)
 	float MaxAgeYears = 18.f;	
@@ -121,7 +135,7 @@ struct FPigInitData {
 	// Max Sizes 
 	//
 
-	// At what age of pig it will reach it's max scale and max weight.
+	// At what age of pig it will reach it's max scale and max possible weight.
 	
 	UPROPERTY(EditAnyWhere)
 	float MaxSizesAtAgeYears = 8.f;

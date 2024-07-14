@@ -5,11 +5,23 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EatingSpot.h"
+#include "ThePigGame/Utils/Property/Property.h"
 #include "Trough.generated.h"
 
 class UTextRenderComponent;
 class UStaticMeshComponent;
 
+UCLASS(Blueprintable, DefaultToInstanced, EditInlineNew)
+class THEPIGGAME_API UTroughPrototype : public UObject {
+
+	GENERATED_BODY()
+
+	public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float m_fCapacity = 1000;
+};
+
+using TTroughtFillness = TPropertyBase<TMinMaxStatic, TNoTickType, TAllowedCurrentModification>;
 
 UCLASS()
 class THEPIGGAME_API ATrough : public AActor {
@@ -29,6 +41,8 @@ class THEPIGGAME_API ATrough : public AActor {
 	public:
 	void Fill(float amount);
 
+	float TryEatOut(float amount);
+
 	public:
 	UEatingSpot* GetAvailableEatingSpot();
 
@@ -43,6 +57,9 @@ class THEPIGGAME_API ATrough : public AActor {
 	void UpdateInfo();
 
 	public:
+	UPROPERTY(EditAnywhere)
+	UTroughPrototype* m_pPrototype = nullptr;
+
 	UPROPERTY(EditAnyWhere)
 	UStaticMeshComponent* TroughMesh = nullptr;
 
@@ -54,11 +71,6 @@ class THEPIGGAME_API ATrough : public AActor {
 	UPROPERTY()
 	TArray<UEatingSpot*> m_vEatingSpots;
 
-	public:
-	UPROPERTY(EditAnyWhere)
-	float m_fCapacity = 100.f;
-
-	protected:
-	float m_fCurrentFillnes = 0.f;
+	TTroughtFillness m_xFullness;
 
 };

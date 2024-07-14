@@ -9,7 +9,7 @@ class THEPIGGAME_API UGoToSleepTask : public UBaseTask {
 	// pig that got task to sleep tries to find any another pig
 	// that has already started sleeping in order to lay down near her
 	// if pig has found another sleeping pig to sleep near,
-	// she goes to here
+	// she goes here
 	// but while pig is going to another sleeping pig this pig can
 	// wake up. so we subscribe to such event
 	// if such event has been fired we do everything from the beginning.

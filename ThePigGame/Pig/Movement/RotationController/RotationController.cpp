@@ -1,7 +1,8 @@
 #include "RotationController.h"
 
 #include "Kismet/KismetMathLibrary.h"
-#include "ThePigGame/Animation/PigAnimInstance.h"
+#include "ThePigGame/Pig/PigInitData.h"
+#include "ThePigGame/Pig/AnimInstance/PigAnimInstance.h"
 #include "ThePigGame/Pig/Movement/MovementType.h"
 #include "ThePigGame/Pig/Movement/WalkingController/WalkingController.h"
 
@@ -14,9 +15,11 @@ const int s_iRotationToRight = 180;
 const int s_iRotationToLeft = -180;
 
 void URotationController::RotateTo(const FVector& vec) {
-	m_xRotatingTo = vec;
+
+	EndRotating();
+	/*m_xRotatingTo = vec;
 	m_bIsCurrentlyRotating = true;
-	RecalcRotationData();
+	RecalcRotationData();*/
 }
 
 void URotationController::Tick(float deltaTime) {

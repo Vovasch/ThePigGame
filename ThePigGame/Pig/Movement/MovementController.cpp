@@ -1,10 +1,9 @@
 ﻿#include "MovementController.h"
 #include "../Pig.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "../../Animation/PigAnimInstance.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "RotationController/RotationController.h"
-#include "ThePigGame/Pig/PigAI/PigAIController.h"
+#include "ThePigGame/Pig/PigInitData.h"
+#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/AgeController/AgeController.h"
+#include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "WalkingController/WalkingController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(MovementControllerLog, Log, All)
@@ -39,13 +38,26 @@ UMovementController::UMovementController() {
 void UMovementController::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
 	
-	m_pWalkingController = pig->GetWorld()->SpawnActor<AWalkingController>(GetAIController()->WalkingControllerBP);
+	m_pWalkingController = pig->GetWorld()->SpawnActor<AWalkingController>(GetInitData()->WalkingControllerBP);
 	m_pWalkingController->SetActorHiddenInGame(true);
 	m_pWalkingController->SetOwner(GetPig());
 
 	m_pWalkingController->Init(pig);
 	m_pRotationController->Init(pig);
 	m_pRotationController->SetWalkingController(m_pWalkingController);
+
+	auto ageController = GetPropertyController()->GetAgeController();
+
+	if(ageController->GetIsAdult()) {
+		InitAdultVelocityData();
+	} else {
+		InitChildVelocityData();
+
+		ageController->Subscribe(this, EAgeControllerEvent::BecomeAdult, [this]() {
+			InitAdultVelocityData();
+		});
+	}
+
 }
 
 float UMovementController::GetVelocity() {
@@ -65,10 +77,10 @@ void UMovementController::InitAdultVelocityData() {
 }
 
 void UMovementController::InitVelocityData(bool isAdult) {
-	auto& initData = GetPig()->GetInitData();
+	auto initData = GetPig()->GetInitData();
 
-	m_pWalkingController->InitWalkingData(isAdult ? initData.AdultWalkingData : initData.ChildWalkingData);
-	m_pRotationController->InitRotationData(isAdult ? initData.AdultRotationData : initData.ChildRotationData);
+	m_pWalkingController->InitWalkingData(isAdult ? initData->AdultWalkingData : initData->ChildWalkingData);
+	m_pRotationController->InitRotationData(isAdult ? initData->AdultRotationData : initData->ChildRotationData);
 }
 
 void UMovementController::MoveTo(const FVector& vec) {

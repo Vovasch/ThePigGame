@@ -5,6 +5,6 @@
 void UInterruptibleTask::Interrupt() {
 	if(!IsInProgress()) return;
 	OnEnd();
-	OnEvent(ETaskEvent::Interrupt, m_xTaskType);
-	UE_LOG(TaskLog, Log, TEXT("Task %s interrupted. %s"), *UEnum::GetValueAsString<ETaskType>(m_xTaskType), *GetPig()->GetName());
+	OnEvent(ETaskEvent::Interrupt);
+	UE_LOG(TaskLog, Log, TEXT("Task %s interrupted. %s"), *UEnum::GetDisplayValueAsText(m_xTaskType).ToString(), *GetPig()->GetName());
 }

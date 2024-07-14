@@ -5,13 +5,4 @@ UPigEatingState::UPigEatingState(TArray<EPigStates>&& transitions) : TStateBase<
 	SetStateType(EPigStates::Eating);
 }
 
-void UPigEatingState::Tick(float delta) {
-
-	auto pig = GetPig();
-
-	if(pig->GetCurrentBellyful() >= pig->GetBellyfulLevelToStopEating()) {
-		pig->StopEating();
-	}
-	
-}
 

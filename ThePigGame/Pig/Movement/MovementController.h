@@ -29,7 +29,7 @@ class THEPIGGAME_API UMovementController : public UObject, public ICachedPigData
 	float GetVelocity();
 	float GetRotation();
 
-	public:
+	protected:
 	void InitChildVelocityData();
 	void InitAdultVelocityData();
 

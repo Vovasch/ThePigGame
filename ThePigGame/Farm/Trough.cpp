@@ -5,7 +5,6 @@
 #include "Components/TextRenderComponent.h"
 #include "Components/StaticMeshComponent.h"
 
-const static float s_fTempStartingFillness = 50.f;
 const static FString s_sEatingSpotName = TEXT("EatingSpot");
 
 
@@ -20,7 +19,6 @@ ATrough::ATrough() {
 	Info = CreateDefaultSubobject<UTextRenderComponent, UTextRenderComponent>("Info");
 	Info->SetupAttachment(GetRootComponent());
 
-	m_fCurrentFillnes = s_fTempStartingFillness;
 }
 
 void ATrough::OnConstruction(const FTransform& Transform) {
@@ -32,6 +30,9 @@ void ATrough::OnConstruction(const FTransform& Transform) {
 // Called when the game starts or when spawned
 void ATrough::BeginPlay() {
 	Super::BeginPlay();
+
+	m_xFullness.GetMinMaxType().SetMinMax(0, m_pPrototype->m_fCapacity);
+
 	UpdateInfo();
 
 	auto& components = GetComponents();
@@ -40,6 +41,8 @@ void ATrough::BeginPlay() {
 		if(component->GetFName().ToString().Find(s_sEatingSpotName) != -1) {
 			m_vEatingSpots.Add(NewObject<UEatingSpot>());
 			m_vEatingSpots.Last()->SetLocation((Cast<UStaticMeshComponent>(component)->GetComponentLocation()));
+			m_vEatingSpots.Last()->SetOwnerTrough(this);
+
 		}
 	}
 	
@@ -52,17 +55,32 @@ void ATrough::Tick(float DeltaTime) {
 }
 
 void ATrough::Fill(float amount) {
-	m_fCurrentFillnes = FMath::Min(m_fCurrentFillnes + amount, m_fCapacity);
+	m_xFullness.GetCurrentModifycationType().Add(amount);
 
 	UpdateInfo();
 }
 
+float ATrough::TryEatOut(float amount) {
+
+	auto allowedEatOutAmount = 0.f;
+
+	if(amount>m_xFullness.GetCurrent()) {
+		allowedEatOutAmount = m_xFullness.GetCurrent();
+	} else {
+		allowedEatOutAmount = amount;
+	}
+
+	m_xFullness.GetCurrentModifycationType().Add(-allowedEatOutAmount);
+	return allowedEatOutAmount;
+}
+
+
 void ATrough::UpdateInfo() {
 	FString str;
 
-	str += FString::SanitizeFloat(m_fCurrentFillnes);
+	str += FString::SanitizeFloat(m_xFullness.GetCurrent());
 	str += " / ";
-	str += FString::SanitizeFloat(m_fCapacity);
+	str += FString::SanitizeFloat(m_xFullness.GetMinMaxType().GetMax());
 
 	Info->SetText(FText::FromString(str));
 

@@ -7,6 +7,7 @@ public class ThePigGame : ModuleRules
 	public ThePigGame(ReadOnlyTargetRules Target) : base(Target)
 	{
 		CppStandard = CppStandardVersion.Cpp20;
+        bUseRTTI = true;
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 

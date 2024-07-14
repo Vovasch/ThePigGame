@@ -2,10 +2,29 @@
 
 #include <type_traits>
 
+class IProperty {
+	private:
+	virtual void MakePolymorphic(){}
+};
+
+class TBoolProperty : public IProperty {
+
+	public:
+	TBoolProperty() {}
+	TBoolProperty(bool value) : m_bValue(value) {}
+
+	bool GetValue() const {
+		return m_bValue;
+	}
+
+	protected:
+	bool m_bValue = false;
+};
+
 class IPropertyTickProvider;
 
 template<typename MinMaxType, typename TickingType, typename CurrentModyficationType>
-class TPropertyBase {
+class TPropertyBase : public IProperty {
 
 	public:
 	TPropertyBase()=default;
@@ -14,9 +33,9 @@ class TPropertyBase {
 	TPropertyBase(float startingCurrent) : m_fCurrent(startingCurrent) {}
 
 	public:
-	float GetCurrent() { return m_fCurrent; }
-	const float& GetCurrentRef() { return m_fCurrent; }
-	const float* GetCurrentPtr() { return &m_fCurrent; }
+	virtual float GetCurrent() const { return m_fCurrent; }
+	virtual const float& GetCurrentRef() const { return m_fCurrent; }
+	virtual const float* GetCurrentPtr() const { return &m_fCurrent; }
 
 	public:
 	MinMaxType& GetMinMaxType() { return m_xMinMax; }
@@ -38,7 +57,7 @@ class TPropertyBase {
 	}
 
 	protected:
-	virtual void Update()=0;
+	virtual void Update() {}
 	void Update(float newCurrent) { m_fCurrent = m_xMinMax.ClampNewCurrent(newCurrent); }
 
 	protected:
@@ -333,6 +352,7 @@ class TInstantTicking : public ITicking {
 	TArray<TTickingFunction> m_vSubs;
 };
 
+// todo remove because may be unused 
 class TEventualTicking : public TInstantTicking {
 	public:
 	virtual void Init(IPropertyTickProvider* tickProvider) override;
@@ -342,7 +362,7 @@ class TEventualTicking : public TInstantTicking {
 	void StopTicking();
 };
 
-
+// todo remove because may be unused 
 class TConditionalTicking : public TInstantTicking {
 	
 	using TCondition = TFunction<bool()>;

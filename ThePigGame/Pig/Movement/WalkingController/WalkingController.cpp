@@ -1,7 +1,9 @@
 #include "WalkingController.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigAI/PigAIController.h"
+#include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 
 AWalkingController::AWalkingController() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,11 +37,11 @@ void AWalkingController::InitWalkingData(const FPigWalkingData& initData) {
 }
 
 float AWalkingController::SpeedToScale(float baseSpeed) {
-	return baseSpeed * GetPig()->GetCurrentScale();
+	return baseSpeed * GetPropertyController()->GetProperty<EPigPropertyType::Scale>()->GetCurrent();
 }
 
 float AWalkingController::SpeedFromScale(float speed) {
-	return speed / GetPig()->GetCurrentScale();
+	return speed / GetPig()->GetPropertyController()->GetProperty<EPigPropertyType::Scale>()->GetCurrent();
 }
 
 void AWalkingController::SetWalkingType(EMovementType movementType) {

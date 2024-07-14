@@ -2,12 +2,21 @@
 
 #include "../../Pig/Pig.h"
 
-
+// TODO: make friend in pig and delete getters in pig
 class INoCachePigDataUser {	
 	public:
 	virtual APig* GetPig()=0;
-	virtual APigAIController* GetAIController() {
-		return GetPig()->GetPigAIController();
+
+	virtual AFarm* GetFarm() {
+		return GetPig()->GetOwnerFarm();
+	}
+
+	const UPigInitData* GetInitData() {
+		return GetPig()->GetInitData();
+	}
+
+	virtual USupremePropertyController* GetPropertyController() {
+		return GetPig()->GetPropertyController();
 	}
 
 	virtual UPigStateMachine* GetStateMachine() {
@@ -18,14 +27,17 @@ class INoCachePigDataUser {
 		return GetPig()->GetTaskDispatcher();
 	}
 
-	virtual AFarm* GetFarm() {
-		return GetPig()->GetOwnerFarm();
-	}
-
 	virtual UMovementController* GetMovementController() {
 		return GetPig()->GetMovementController();
 	}
 
+	virtual APigAIController* GetAIController() {
+		return GetPig()->GetPigAIController();
+	}
+
+	virtual UAnimInstanceController* GetAnimInstanceController() {
+		return GetPig()->GetAnimInstanceController();
+	}
 };
 
 class ICachedPigDataUser : public INoCachePigDataUser {

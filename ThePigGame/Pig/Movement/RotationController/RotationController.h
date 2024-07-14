@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "../../../Utils/PigDataUser/IPigDataUser.h"
 #include "RotationControllerEvent.h"
+#include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "RotationController.generated.h"
 
+struct FPigRotationData;
 class AWalkingController;
 
 UCLASS()

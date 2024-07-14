@@ -65,7 +65,7 @@ void AFarm::BeginPlay() {
 		auto uclass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
 
 		origin.Z = 88.f;
-		for(int i = 0; i < 1; i++) {
+		for(int i = 0; i < 5; i++) {
 			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
 			if(!pig) continue;
 			origin.X += 70;
@@ -103,7 +103,8 @@ void AFarm::BindOnPig(APig* pig) {
 		m_pSleepingArea->OnPigEndedSleeping(pig);
 	});
 
-	pig->Subscribe(this, EPigEvent::RemovedFromFarm, [this, pig]() {
+	// todo implement pig live phase controller
+	/*pig->Subscribe(this, EPigEvent::RemovedFromFarm, [this, pig]() {
 		m_pSleepingArea->OnPigRemovedFromFarm(pig);
-	});
+	});*/
 }

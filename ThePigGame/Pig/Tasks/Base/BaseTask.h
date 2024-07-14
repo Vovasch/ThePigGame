@@ -10,7 +10,7 @@
 DECLARE_LOG_CATEGORY_EXTERN(TaskLog, Log, All)
 
 UCLASS()
-class THEPIGGAME_API UBaseTask : public UObject, public TEventHandler<ETaskEvent, ETaskType>, public ICachedPigDataUser {
+class THEPIGGAME_API UBaseTask : public UObject, public TEventHandler<ETaskEvent>, public ICachedPigDataUser {
 	GENERATED_BODY()
 
 	public:

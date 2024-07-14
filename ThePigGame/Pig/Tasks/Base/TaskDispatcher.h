@@ -53,7 +53,6 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 		static_assert(std::is_base_of_v<UBaseTask, TaskType>, "TaskType must be derived from UBaseTask");
 
 		auto task = NewObject<TaskType>();
-		task->Subscribe(this, ETaskEvent::End, [this](ETaskType taskType) { this->OnEndTask(taskType); });
 		m_vAllTasks[(uint32)task->GetTaskType()] = task;
 	}
 

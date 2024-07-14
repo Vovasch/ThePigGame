@@ -4,8 +4,10 @@
 #include "../../../Utils/PigDataUser/IPigDataUser.h"
 #include "WalkingControllerEvent.h"
 #include "ThePigGame/Pig/Movement/MovementType.h"
+#include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "WalkingController.generated.h"
 
+struct FPigWalkingData;
 class AAIController;
 
 UCLASS()
