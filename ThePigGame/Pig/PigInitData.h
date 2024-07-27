@@ -131,6 +131,12 @@ class UPigInitData : public UObject {
 	UPROPERTY(EditAnyWhere)
 	float BellyfulLevelToStopEating = 90.f;
 
+	UPROPERTY(EditAnywhere)
+	float EatDeltaPerTick = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float BellyfullLosePerTick = 0.5f;
+
 	//
 	// Max Sizes 
 	//

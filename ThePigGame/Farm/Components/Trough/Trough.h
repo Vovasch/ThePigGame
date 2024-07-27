@@ -17,8 +17,11 @@ class THEPIGGAME_API UTroughPrototype : public UObject {
 	GENERATED_BODY()
 
 	public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float m_fCapacity = 1000;
+	UPROPERTY(EditAnywhere)
+	float m_fCapacity = 100.f;
+
+	UPROPERTY(EditAnywhere)
+	float m_fStaringAmount = 50.f;
 };
 
 using TTroughtFillness = TPropertyBase<TMinMaxStatic, TNoTickType, TAllowedCurrentModification>;
@@ -30,6 +33,10 @@ class THEPIGGAME_API ATrough : public AActor {
 	public:	
 	// Sets default values for this actor's properties
 	ATrough();
+
+	protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 	public:
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -49,9 +56,6 @@ class THEPIGGAME_API ATrough : public AActor {
 	public:
 	TArray<UEatingSpot*>& GetAllEatingSpots();
 
-	protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	protected:
 	void UpdateInfo();

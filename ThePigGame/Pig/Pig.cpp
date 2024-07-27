@@ -73,6 +73,7 @@ AFarm* APig::GetOwnerFarm() {
 void APig::FillPigInfo() {
 	FString str(UTF8_TO_TCHAR("Current age = "));
 
+	// todo move to new component "pig info component"
 	/*auto currentAge = m_xAge.GetCurrent();
 	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
 	str += FString::SanitizeFloat(m_xAge.GetCurrent() / gameMode->GetOneYearInSeconds());
@@ -126,7 +127,6 @@ UMovementController* APig::GetMovementController() {
 }
 
 APigAIController* APig::GetPigAIController() {
-	//TODO: check if this really works
 	return Cast<APigAIController>(Controller);
 }
 

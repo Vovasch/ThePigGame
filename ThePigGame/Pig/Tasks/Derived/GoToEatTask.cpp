@@ -1,7 +1,8 @@
 #include "GoToEatTask.h"
 #include "../../PigAI/PigAIController.h"
 #include "../../../Farm/Farm.h"
-#include "../../../Farm/EatingSpot.h"
+#include "ThePigGame/Farm/Components/Trough/EatingSpot.h"
+#include "ThePigGame/Farm/Controllers/TroughsController/TroughsController.h"
 #include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/EatingController/EatingController.h"
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "ThePigGame/Pig/Tasks/Base/TaskDispatcher.h"
@@ -34,7 +35,7 @@ void UGoToEatTask::TryGoToEatingSpot() {
 	UnsubscribeAll();
 	auto aiController = GetAIController();
 
-	auto targetEatingSpot = GetFarm()->GetAvailableEatingSpot();
+	auto targetEatingSpot = GetFarm()->GetTroughsController()->GetAvailableEatingSpot();
 	GetPropertyController()->GetEatingController()->SetTargetEatingSpot(targetEatingSpot);
 	if(!targetEatingSpot) {
 		OnNoEatingSpotAvailable();
@@ -64,8 +65,8 @@ void UGoToEatTask::OnNoEatingSpotAvailable() {
 	GetAIController()->Unsubscribe(this);
 	Fail();
 
-	GetFarm()->Subscribe(this, EFarmEvent::EatingSpotFreed, [this]() {
-		GetFarm()->Unsubscribe(this);
+	GetFarm()->GetTroughsController()->Subscribe(this, ETroughsControllerEvent::EatingSpotFreed, [this]() {
+		GetFarm()->GetTroughsController()->Unsubscribe(this);
 
 		GetPropertyController()->GetEatingController()->SetWaitingForEatingSpot(false);
 		GetTaskDispatcher()->AddTask(ETaskType::GoToEat);

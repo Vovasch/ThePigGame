@@ -43,9 +43,7 @@ class TPropertyBase : public IProperty {
 	const CurrentModyficationType& GetCurrentModifycationType() { return m_xCurrentModificationType; }
 
 	public:
-	void Init(IPropertyTickProvider* tickProvider) {
-
-		InitTickingType(tickProvider);
+	void Init(IPropertyTickProvider* tickProvider=nullptr) {
 
 		m_xCurrentModificationType.SetAdder([this](float value) {
 			this->Update(this->GetCurrent() + value);
@@ -54,6 +52,8 @@ class TPropertyBase : public IProperty {
 		m_xCurrentModificationType.SetSetter([this](float value) {
 			this->Update(value);
 		});
+
+		if(tickProvider) InitTickingType(tickProvider);
 	}
 
 	protected:

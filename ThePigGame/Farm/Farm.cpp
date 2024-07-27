@@ -1,110 +1,54 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Farm.h"
-#include "../Pig/Pig.h"
-#include "../Pig/PigStateMachine/PigStateMachine.h"
-#include "EatingSpot.h"
+#include "Controllers/PigsController/PigsController.h"
+#include "Controllers/SleepingPigsController/SleepingPigsController.h"
 #include "Engine/World.h"
-#include "Trough.h"
-#include "SleepingArea/SleepingArea.h"
+#include "Controllers/TroughsController/TroughsController.h"
 
 AFarm::AFarm() {
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default"));
+
+	m_pSleepingArea = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SleepringArea"));
+	m_pSleepingArea->SetupAttachment(RootComponent);
 }
 
 void AFarm::BeginPlay() {
 	Super::BeginPlay();
-	
-	// get all troughs to be able to control them.
-	{
 
-		TArray<AActor*> actors;
-		GetAllChildActors(actors);
+	CreateControllers();
+	InitControllers();
 
-		m_iAvailableEatingSpots = m_iTotalEatingSpots = 0;
-
-		for(auto actor : actors) {
-			if(auto trough = Cast<ATrough>(actor)) {
-				m_vTroughs.Add(trough);
-
-				auto& eatingSpots = trough->GetAllEatingSpots();
-
-				m_iTotalEatingSpots += eatingSpots.Num();
-
-				for(auto eatingSpot : eatingSpots) {
-					eatingSpot->Subscribe(this, EEatingSpotEvent::Occupied, [this]() {
-						--m_iAvailableEatingSpots;
-					});
-
-					eatingSpot->Subscribe(this, EEatingSpotEvent::Freed, [this]() {
-						auto noneWereAvailable = m_iAvailableEatingSpots == 0;
-
-						++m_iAvailableEatingSpots;
-						if(noneWereAvailable) OnEvent(EFarmEvent::EatingSpotFreed);
-
-					});
-				}
-			}
-		}
-
-		m_iAvailableEatingSpots = m_iTotalEatingSpots;
-
-	}
-
-	m_pSleepingArea = GetComponentByClass<USleepingArea>();
-
-
-	// spawn pigs
-	{
-		FVector origin;
-		FVector boxExtent;
-		this->GetActorBounds(false, origin, boxExtent);
-
-		auto uclass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
-
-		origin.Z = 88.f;
-		for(int i = 0; i < 5; i++) {
-			auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);
-			if(!pig) continue;
-			origin.X += 70;
-			m_vPigs.Add(pig);
-			pig->SetOwner(this);
-			BindOnPig(pig);
-		}
-	}
+	m_pPigsController->BeginPlay();
 }
 
-void AFarm::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
+void AFarm::CreateControllers() {
+	m_pPigsController = NewObject<UPigsController>(this);
+	m_pSleepingPigsController = NewObject<USleepingPigsController>(this);
+	m_pTroughController = NewObject<UTroughsController>(this);
 }
 
-UEatingSpot* AFarm::GetAvailableEatingSpot() {
-	for(auto& trough : m_vTroughs) {
-		auto eatingSpot = trough->GetAvailableEatingSpot();
-		if(eatingSpot) return eatingSpot;
-	}
-
-	return nullptr;
+void AFarm::InitControllers() {
+	m_pPigsController->Init();
+	m_pSleepingPigsController->Init();
+	m_pTroughController->Init();
 }
 
 
-const USleepingArea* AFarm::GetSleepingArea() {
+UPigsController* AFarm::GetPigsController() {
+	return m_pPigsController;
+}
+
+USleepingPigsController* AFarm::GetSleepingPigsController() {
+	return m_pSleepingPigsController;
+}
+
+UTroughsController* AFarm::GetTroughsController() {
+	return m_pTroughController;
+}
+
+UStaticMeshComponent* AFarm::GetSleepingArea() {
 	return m_pSleepingArea;
-}
-
-void AFarm::BindOnPig(APig* pig) {
-	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(this, EStateEvent::Start, [this, pig]() {
-		m_pSleepingArea->OnPigStartedSleeping(pig);
-	});
-
-	pig->GetPigStateMachine()->GetState(EPigStates::Sleeping)->Subscribe(this, EStateEvent::End, [this, pig]() {
-		m_pSleepingArea->OnPigEndedSleeping(pig);
-	});
-
-	// todo implement pig live phase controller
-	/*pig->Subscribe(this, EPigEvent::RemovedFromFarm, [this, pig]() {
-		m_pSleepingArea->OnPigRemovedFromFarm(pig);
-	});*/
 }

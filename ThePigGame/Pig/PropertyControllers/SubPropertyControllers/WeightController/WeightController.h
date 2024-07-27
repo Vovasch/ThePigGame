@@ -16,9 +16,6 @@ class THEPIGGAME_API UWeightController : public UPropertyControllerBase {
 	public:
 	virtual void Tick(float delta) override;
 
-	public:
-	float GetWeightDeltaPerTick();
-
 	protected:
 	void CheckBellyful();
 

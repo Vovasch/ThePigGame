@@ -28,10 +28,6 @@ void UWeightController::Tick(float delta) {
 	}
 }
 
-float UWeightController::GetWeightDeltaPerTick() {
-	return m_fWeightDeltaPerTick;
-}
-
 void UWeightController::CheckBellyful() {
 
 	auto currentBellyful = GetProperty<EPigPropertyType::Bellyful>()->GetCurrent();

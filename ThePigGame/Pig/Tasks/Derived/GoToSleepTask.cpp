@@ -1,12 +1,12 @@
 #include "GoToSleepTask.h"
 #include "../../../Pig/Pig.h"
 #include "../../../Farm/Farm.h"
-#include "../../../Farm/SleepingArea/SleepingArea.h"
 #include "../../../Pig/PigAI/PigAIController.h"
 #include "../../../Pig/PigStateMachine/PigStateMachine.h"
 #include "../../../Pig/PigStateMachine/PigSleepingState.h"
 #include "Math/Box.h"
 #include "../../../Utils/Misc/TMiscUtils.h"
+#include "ThePigGame/Farm/Controllers/SleepingPigsController/SleepingPigsController.h"
 
 UGoToSleepTask::UGoToSleepTask() {
 	m_xTaskType = ETaskType::GoToSleep;
@@ -38,8 +38,8 @@ void UGoToSleepTask::Tick(float delta) {
 }
 
 void UGoToSleepTask::FindPlaceForSleeping() {
-	auto sleepingArea = GetFarm()->GetSleepingArea();
-	m_pAnotherSleepingPig = sleepingArea->GetAnySleepingPig();
+	
+	m_pAnotherSleepingPig = GetFarm()->GetSleepingPigsController()->GetAnySleepingPig();
 	
 	auto moveToLocation = FVector::ZeroVector;
 
@@ -64,6 +64,7 @@ void UGoToSleepTask::FindPlaceForSleeping() {
 		m_xSleepingSpotType = ESleepingSpotType::AnotherPig;
 
 	} else if(m_xSleepingSpotType==ESleepingSpotType::None) {
+		auto sleepingArea = GetFarm()->GetSleepingArea();
 
 		static const auto extent = sleepingArea->GetStaticMesh()->GetBounds().BoxExtent / 2;
 		static const auto sleepingAreaLocation = sleepingArea->GetComponentLocation();

@@ -31,7 +31,9 @@ void ATrough::OnConstruction(const FTransform& Transform) {
 void ATrough::BeginPlay() {
 	Super::BeginPlay();
 
+	m_xFullness.Init();
 	m_xFullness.GetMinMaxType().SetMinMax(0, m_pPrototype->m_fCapacity);
+	m_xFullness.GetCurrentModifycationType().Set(m_pPrototype->m_fStaringAmount);
 
 	UpdateInfo();
 
@@ -48,10 +50,10 @@ void ATrough::BeginPlay() {
 	
 }
 
-// Called every frame
 void ATrough::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	UpdateInfo();
 }
 
 void ATrough::Fill(float amount) {
@@ -61,17 +63,18 @@ void ATrough::Fill(float amount) {
 }
 
 float ATrough::TryEatOut(float amount) {
+	auto successEatOut = 0.f;
+	auto current = m_xFullness.GetCurrent();
 
-	auto allowedEatOutAmount = 0.f;
-
-	if(amount>m_xFullness.GetCurrent()) {
-		allowedEatOutAmount = m_xFullness.GetCurrent();
+	if(amount >= current) {
+		successEatOut = amount;
 	} else {
-		allowedEatOutAmount = amount;
+		successEatOut = current;
 	}
 
-	m_xFullness.GetCurrentModifycationType().Add(-allowedEatOutAmount);
-	return allowedEatOutAmount;
+	m_xFullness.GetCurrentModifycationType().Add(-successEatOut);
+
+	return successEatOut;
 }
 
 

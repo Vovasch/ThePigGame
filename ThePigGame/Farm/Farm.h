@@ -3,53 +3,45 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "../Utils/EventHandler/TEventHandler.h"
-#include "FarmEvent.h"
 #include "Farm.generated.h"
 
-class ATrough;
-class UEatingSpot;
-class USleepingArea;
-class APig;
+class UPigsController;
+class USleepingPigsController;
+class UTroughsController;
 
 UCLASS()
-class THEPIGGAME_API AFarm : public AActor, public TEventHandler<EFarmEvent> {
+class THEPIGGAME_API AFarm : public AActor {
 	GENERATED_BODY()
-	
+
 	public:	
-	// Sets default values for this actor's properties
 	AFarm();
 
-	public:
-	UEatingSpot* GetAvailableEatingSpot();
-
-	public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	public:
-	const USleepingArea* GetSleepingArea();
-
 	protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	protected:
-	void BindOnPig(APig* pig);
+	void CreateControllers();
+	void InitControllers();
+
+	public:
+	UPigsController* GetPigsController();
+	USleepingPigsController* GetSleepingPigsController();
+	UTroughsController* GetTroughsController();
+
+	public:
+	UStaticMeshComponent* GetSleepingArea();
 
 	protected:
 	UPROPERTY()
-	TArray<class APig*> m_vPigs;
+	UPigsController* m_pPigsController = nullptr;
+
+	UPROPERTY()
+	USleepingPigsController* m_pSleepingPigsController = nullptr;
+
+	UPROPERTY()
+	UTroughsController* m_pTroughController = nullptr;
 
 	protected:
-	TArray<ATrough*> m_vTroughs;
-
-	protected:
-	USleepingArea* m_pSleepingArea = nullptr;
-
-	protected:
-	int32 m_iTotalEatingSpots = 0;
-	int32 m_iAvailableEatingSpots = 0;
-
+	UPROPERTY(EditDefaultsOnly)
+	UStaticMeshComponent* m_pSleepingArea = nullptr;
 };

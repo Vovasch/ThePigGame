@@ -1,9 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/ObjectLibrary.h"
-#include "../Utils/EventHandler/TEventHandler.h"
 #include "EatingSpotEvent.h"
+#include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "EatingSpot.generated.h"
 
 

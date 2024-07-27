@@ -35,8 +35,6 @@ void USleepingController::InitProperties() {
 }
 
 void USleepingController::GoToSleep() {
-	// TODO: make changing delta on start of sleep
-
 	auto taskDispatcher = GetTaskDispatcher();
 
 	taskDispatcher->GetTaskByType(ETaskType::GoToSleep)->Subscribe(this, ETaskEvent::Success, [this]() {

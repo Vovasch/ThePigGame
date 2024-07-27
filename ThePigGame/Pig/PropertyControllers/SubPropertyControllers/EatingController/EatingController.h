@@ -15,26 +15,30 @@ class THEPIGGAME_API UEatingController : public UPropertyControllerBase
 	public:
 	virtual void Tick(float delta) override;
 
+	public:
 	const Bellyful* GetBellyfull();
 
-	void StartEating();
-	void EndEating();
-
+	public:
 	UEatingSpot* GetTargetEatingSpot();
 	void SetTargetEatingSpot(UEatingSpot* EatingSpot);
 
+	public:
 	void SetWaitingForEatingSpot(bool isWaiting);
-
-	void CheckBellyfulLevel();
 
 	public:
 	virtual void InitProperties() override;
 
 	protected:
-	Bellyful m_xBellyful;
+	void StartEating();
+	void EndEating();
 
 	protected:
-	TWeakObjectPtr<ATrough> CurrentTrough = nullptr;
+	void ProcessNonEatingState();
+	void ProcessEatingState();
+
+	protected:
+	Bellyful m_xBellyful;
+
 	TWeakObjectPtr<UEatingSpot> CurrentEatingSpot = nullptr;
 
 	protected:
