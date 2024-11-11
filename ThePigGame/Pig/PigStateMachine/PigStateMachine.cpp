@@ -1,8 +1,7 @@
 #include "PigStateMachine.h"
 #include "../../Pig/Pig.h"
-#include "../PigAI/PigAIController.h"
 #include "PigDefaultState.h"
-#include "PigEatingState.h"
+#include "PigConsumingState.h"
 #include "PigSleepingState.h"
 #include "PigLayingDownState.h"
 #include "PigStandingUpState.h"
@@ -12,9 +11,9 @@
 DEFINE_LOG_CATEGORY_STATIC(StateMachineLog, Log, All)
 
 UPigStateMachine::UPigStateMachine() {
-	AddState(MakeShared<UPigDefaultState>(TArray{ EPigStates::Eating, EPigStates::LayingDown }));
+	AddState(MakeShared<UPigDefaultState>(TArray{ EPigStates::Consuming, EPigStates::LayingDown }));
 	
-	AddState(MakeShared<UPigEatingState>(TArray{ EPigStates::Default }));
+	AddState(MakeShared<UPigConsumingState>(TArray{ EPigStates::Default }));
 	
 	AddState(MakeShared<UPigLayingDownState>(TArray{ EPigStates::Sleeping }));
 	AddState(MakeShared<UPigSleepingState>(TArray{ EPigStates::StandingUp }));

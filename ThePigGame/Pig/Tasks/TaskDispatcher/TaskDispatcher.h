@@ -3,14 +3,14 @@
 #include "CoreMinimal.h"
 #include "../../../Utils/EventHandler/TEventHandler.h"
 #include "../../../Utils/PigDataUser/IPigDataUser.h"
-#include "BaseTask.h"
-#include "TaskEvent.h"
-#include "../Derived/TaskType.h"
 #include "Containers/Queue.h"
 #include "type_traits"
 #include "TaskDispatcherEvent.h"
+#include "ThePigGame/Pig/Tasks/TaskType/TaskType.h"
 #include "TaskDispatcher.generated.h"
 
+class UTaskDataBase;
+class UBaseTask;
 class APig;
 
 UCLASS()
@@ -27,19 +27,16 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	virtual void Init(APig* pig) override;
 
 	public:
-	void AddTask(ETaskType taskType);
+	void AddTask(ETaskType taskType, TStrongObjectPtr<const UTaskDataBase> data=nullptr);
 
 	public:
 	void Tick(float delta);
 
 	public:
-	UBaseTask* GetTaskByType(ETaskType taskType);
-
-	public:
-	UBaseTask* GetCurrentInProgressTask();
-
-	public:
+	// todo make friend in UTaskBase. This should not be public
 	void OnEndTask(ETaskType taskType);
+
+	const UBaseTask* GetTaskByType(ETaskType type);
 
 	protected:
 	void TryStartNewTask();
@@ -56,6 +53,10 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 		m_vAllTasks[(uint32)task->GetTaskType()] = task;
 	}
 
+	protected:
+	UBaseTask* GetTaskByTypeInner(ETaskType taskType);
+	UBaseTask* GetCurrentInProgressTask();
+
 	enum class ETaskState {
 		None,
 		InQueue,
@@ -69,6 +70,6 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	UPROPERTY()
 	TArray<UBaseTask*> m_vAllTasks;
 
-	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskData;
+	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskState;
 
 };

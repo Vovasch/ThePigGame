@@ -1,15 +1,15 @@
 #include "GoToSleepTask.h"
 #include "../../../Pig/Pig.h"
 #include "../../../Farm/Farm.h"
-#include "../../../Pig/PigAI/PigAIController.h"
 #include "../../../Pig/PigStateMachine/PigStateMachine.h"
 #include "../../../Pig/PigStateMachine/PigSleepingState.h"
 #include "Math/Box.h"
 #include "../../../Utils/Misc/TMiscUtils.h"
 #include "ThePigGame/Farm/Controllers/SleepingPigsController/SleepingPigsController.h"
+#include "../../Movement/MovementController.h"
 
-UGoToSleepTask::UGoToSleepTask() {
-	m_xTaskType = ETaskType::GoToSleep;
+ETaskType UGoToSleepTask::GetTaskType() {
+	return ETaskType::GoToSleep;
 }
 
 void UGoToSleepTask::Start() {
@@ -25,13 +25,11 @@ void UGoToSleepTask::Complete() {
 void UGoToSleepTask::OnEnd() {
 	UnsubscribeFromAnotherSleepingPig();
 
-	GetAIController()->Unsubscribe(this);
+	GetMovementController()->Unsubscribe(this);
 	UBaseTask::OnEnd();
 }
 
 void UGoToSleepTask::Tick(float delta) {
-	UBaseTask::Tick(delta);
-	
 	if(!m_pAnotherSleepingPig.IsValid()) {
 		FindPlaceForSleeping();
 	}
@@ -82,15 +80,15 @@ void UGoToSleepTask::FindPlaceForSleeping() {
 		return;
 	}
 
-	auto aiController = GetAIController();	
+	auto movementController = GetMovementController();	
 
-	aiController->MoveToTargetLocation(moveToLocation, ETargetLocationTypes::SleepingSpot);
+	movementController->MoveTo(moveToLocation);
 
-	aiController->Subscribe(this, EPigAIControllerEvent::ReachedSleepingSpot, [this]() {
+	movementController->Subscribe(this, EMovementControllerEvent::MovementCompleted, [this]() {
 		Complete();
 	});
 
-	aiController->Subscribe(this, EPigAIControllerEvent::FailedToReachSleepingSpot, [this]() {
+	movementController->Subscribe(this, EMovementControllerEvent::MovementFailed, [this]() {
 		// TODO: handle failed to move 
 		//OnFailedToReachSleepingPlace();
 	});

@@ -20,13 +20,13 @@ class TEventHandler {
 	using THandlerFunc = TFunction<void(Args...)>;
 
 	public:
-	void Subscribe(void* owner, EnumType enumVal, THandlerFunc func) {
+	void Subscribe(void* owner, EnumType enumVal, THandlerFunc func) const {
 		auto& handlersArray = m_vHandlers[(uint32)enumVal];
 		handlersArray.emplace(owner, func);
 	}
 
 	public:
-	void Unsubscribe(void* owner) {
+	void Unsubscribe(void* owner) const {
 		if(!owner) return;
 
 		for(auto& handlerPools : m_vHandlers) {
@@ -41,6 +41,6 @@ class TEventHandler {
 			handler.second(args...);
 	}
 
-	protected:
-	TStaticArray<std::unordered_multimap<void*, THandlerFunc>, (uint32)EnumType::Size> m_vHandlers;
+	private:
+	mutable TStaticArray<std::unordered_multimap<void*, THandlerFunc>, (uint32)EnumType::Size> m_vHandlers;
 };

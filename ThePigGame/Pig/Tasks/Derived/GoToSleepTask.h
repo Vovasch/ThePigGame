@@ -27,7 +27,7 @@ class THEPIGGAME_API UGoToSleepTask : public UBaseTask {
 	};
 
 	public:
-	UGoToSleepTask();
+	ETaskType GetTaskType() override;
 
 	public:
 	virtual void Start() override;

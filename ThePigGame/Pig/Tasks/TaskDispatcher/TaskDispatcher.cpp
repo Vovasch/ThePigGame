@@ -1,57 +1,63 @@
 #include "TaskDispatcher.h"
-
-#include "InterruptibleTask.h"
-#include "../Derived/GoToEatTask.h"
 #include "../Derived/GoToSleepTask.h"
 #include "../Derived/GoToRandomLocationTask.h"
 #include "../../PigStateMachine/PigStateMachine.h"
 #include "../../PigStateMachine/PigDefaultState.h"
+#include "ThePigGame/Pig/Tasks/Derived/GoToConsumeSpotTask.h"
 
 UTaskDispatcher::UTaskDispatcher() {
+	// todo make m_valltask a staticarray and add checking if all types of tasks has been created.
 	m_vAllTasks.AddDefaulted((uint32)ETaskType::Size);
-	CreateTask<UGoToEatTask>();
+	CreateTask<UGoToConsumeSpotTask>();
 	CreateTask<UGoToSleepTask>();
 	CreateTask<UGoToRandomLocationTask>();
 }
 
 void UTaskDispatcher::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
+	// todo here shall not be if(task) check this is stupid we shall have fatal error and not able to get to this stage of the program if any task is a nullptr
 	for(auto& task : m_vAllTasks) {
 		if(task) task->Init(pig);
 	}
 
-	for(auto& data : m_vTaskData) {
+	for(auto& data : m_vTaskState) {
 		data = ETaskState::None;
 	}
 
 	GetStateMachine()->GetState(EPigStates::Default)->Subscribe(this, EStateEvent::Start, [this]() {
 		TryStartNewTask();
 	});
-
 }
 
 void UTaskDispatcher::OnTaskStarted(ETaskType taskType) {
-	m_vTaskData[uint32(taskType)] = ETaskState::InProgress;
+	// todo this seems to be unused
 	OnEvent(ETaskDispatcherEvent::TaskStarted, taskType);
 }
 
+// this should not be public make such method in taskbase and make it friend here
 void UTaskDispatcher::OnEndTask(ETaskType taskType) {
 	auto currentTask = GetCurrentInProgressTask();
 	if(!currentTask || currentTask->GetTaskType()!=taskType) return;
 
 	m_xTaskQue.Pop();
-	m_vTaskData[uint32(taskType)] = ETaskState::None;
+	m_vTaskState[uint32(taskType)] = ETaskState::None;
+	// todo this seems to be unused
 	OnEvent(ETaskDispatcherEvent::TaskFinished, currentTask->GetTaskType());
 	
 	TryStartNewTask();
 }
 
-void UTaskDispatcher::AddTask(ETaskType taskType) {
-	auto& taskData = m_vTaskData[(uint32)taskType];
-	if(taskData != ETaskState::None) return;
+const UBaseTask* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
+	return GetTaskByTypeInner(taskType);
+}
 
+void UTaskDispatcher::AddTask(ETaskType taskType, TStrongObjectPtr<const UTaskDataBase> data) {
+	auto& taskState = m_vTaskState[uint32(taskType)];
+	if(taskState != ETaskState::None) return;
+
+	GetTaskByTypeInner(taskType)->SetTaskData(data);
 	m_xTaskQue.Enqueue(taskType);
-	taskData = ETaskState::InQueue;
+	taskState = ETaskState::InQueue;
 
 	TryStartNewTask();
 }
@@ -62,7 +68,7 @@ void UTaskDispatcher::Tick(float delta) {
 	}
 }
 
-UBaseTask* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
+UBaseTask* UTaskDispatcher::GetTaskByTypeInner(ETaskType taskType) {
 	if(taskType==ETaskType::None || taskType == ETaskType::Size) return nullptr;
 	return m_vAllTasks[(uint32)taskType];
 }
@@ -70,10 +76,9 @@ UBaseTask* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 UBaseTask* UTaskDispatcher::GetCurrentInProgressTask() {
 	if(m_xTaskQue.IsEmpty()) return nullptr;
 
-
 	auto potentialInProgress = *m_xTaskQue.Peek();
 
-	if(m_vTaskData[(uint32)potentialInProgress]==ETaskState::InProgress) return GetTaskByType(potentialInProgress);
+	if(m_vTaskState[(uint32)potentialInProgress]==ETaskState::InProgress) return GetTaskByTypeInner(potentialInProgress);
 
 	return nullptr;
 }
@@ -100,23 +105,25 @@ void UTaskDispatcher::TryStartNewTask() {
 	// iterate through all task loop looking for non-interruptible task
 	// or until there is only one task left in queue.
 	auto taskTypeToStart = *m_xTaskQue.Peek();
-	auto taskToStart = GetTaskByType(taskTypeToStart);
+	auto taskToStart = GetTaskByTypeInner(taskTypeToStart);
 	auto taskAsInterruptible = Cast<UInterruptibleTask>(taskToStart);
 
 	while(taskAsInterruptible) {
-		m_vTaskData[(uint32)taskTypeToStart] = ETaskState::None;
+		m_vTaskState[(uint32)taskTypeToStart] = ETaskState::None;
 		m_xTaskQue.Pop();
 		
 		if(m_xTaskQue.IsEmpty()) {
 			m_xTaskQue.Enqueue(taskTypeToStart);
+			// todo maybe set some task state for task we've returned. in progress will be set later
 			break;
 		}
 
 		taskTypeToStart = *m_xTaskQue.Peek();
-		taskToStart = GetTaskByType(taskTypeToStart);
+		taskToStart = GetTaskByTypeInner(taskTypeToStart);
 		taskAsInterruptible = Cast<UInterruptibleTask>(taskToStart);
 	}
 
+	m_vTaskState[uint32(taskTypeToStart)] = ETaskState::InProgress;
 	taskToStart->Start();
 	OnTaskStarted(taskTypeToStart);
 }

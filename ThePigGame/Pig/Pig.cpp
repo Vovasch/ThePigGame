@@ -10,9 +10,9 @@
 #include "../Levels/MainLevel/GameMainPlayerController.h"
 #include "AnimInstance/AnimInstanceController.h"
 #include "AnimInstance/PigAnimInstance.h"
-#include "Tasks/Base/TaskDispatcher.h"
 #include "Movement/MovementController.h"
 #include "PropertyControllers/SupremePropertyController/SupremePropertyController.h"
+#include "Tasks/TaskDispatcher/TaskDispatcher.h"
 
 APig::APig() {
 
@@ -137,4 +137,3 @@ UAnimInstanceController* APig::GetAnimInstanceController() {
 UPigAnimInstance* APig::GetPigAnimInstance() {
 	return Cast<UPigAnimInstance>(GetMesh()->GetAnimInstance());
 }
-

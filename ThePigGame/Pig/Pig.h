@@ -8,11 +8,9 @@
 
 class UAnimInstanceController;
 class USupremePropertyController;
-class UEatingController;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 class APigAIController;
-class UEatingSpot;
 class AFarm;
 class UPigStateMachine;
 class UPigAnimInstance;

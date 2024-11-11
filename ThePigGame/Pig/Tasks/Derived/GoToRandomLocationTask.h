@@ -7,10 +7,10 @@ class THEPIGGAME_API UGoToRandomLocationTask : public UInterruptibleTask {
 	GENERATED_BODY()
 
 	public:
-	UGoToRandomLocationTask();
+	ETaskType GetTaskType() override;
 
 	public:
-	virtual void Start() override;
-	virtual void Interrupt() override;
-	virtual void OnEnd() override;
+	void Start() override;
+	void Interrupt() override;
+	void OnEnd() override;
 };

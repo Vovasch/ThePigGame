@@ -6,7 +6,7 @@
 UENUM(BlueprintType)
 enum class EPigStates : uint8 {
 	Default,
-	Eating,
+	Consuming,
 	Sleeping,
 	LayingDown,
 	StandingUp,

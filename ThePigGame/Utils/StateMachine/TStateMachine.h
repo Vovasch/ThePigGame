@@ -19,7 +19,8 @@ class TStateMachine : public TEventHandler<EStateMachineEvent, EnumType, EnumTyp
 	using ParentType::OnEvent;
 
 	public:
-	TStateMachine() = default;
+	TStateMachine()=default;
+	virtual ~TStateMachine()=default;
 
 	public:
 	EnumType GetCurrentStateType() { return m_pCurrentState->StateType(); }

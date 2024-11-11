@@ -41,7 +41,7 @@ float AWalkingController::SpeedToScale(float baseSpeed) {
 }
 
 float AWalkingController::SpeedFromScale(float speed) {
-	return speed / GetPig()->GetPropertyController()->GetProperty<EPigPropertyType::Scale>()->GetCurrent();
+	return speed / GetPropertyController()->GetProperty<EPigPropertyType::Scale>()->GetCurrent();
 }
 
 void AWalkingController::SetWalkingType(EMovementType movementType) {

@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Farm.generated.h"
 
+class UConsumeSpotsController;
 class UPigsController;
 class USleepingPigsController;
 class UTroughsController;
@@ -16,20 +15,19 @@ class THEPIGGAME_API AFarm : public AActor {
 	public:	
 	AFarm();
 
-	protected:
-	virtual void BeginPlay() override;
-
-	protected:
-	void CreateControllers();
-	void InitControllers();
-
 	public:
 	UPigsController* GetPigsController();
 	USleepingPigsController* GetSleepingPigsController();
-	UTroughsController* GetTroughsController();
+	UConsumeSpotsController* GetConsumeSpotsController();
 
 	public:
 	UStaticMeshComponent* GetSleepingArea();
+
+	protected:
+	void BeginPlay() override;
+
+	private:
+	void InitControllers();
 
 	protected:
 	UPROPERTY()
@@ -39,7 +37,7 @@ class THEPIGGAME_API AFarm : public AActor {
 	USleepingPigsController* m_pSleepingPigsController = nullptr;
 
 	UPROPERTY()
-	UTroughsController* m_pTroughController = nullptr;
+	UConsumeSpotsController* m_pConsumeSpotsController = nullptr;
 
 	protected:
 	UPROPERTY(EditDefaultsOnly)

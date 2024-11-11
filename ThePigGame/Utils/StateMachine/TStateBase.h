@@ -4,12 +4,16 @@
 #include "../EventHandler/TEventHandler.h"
 #include "../PigDataUser/IPigDataUser.h"
 
+// todo there is not need for template. better remake it to be UObject derived class. and then remake creation of states in UStateMachine
 template<typename EnumType>
 class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser {
 	public:
 	TStateBase(TArray<EnumType>&& transitions) {
 		m_vTransitions = transitions;
 	}
+
+	public:
+	virtual ~TStateBase()=default;
 
 	public:
 	EnumType StateType() const { return m_xStateType; }
@@ -33,6 +37,7 @@ class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser 
 	}
 
 	protected:
+	// todo remove this stupid method and make pure virtual getter
 	void SetStateType(EnumType enumVal) {
 		m_xStateType = enumVal;
 	}

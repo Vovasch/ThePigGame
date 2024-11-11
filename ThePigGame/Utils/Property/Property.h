@@ -3,8 +3,8 @@
 #include <type_traits>
 
 class IProperty {
-	private:
-	virtual void MakePolymorphic(){}
+	public:
+	virtual ~IProperty()=default;
 };
 
 class TBoolProperty : public IProperty {
@@ -251,6 +251,7 @@ class TMinMaxBase {
 
 	public:
 	TMinMaxBase() = default;
+	virtual ~TMinMaxBase()=default;
 	
 	public:
 	virtual float ClampNewCurrent(float newCurrent) = 0;
@@ -312,7 +313,8 @@ class TMinMaxDynamic : public THasMinMax {
 class ITicking {
 
 	public:
-	ITicking() = default;
+	ITicking()=default;
+	virtual ~ITicking()=default;
 
 	public:
 	using TTickingFunction = TFunction<void(float)>;
@@ -337,6 +339,9 @@ class TNoTickType : public ITicking {
 
 
 class TInstantTicking : public ITicking {
+
+	public:
+	virtual ~TInstantTicking()=default;
 
 	public:
 	virtual void Tick(float delta) override;
@@ -394,6 +399,9 @@ class IPropertyTickProvider {
 };
 
 class TRestrictedCurrentModification {
+
+	public:
+	virtual ~TRestrictedCurrentModification()=default;
 
 	public:
 	TRestrictedCurrentModification() = default;

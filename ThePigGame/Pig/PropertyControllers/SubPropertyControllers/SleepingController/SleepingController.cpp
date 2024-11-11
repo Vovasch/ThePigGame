@@ -4,7 +4,10 @@
 #include "ThePigGame/Levels/MainLevel/MainScreenGameMode.h"
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
-#include "ThePigGame/Pig/Tasks/Base/TaskDispatcher.h"
+#include "ThePigGame/Pig/Tasks/Base/BaseTask.h"
+#include "ThePigGame/Pig/Tasks/Base/TaskEvent.h"
+#include "ThePigGame/Pig/Tasks/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/Tasks/TaskType/TaskType.h"
 
 
 const Energy* USleepingController::GetEnergy() {

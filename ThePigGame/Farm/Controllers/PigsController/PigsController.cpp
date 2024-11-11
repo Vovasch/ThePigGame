@@ -12,7 +12,7 @@ void UPigsController::SpawnTestPigs() {
 	FVector boxExtent;
 	GetFarm()->GetActorBounds(false, origin, boxExtent);
 
-	// todo remake text path to asset storage line in cyber bug
+	// todo remake text path to asset storage like in cyber bug
 	auto uclass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
 
 	// todo make normal Z coord

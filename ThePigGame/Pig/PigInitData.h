@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/Map.h"
+#include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
 #include "PigInitData.generated.h"
 
 class UPigAnimInstance;
@@ -195,6 +197,14 @@ class UPigInitData : public UObject {
 	//
 	// Rotation
 	//
+
+	//
+	// Consuming
+	//
+
+	// todo check how TMap will work in engin's property window
+	UPROPERTY(EditAnywhere, meta = (EditFixedSize))
+	TMap<EConsumeSourceType, float> ConsumingPerTick;
 
 	FPigRotationData ChildRotationData;
 	FPigRotationData AdultRotationData;

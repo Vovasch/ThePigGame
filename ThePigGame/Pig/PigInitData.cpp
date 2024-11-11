@@ -1,4 +1,5 @@
 #include "PigInitData.h"
+#include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
 
 UPigInitData::UPigInitData() {
 	ChildRotationData.WalkDeltaX = 13.84f;
@@ -26,4 +27,6 @@ UPigInitData::UPigInitData() {
 	AdultWalkingData.RunSpeed = 514.05f;
 	AdultWalkingData.SprintSpeed = 820.88f;
 
+	ConsumingPerTick.Add(EConsumeSourceType::Eating, 0.1f);
+	ConsumingPerTick.Add(EConsumeSourceType::Drinking, 0.1f);
 }

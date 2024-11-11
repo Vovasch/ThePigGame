@@ -1,5 +1,4 @@
 #include "AgeController.h"
-
 #include "Microsoft/AllowMicrosoftPlatformTypes.h"
 #include "ThePigGame/Levels/MainLevel/MainScreenGameMode.h"
 #include "ThePigGame/Pig/PigInitData.h"
@@ -47,7 +46,6 @@ void UAgeController::Tick(float delta) {
 		//OnEvent(EPigEvent::RemovedFromFarm);
 	}
 }
-
 
 void UAgeController::CheckIfAdult() {
 

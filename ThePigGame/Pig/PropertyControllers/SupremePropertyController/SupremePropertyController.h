@@ -6,6 +6,7 @@
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "SupremePropertyController.generated.h"
 
+class UConsumingController;
 class IProperty;
 class UMiscController;
 class UAgeController;
@@ -25,7 +26,7 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 
 	public:
 	UAgeController* GetAgeController();
-	UEatingController* GetEatingController();
+	UConsumingController* GetConsumingController();
 	USleepingController* GetSleepingController();
 	UWeightController* GetWeightController();
 	UMiscController* GetMiscController();
@@ -37,15 +38,15 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 	const auto* GetProperty() {
 		
 		if constexpr(type == EPigPropertyType::Age) return dynamic_cast<const Age*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::IsAdult) return dynamic_cast<const TBoolProperty*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::Bellyful) return dynamic_cast<const Bellyful*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::Energy) return dynamic_cast<const Energy*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::MaxWeight) return dynamic_cast<const MaxWeight*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::CriticalWeight) return dynamic_cast<const CriticalWeight*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::Weight) return dynamic_cast<const Weight*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::Scale) return dynamic_cast<const Scale*>(m_vProperties[uint32(type)]);
-		if constexpr(type == EPigPropertyType::Morph) return dynamic_cast<const Morph*>(m_vProperties[uint32(type)]);
-		// TODO// make error
+		else if constexpr(type == EPigPropertyType::IsAdult) return dynamic_cast<const TBoolProperty*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Bellyful) return dynamic_cast<const Bellyful*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Energy) return dynamic_cast<const Energy*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::MaxWeight) return dynamic_cast<const MaxWeight*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::CriticalWeight) return dynamic_cast<const CriticalWeight*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Weight) return dynamic_cast<const Weight*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Scale) return dynamic_cast<const Scale*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Morph) return dynamic_cast<const Morph*>(m_vProperties[uint32(type)]);
+		// TODO// make error, but verify if it's required
 	}
 
 	protected:
@@ -53,7 +54,7 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 	UAgeController* m_pAgeController = nullptr;
 
 	UPROPERTY()
-	UEatingController* m_pEatingController = nullptr;
+	UConsumingController* m_pConsumingController = nullptr;
 
 	UPROPERTY()
 	USleepingController* m_pSleepingController = nullptr;
@@ -65,5 +66,5 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 	UMiscController* m_pMiscController = nullptr;
 
 	protected:
-	TArray<const IProperty*> m_vProperties;
+	TStaticArray<const IProperty*, uint32(EPigPropertyType::Size)> m_vProperties {InPlace, nullptr};
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStates.h"
 #include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
@@ -30,14 +31,16 @@ class THEPIGGAME_API UPigAnimInstance : public UAnimInstance, public TEventHandl
 	void OnStateFinished(EPigStates pigState);
 
 	protected:
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (BlueprintThreadSafe))
+	EConsumeSourceType GetCurrentConsumeSpotType();
+
+	protected:
 	UPROPERTY(BlueprintReadOnly)
 	float m_fVelocity = 0.f;
 
-	protected:
 	UPROPERTY(BlueprintReadOnly)
 	float m_fRotation = 0.f;
-
-	protected:
+	
 	UPROPERTY(BlueprintReadOnly)
 	EPigStates m_xPigState = EPigStates::Default;
 

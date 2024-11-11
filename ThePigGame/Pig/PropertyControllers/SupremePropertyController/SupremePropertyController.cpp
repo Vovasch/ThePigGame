@@ -1,48 +1,55 @@
 #include "SupremePropertyController.h"
 
 #include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/AgeController/AgeController.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/EatingController/EatingController.h"
+#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/ConsumingController/ConsumingController.h"
 #include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/MiscController/MiscController.h"
 #include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/SleepingController/SleepingController.h"
 #include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/WeightController/WeightController.h"
 
+DEFINE_LOG_CATEGORY_STATIC(SupremePropertyControllerLog, Log, All)
+
 USupremePropertyController::USupremePropertyController() {
+	// todo add controllers into array.
 	m_pAgeController = NewObject<UAgeController>();
-	m_pEatingController = NewObject<UEatingController>();
+	m_pConsumingController = NewObject<UConsumingController>();
 	m_pSleepingController = NewObject<USleepingController>();
 	m_pWeightController = NewObject<UWeightController>();
 	m_pMiscController = NewObject<UMiscController>();
 
-	m_vProperties.SetNum(uint32(EPigPropertyType::Size));
-
 	m_vProperties[uint32(EPigPropertyType::Age)] = m_pAgeController->GetAge();
 	m_vProperties[uint32(EPigPropertyType::IsAdult)] = m_pAgeController->GetIsAdult();
-	m_vProperties[uint32(EPigPropertyType::Bellyful)] = m_pEatingController->GetBellyfull();
+	m_vProperties[uint32(EPigPropertyType::Bellyful)] = m_pConsumingController->GetBellyful();
 	m_vProperties[uint32(EPigPropertyType::Energy)] = m_pSleepingController->GetEnergy();
 	m_vProperties[uint32(EPigPropertyType::MaxWeight)] = m_pWeightController->GetMaxWeight();
 	m_vProperties[uint32(EPigPropertyType::CriticalWeight)] = m_pWeightController->GetCriticalWeight();
 	m_vProperties[uint32(EPigPropertyType::Weight)] = m_pWeightController->GetWeight();
 	m_vProperties[uint32(EPigPropertyType::Scale)] = m_pMiscController->GetScale();
 	m_vProperties[uint32(EPigPropertyType::Morph)] = m_pMiscController->GetMorph();
+
+	// todo check if error works fine
+	for(const auto property : m_vProperties) {
+		if(!property) UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("Property is a nullptr"));
+	}
 }
 
 void USupremePropertyController::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
 
+	// todo add controllers into array.
 	m_pAgeController->Init(this);
-	m_pEatingController->Init(this);
+	m_pConsumingController->Init(this);
 	m_pSleepingController->Init(this);
 	m_pWeightController->Init(this);
 	m_pMiscController->Init(this);
 
 	m_pAgeController->InitServiceProperties();
-	m_pEatingController->InitServiceProperties();
+	m_pConsumingController->InitServiceProperties();
 	m_pSleepingController->InitServiceProperties();
 	m_pWeightController->InitServiceProperties();
 	m_pMiscController->InitServiceProperties();
 
 	m_pAgeController->InitProperties();
-	m_pEatingController->InitProperties();
+	m_pConsumingController->InitProperties();
 	m_pSleepingController->InitProperties();
 	m_pWeightController->InitProperties();
 	m_pMiscController->InitProperties();
@@ -52,8 +59,8 @@ UAgeController* USupremePropertyController::GetAgeController() {
 	return m_pAgeController;
 }
 
-UEatingController* USupremePropertyController::GetEatingController() {
-	return m_pEatingController;
+UConsumingController* USupremePropertyController::GetConsumingController() {
+	return m_pConsumingController;
 }
 
 USleepingController* USupremePropertyController::GetSleepingController() {
@@ -70,7 +77,7 @@ UMiscController* USupremePropertyController::GetMiscController() {
 
 void USupremePropertyController::Tick(float delta) {
 	m_pAgeController->Tick(delta);
-	m_pEatingController->Tick(delta);
+	m_pConsumingController->Tick(delta);
 	m_pSleepingController->Tick(delta);
 	m_pWeightController->Tick(delta);
 	m_pMiscController->Tick(delta);
