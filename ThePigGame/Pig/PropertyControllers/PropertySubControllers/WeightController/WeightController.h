@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "WeightController.generated.h"
 
 UCLASS()
-class THEPIGGAME_API UWeightController : public UPropertyControllerBase {
+class THEPIGGAME_API UWeightController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
 	public:

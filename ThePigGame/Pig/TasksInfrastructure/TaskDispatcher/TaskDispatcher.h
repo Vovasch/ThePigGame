@@ -10,7 +10,7 @@
 #include "TaskDispatcher.generated.h"
 
 class UTaskDataBase;
-class UBaseTask;
+class UTaskBase;
 class APig;
 
 UCLASS()
@@ -36,7 +36,7 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	// todo make friend in UTaskBase. This should not be public
 	void OnEndTask(ETaskType taskType);
 
-	const UBaseTask* GetTaskByType(ETaskType type);
+	const UTaskBase* GetTaskByType(ETaskType type);
 
 	protected:
 	void TryStartNewTask();
@@ -47,15 +47,15 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	protected:
 	template<typename TaskType>
 	void CreateTask() {
-		static_assert(std::is_base_of_v<UBaseTask, TaskType>, "TaskType must be derived from UBaseTask");
+		static_assert(std::is_base_of_v<UTaskBase, TaskType>, "TaskType must be derived from UTaskBase");
 
 		auto task = NewObject<TaskType>();
 		m_vAllTasks[(uint32)task->GetTaskType()] = task;
 	}
 
 	protected:
-	UBaseTask* GetTaskByTypeInner(ETaskType taskType);
-	UBaseTask* GetCurrentInProgressTask();
+	UTaskBase* GetTaskByTypeInner(ETaskType taskType);
+	UTaskBase* GetCurrentInProgressTask();
 
 	enum class ETaskState {
 		None,
@@ -68,7 +68,7 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	TQueue<ETaskType> m_xTaskQue;
 
 	UPROPERTY()
-	TArray<UBaseTask*> m_vAllTasks;
+	TArray<UTaskBase*> m_vAllTasks;
 
 	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskState;
 

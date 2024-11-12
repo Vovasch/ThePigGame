@@ -2,11 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Pig/PigProperties/PigProperties.h"
-#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "MiscController.generated.h"
 
 UCLASS()
-class THEPIGGAME_API UMiscController : public UPropertyControllerBase {
+class THEPIGGAME_API UMiscController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
 	public:

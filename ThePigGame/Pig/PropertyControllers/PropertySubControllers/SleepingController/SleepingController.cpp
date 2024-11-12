@@ -4,7 +4,7 @@
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
-#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/BaseTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskBase.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskEvent.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 

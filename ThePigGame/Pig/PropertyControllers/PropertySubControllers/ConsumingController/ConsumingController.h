@@ -2,14 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
-#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "ConsumingController.generated.h"
 
 class UConsumeSpotComponent;
 class ATrough;
 
 UCLASS()
-class THEPIGGAME_API UConsumingController : public UPropertyControllerBase {
+class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
 	public:

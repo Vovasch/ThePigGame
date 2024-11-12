@@ -13,20 +13,20 @@ ETaskType UGoToSleepTask::GetTaskType() {
 }
 
 void UGoToSleepTask::Start() {
-	UBaseTask::Start();
+	UTaskBase::Start();
 	FindPlaceForSleeping();
 }
 
 void UGoToSleepTask::Complete() {
 	GetStateMachine()->TryChangeState(EPigStates::LayingDown);
-	UBaseTask::Complete();
+	UTaskBase::Complete();
 }
 
 void UGoToSleepTask::OnEnd() {
 	UnsubscribeFromAnotherSleepingPig();
 
 	GetMovementController()->Unsubscribe(this);
-	UBaseTask::OnEnd();
+	UTaskBase::OnEnd();
 }
 
 void UGoToSleepTask::Tick(float delta) {

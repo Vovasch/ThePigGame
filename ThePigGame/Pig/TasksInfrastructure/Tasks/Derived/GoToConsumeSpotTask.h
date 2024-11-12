@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Base/BaseTask.h"
+#include "../Base/TaskBase.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
 #include "GoToConsumeSpotTask.generated.h"
 
@@ -8,7 +8,7 @@ class UGoToConsumeSpotData;
 class UConsumeSpotComponent;
 
 UCLASS()
-class THEPIGGAME_API UGoToConsumeSpotTask : public UBaseTask {
+class THEPIGGAME_API UGoToConsumeSpotTask : public UTaskBase {
 	GENERATED_BODY()
 	
 	public:

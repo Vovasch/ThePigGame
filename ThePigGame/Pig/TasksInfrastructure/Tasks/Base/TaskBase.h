@@ -6,13 +6,12 @@
 #include "ThePigGame/Pig/TasksInfrastructure/TaskData/Base/TaskDataBase.h"
 #include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
-#include "BaseTask.generated.h"
+#include "TaskBase.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(TaskLog, Log, All)
 
-// todo rename into UTaskBase
 UCLASS(Abstract)
-class THEPIGGAME_API UBaseTask : public UObject, public TEventHandler<ETaskEvent>, public ICachedPigDataUser {
+class THEPIGGAME_API UTaskBase : public UObject, public TEventHandler<ETaskEvent>, public ICachedPigDataUser {
 	GENERATED_BODY()
 
 	public:

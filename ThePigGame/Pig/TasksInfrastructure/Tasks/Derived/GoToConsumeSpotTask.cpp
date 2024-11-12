@@ -10,13 +10,13 @@
 DEFINE_LOG_CATEGORY_STATIC(GoToConsumeSpotTaskLog, Log, All)
 
 void UGoToConsumeSpotTask::Start() {
-	UBaseTask::Start();
+	UTaskBase::Start();
 	TryGoToSpot();
 }
 
 void UGoToConsumeSpotTask::OnEnd() {
 	UnsubscribeAll();
-	UBaseTask::OnEnd();
+	UTaskBase::OnEnd();
 }
 
 void UGoToConsumeSpotTask::Tick(float delta) {

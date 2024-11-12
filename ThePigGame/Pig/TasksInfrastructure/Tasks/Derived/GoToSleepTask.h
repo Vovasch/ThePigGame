@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Base/BaseTask.h"
+#include "../Base/TaskBase.h"
 #include "GoToSleepTask.generated.h"
 
 UCLASS()
-class THEPIGGAME_API UGoToSleepTask : public UBaseTask {
+class THEPIGGAME_API UGoToSleepTask : public UTaskBase {
 	// main idea of this task
 	// pig that got task to sleep tries to find any another pig
 	// that has already started sleeping in order to lay down near her

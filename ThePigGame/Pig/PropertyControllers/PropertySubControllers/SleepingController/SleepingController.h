@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "SleepingController.generated.h"
 
 UCLASS()
-class THEPIGGAME_API USleepingController : public UPropertyControllerBase {
+class THEPIGGAME_API USleepingController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
 	public:

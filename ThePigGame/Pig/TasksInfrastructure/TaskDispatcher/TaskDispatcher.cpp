@@ -47,7 +47,7 @@ void UTaskDispatcher::OnEndTask(ETaskType taskType) {
 	TryStartNewTask();
 }
 
-const UBaseTask* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
+const UTaskBase* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 	return GetTaskByTypeInner(taskType);
 }
 
@@ -68,12 +68,12 @@ void UTaskDispatcher::Tick(float delta) {
 	}
 }
 
-UBaseTask* UTaskDispatcher::GetTaskByTypeInner(ETaskType taskType) {
+UTaskBase* UTaskDispatcher::GetTaskByTypeInner(ETaskType taskType) {
 	if(taskType==ETaskType::None || taskType == ETaskType::Size) return nullptr;
 	return m_vAllTasks[(uint32)taskType];
 }
 
-UBaseTask* UTaskDispatcher::GetCurrentInProgressTask() {
+UTaskBase* UTaskDispatcher::GetCurrentInProgressTask() {
 	if(m_xTaskQue.IsEmpty()) return nullptr;
 
 	auto potentialInProgress = *m_xTaskQue.Peek();

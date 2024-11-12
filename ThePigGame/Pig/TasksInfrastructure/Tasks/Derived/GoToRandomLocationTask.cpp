@@ -27,5 +27,5 @@ void UGoToRandomLocationTask::Interrupt() {
 
 void UGoToRandomLocationTask::OnEnd() {
 	GetMovementController()->Unsubscribe(this);
-	UBaseTask::OnEnd();
+	UTaskBase::OnEnd();
 }

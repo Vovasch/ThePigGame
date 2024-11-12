@@ -2,13 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Pig/PigProperties/PigProperties.h"
-#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "AgeControllerEvent.h"
 #include "ThePigGame/Utils/EventHandler/TEventHandler.h"
 #include "AgeController.generated.h"
 
 UCLASS()
-class THEPIGGAME_API UAgeController : public UPropertyControllerBase, public TEventHandler<EAgeControllerEvent> {
+class THEPIGGAME_API UAgeController : public UPropertySubControllerBase, public TEventHandler<EAgeControllerEvent> {
 	GENERATED_BODY()
 
 	public:

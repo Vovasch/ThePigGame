@@ -5,7 +5,7 @@
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "ThePigGame/Utils/Property/Property.h"
-#include "PropertyControllerBase.generated.h"
+#include "PropertySubControllerBase.generated.h"
 
 /// Children of this class are the owner of the properties they control
 /// No one else can change value of these properties
@@ -13,7 +13,7 @@
 
 // todo rename this class into PropertySubControllerBase. Rename folder for this class into PropertySubControllers.
 UCLASS(Abstract)
-class THEPIGGAME_API UPropertyControllerBase : public UObject, public INoCachePigDataUser, public IPropertyTickProvider
+class THEPIGGAME_API UPropertySubControllerBase : public UObject, public INoCachePigDataUser, public IPropertyTickProvider
 {
 	GENERATED_BODY()
 

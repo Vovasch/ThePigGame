@@ -13,7 +13,7 @@ DEFINE_LOG_CATEGORY_STATIC(ConsumingControllerLog, Log, All)
 static float s_fWaitUntilRetryGoToConsume = 100.f;
 
 void UConsumingController::Tick(float delta) {
-	UPropertyControllerBase::Tick(delta);
+	UPropertySubControllerBase::Tick(delta);
 	ProcessTick();
 }
 
