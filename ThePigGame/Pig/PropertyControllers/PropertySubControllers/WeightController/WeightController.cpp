@@ -2,7 +2,7 @@
 
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigProperties/PigPropertyType.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/AgeController/AgeController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/AgeController/AgeController.h"
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 
 const MaxWeight* UWeightController::GetMaxWeight() {

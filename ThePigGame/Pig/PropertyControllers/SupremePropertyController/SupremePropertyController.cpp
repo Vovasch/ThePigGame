@@ -1,10 +1,10 @@
 #include "SupremePropertyController.h"
 
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/AgeController/AgeController.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/ConsumingController/ConsumingController.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/MiscController/MiscController.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/SleepingController/SleepingController.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/WeightController/WeightController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/AgeController/AgeController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/ConsumingController/ConsumingController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/MiscController/MiscController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/SleepingController/SleepingController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(SupremePropertyControllerLog, Log, All)
 

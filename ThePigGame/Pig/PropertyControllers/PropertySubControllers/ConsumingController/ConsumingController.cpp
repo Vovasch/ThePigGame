@@ -3,9 +3,9 @@
 #include "ThePigGame/Farm/Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/WeightController/WeightController.h"
-#include "ThePigGame/Pig/Tasks/TaskData/GoToConsumeSpotData.h"
-#include "ThePigGame/Pig/Tasks/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskData/GoToConsumeSpotData.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
 
 DEFINE_LOG_CATEGORY_STATIC(ConsumingControllerLog, Log, All)
 

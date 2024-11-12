@@ -12,7 +12,7 @@
 #include "AnimInstance/PigAnimInstance.h"
 #include "Movement/MovementController.h"
 #include "PropertyControllers/SupremePropertyController/SupremePropertyController.h"
-#include "Tasks/TaskDispatcher/TaskDispatcher.h"
+#include "TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
 
 APig::APig() {
 

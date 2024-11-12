@@ -1,9 +1,9 @@
 #include "TaskDispatcher.h"
-#include "../Derived/GoToSleepTask.h"
-#include "../Derived/GoToRandomLocationTask.h"
 #include "../../PigStateMachine/PigStateMachine.h"
 #include "../../PigStateMachine/PigDefaultState.h"
-#include "ThePigGame/Pig/Tasks/Derived/GoToConsumeSpotTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToConsumeSpotTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToRandomLocationTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToSleepTask.h"
 
 UTaskDispatcher::UTaskDispatcher() {
 	// todo make m_valltask a staticarray and add checking if all types of tasks has been created.
@@ -34,7 +34,7 @@ void UTaskDispatcher::OnTaskStarted(ETaskType taskType) {
 	OnEvent(ETaskDispatcherEvent::TaskStarted, taskType);
 }
 
-// this should not be public make such method in taskbase and make it friend here
+// todo this should not be public make such method in taskbase and make it friend here
 void UTaskDispatcher::OnEndTask(ETaskType taskType) {
 	auto currentTask = GetCurrentInProgressTask();
 	if(!currentTask || currentTask->GetTaskType()!=taskType) return;

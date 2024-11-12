@@ -6,7 +6,7 @@
 #include "Containers/Queue.h"
 #include "type_traits"
 #include "TaskDispatcherEvent.h"
-#include "ThePigGame/Pig/Tasks/TaskType/TaskType.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 #include "TaskDispatcher.generated.h"
 
 class UTaskDataBase;

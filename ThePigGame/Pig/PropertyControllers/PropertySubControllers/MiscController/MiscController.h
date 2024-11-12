@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Pig/PigProperties/PigProperties.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
 #include "MiscController.generated.h"
 
 UCLASS()

@@ -1,11 +1,11 @@
 #include "GoToConsumeSpotTask.h"
-#include "../../../Farm/Farm.h"
+#include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Pig/Movement/MovementControllerEvent.h"
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
-#include "../../Movement/MovementController.h"
 #include "ThePigGame/Farm/Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/ConsumingController/ConsumingController.h"
-#include "ThePigGame/Pig/Tasks/TaskData/GoToConsumeSpotData.h"
+#include "ThePigGame/Pig/Movement/MovementController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/ConsumingController/ConsumingController.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskData/GoToConsumeSpotData.h"
 
 DEFINE_LOG_CATEGORY_STATIC(GoToConsumeSpotTaskLog, Log, All)
 

@@ -1,14 +1,12 @@
 #include "SleepingController.h"
-
 #include "ThePigGame/Levels/MainLevel/GameModeEvent.h"
 #include "ThePigGame/Levels/MainLevel/MainScreenGameMode.h"
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
-#include "ThePigGame/Pig/Tasks/Base/BaseTask.h"
-#include "ThePigGame/Pig/Tasks/Base/TaskEvent.h"
-#include "ThePigGame/Pig/Tasks/TaskDispatcher/TaskDispatcher.h"
-#include "ThePigGame/Pig/Tasks/TaskType/TaskType.h"
-
+#include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/BaseTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskEvent.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 
 const Energy* USleepingController::GetEnergy() {
 	return &m_xEnergy;

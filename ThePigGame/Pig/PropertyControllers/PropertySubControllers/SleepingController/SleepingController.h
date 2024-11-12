@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
 #include "SleepingController.generated.h"
 
 UCLASS()

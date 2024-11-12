@@ -1,7 +1,7 @@
 #include "GoToRandomLocationTask.h"
-#include "../../Pig.h"
-#include "../../Movement/MovementController.h"
 #include "NavigationSystem.h"
+#include "ThePigGame/Pig/Movement/MovementController.h"
+#include "ThePigGame/Pig/Movement/MovementControllerEvent.h"
 
 ETaskType UGoToRandomLocationTask::GetTaskType() {
 	return ETaskType::GoToRandomLocation;

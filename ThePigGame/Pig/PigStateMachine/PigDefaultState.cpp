@@ -1,6 +1,8 @@
 #include "PigDefaultState.h"
-#include "../../Pig/Tasks/Derived/GoToRandomLocationTask.h"
-#include "ThePigGame/Pig/Tasks/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/BaseTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskEvent.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 
 using ParentTaskType = TStateBase<EPigStates>;
 

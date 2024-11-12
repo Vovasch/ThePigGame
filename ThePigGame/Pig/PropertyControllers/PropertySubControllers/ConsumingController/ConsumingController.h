@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
-#include "ThePigGame/Pig/PropertyControllers/SubPropertyControllers/PropertyControllerBase.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertyControllerBase.h"
 #include "ConsumingController.generated.h"
 
 class UConsumeSpotComponent;

@@ -1,7 +1,6 @@
 #include "BaseTask.h"
 #include "CoreMinimal.h"
-#include "../../Pig.h"
-#include "ThePigGame/Pig/Tasks/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
 
 DEFINE_LOG_CATEGORY(TaskLog)
 

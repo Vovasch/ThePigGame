@@ -1,11 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../../Utils/EventHandler/TEventHandler.h"
-#include "../../../Utils/PigDataUser/IPigDataUser.h"
 #include "TaskEvent.h"
-#include "ThePigGame/Pig/Tasks/TaskType/TaskType.h"
-#include "../TaskData/Base/TaskDataBase.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskData/Base/TaskDataBase.h"
+#include "ThePigGame/Utils/EventHandler/TEventHandler.h"
+#include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "BaseTask.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(TaskLog, Log, All)

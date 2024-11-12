@@ -1,12 +1,12 @@
 #include "GoToSleepTask.h"
-#include "../../../Pig/Pig.h"
-#include "../../../Farm/Farm.h"
-#include "../../../Pig/PigStateMachine/PigStateMachine.h"
-#include "../../../Pig/PigStateMachine/PigSleepingState.h"
-#include "Math/Box.h"
-#include "../../../Utils/Misc/TMiscUtils.h"
+#include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Farm/Controllers/SleepingPigsController/SleepingPigsController.h"
-#include "../../Movement/MovementController.h"
+#include "ThePigGame/Pig/Movement/MovementController.h"
+#include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
+#include "ThePigGame/Pig/PigStateMachine/PigStates.h"
+#include "ThePigGame/Utils/Misc/TMiscUtils.h"
+#include "ThePigGame/Utils/StateMachine/StateEvent.h"
+
 
 ETaskType UGoToSleepTask::GetTaskType() {
 	return ETaskType::GoToSleep;

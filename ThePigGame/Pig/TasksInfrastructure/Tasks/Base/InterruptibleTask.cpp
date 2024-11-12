@@ -1,6 +1,4 @@
 #include "InterruptibleTask.h"
-#include "../../Pig.h"
-
 
 void UInterruptibleTask::Interrupt() {
 	if(!IsInProgress()) return;
