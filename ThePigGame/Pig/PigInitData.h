@@ -41,6 +41,34 @@ struct FPigRotationData {
 	float DegreesInTime = 0.f;
 };
 
+USTRUCT()
+struct FConsumingData {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	float StartingValue = 100.f;
+
+	UPROPERTY(EditAnyWhere)
+	float Min = 0.f;
+
+	UPROPERTY(EditAnyWhere)
+	float Max = 100.f;
+
+	UPROPERTY(EditAnyWhere)
+	float AmountToWantToConsume = 40.f;
+
+	UPROPERTY(EditAnyWhere)
+	float AmountToStopConsume = 90.f;
+
+	UPROPERTY(EditAnywhere)
+	float GainDeltaPerTick = 1.f;
+
+	UPROPERTY(EditAnywhere)
+	float LoseDeltaPerTick = 0.1f;
+
+	UPROPERTY(EditAnywhere)
+	float WaitUntilRetryConsume = 100.f;
+};
 
 
 UCLASS(Blueprintable, DefaultToInstanced, EditInlineNew)
@@ -112,32 +140,22 @@ class UPigInitData : public UObject {
 	float MaxWeightAtMaxAge = 300.f;
 	
 	//
+	// Consuming
+	//
+
+	// todo check how TMap will work in engine's property window
+	UPROPERTY(EditAnywhere, meta = (EditFixedSize))
+	TMap<EConsumeSourceType, FConsumingData> ConsumingData;
+
+	//
 	// Bellyful
 	//
-	
-	UPROPERTY(EditAnyWhere)
-	float MinBellyful = 0.f;
-
-	UPROPERTY(EditAnyWhere)
-	float MaxBellyful = 100.f;
 
 	UPROPERTY(EditAnyWhere)
 	float BellyfulLevelToGetFat = 70.f;
 
 	UPROPERTY(EditAnyWhere)
 	float BellyfulLevelToGetThin = 20.f;
-
-	UPROPERTY(EditAnyWhere)
-	float BellyfulLevelToWantToEat = 40.f;
-
-	UPROPERTY(EditAnyWhere)
-	float BellyfulLevelToStopEating = 90.f;
-
-	UPROPERTY(EditAnywhere)
-	float EatDeltaPerTick = 0.5f;
-
-	UPROPERTY(EditAnywhere)
-	float BellyfullLosePerTick = 0.5f;
 
 	//
 	// Max Sizes 
@@ -202,10 +220,7 @@ class UPigInitData : public UObject {
 	// Consuming
 	//
 
-	// todo check how TMap will work in engin's property window
-	UPROPERTY(EditAnywhere, meta = (EditFixedSize))
-	TMap<EConsumeSourceType, float> ConsumingPerTick;
-
+	// todo make it editable from engine's property window.
 	FPigRotationData ChildRotationData;
 	FPigRotationData AdultRotationData;
 

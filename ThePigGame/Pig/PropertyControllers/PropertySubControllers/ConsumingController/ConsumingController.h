@@ -12,11 +12,13 @@ UCLASS()
 class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
+	static inline constexpr uint32 s_uConsumeTypesAmount = uint32(EConsumeSourceType::Size);
+
 	public:
 	virtual void Tick(float delta) override;
 
 	public:
-	const Bellyful* GetBellyful();
+	const Consume* GetBellyful();
 
 	public:
 	virtual void InitProperties() override;
@@ -30,12 +32,10 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 
 	private:
 	void AddGoToConsumeSpotTask(EConsumeSourceType consumeType);
+	void TryConsumeLater(EConsumeSourceType sourceType);
 
 	private:
 	void EndConsuming();
-
-	private:
-	void TryConsumeLater(EConsumeSourceType sourceType);
 
 	private:
 	void ProcessTick();
@@ -43,13 +43,13 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	void ProcessNonConsumingState();
 
 	private:
-	void OnRetryGoToConsumeSpot(EConsumeSourceType sourceType);
+	Consume& GetPropertyByConsumeType(EConsumeSourceType sourceType);
 
 	private:
-	Bellyful m_xBellyful;
+	TStaticArray<Consume, s_uConsumeTypesAmount> m_vConsumeProperties {};
 
 	private:
 	// if !IsExplicitlyNull => consuming is in progress
 	TWeakObjectPtr<UConsumeSpotComponent> m_pOccupiedSpot = nullptr;
-	TStaticArray<bool, (uint32)EConsumeSourceType::Size> m_vWaitingForSpot{InPlace, false};
+	TStaticArray<bool, s_uConsumeTypesAmount> m_vWaitingForSpot{InPlace, false};
 };

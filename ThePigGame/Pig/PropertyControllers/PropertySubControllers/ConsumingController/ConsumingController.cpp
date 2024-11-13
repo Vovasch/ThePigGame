@@ -9,9 +9,6 @@
 
 DEFINE_LOG_CATEGORY_STATIC(ConsumingControllerLog, Log, All)
 
-// todo move into pig init data
-static float s_fWaitUntilRetryGoToConsume = 100.f;
-
 void UConsumingController::Tick(float delta) {
 	UPropertySubControllerBase::Tick(delta);
 	ProcessTick();
@@ -51,11 +48,16 @@ void UConsumingController::StartConsuming(TWeakObjectPtr<UConsumeSpotComponent> 
 }
 
 void UConsumingController::ProcessTick() {
-	/*
-	 * We loose bellyful even when we eat. that is ok 
-	 * todo but in init data for pig we should ensure that pig would be eating faster than loosing bellyful
-	*/
-	m_xBellyful.GetCurrentModifycationType().Add(-GetInitData()->BellyfullLosePerTick);
+	
+	/// We loose bellyful even when we eat. that is ok 
+	/// todo but in init data for pig we should ensure that pig would be eating faster than loosing bellyful
+	
+	auto& consumingData = GetInitData()->ConsumingData;
+	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
+		auto enumType = EConsumeSourceType(i);
+
+		GetPropertyByConsumeType(enumType).GetCurrentModifycationType().Add(-consumingData[enumType].LoseDeltaPerTick);
+	}
 
 	if(GetStateMachine()->GetCurrentStateType()==EPigStates::Consuming) {
 		ProcessConsumingState();
@@ -72,17 +74,14 @@ void UConsumingController::ProcessConsumingState() {
 		EndConsuming();
 		return;
 	}
-	auto consumeType = m_pOccupiedSpot->GetSpotType();
-	auto initData = GetPig()->GetInitData();
+	const auto consumeType = m_pOccupiedSpot->GetSpotType();
+	auto& consumeData = GetInitData()->ConsumingData[consumeType];
 
-	// todo everything below is only working with bellyful, make it univeral
-	auto consumeOutAmount = m_pOccupiedSpot->TryConsumeOut(initData->ConsumingPerTick[consumeType], GetPig());
-
-	auto bellyFullLevelToSpotEating = initData->BellyfulLevelToStopEating;
-	auto currentBellyful = m_xBellyful.GetCurrent();
+	auto consumeOutAmount = m_pOccupiedSpot->TryConsumeOut(consumeData.GainDeltaPerTick, GetPig());
+	auto& consumeProperty = GetPropertyByConsumeType(consumeType);
 
 	if(!consumeOutAmount.IsSet()) {
-		if(currentBellyful<bellyFullLevelToSpotEating) {
+		if(consumeProperty.GetCurrent() < consumeData.AmountToStopConsume) {
 			TryConsumeLater(m_pOccupiedSpot->GetSpotType());
 		}
 
@@ -90,30 +89,44 @@ void UConsumingController::ProcessConsumingState() {
 		return;
 	}
 
-	m_xBellyful.GetCurrentModifycationType().Add(consumeOutAmount.GetValue());
+	consumeProperty.GetCurrentModifycationType().Add(consumeOutAmount.GetValue());
 
-	if(m_xBellyful.GetCurrent()>=initData->BellyfulLevelToStopEating) {
+	if(consumeProperty.GetCurrent()>=consumeData.AmountToStopConsume) {
 		EndConsuming();
 	}
 }
 
 void UConsumingController::ProcessNonConsumingState() {
-	auto pig = GetPig();
-	if(m_xBellyful.GetCurrent() >= pig->GetInitData()->BellyfulLevelToWantToEat || !m_vWaitingForSpot[uint32(EConsumeSourceType::Eating)]) {
-		AddGoToConsumeSpotTask(EConsumeSourceType::Eating);
+
+	auto& consumingData = GetInitData()->ConsumingData;
+
+	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
+
+		auto sourceType = EConsumeSourceType(i);
+		auto& currentConsumingData = consumingData[sourceType];
+
+		if(GetPropertyByConsumeType(sourceType).GetCurrent() <= currentConsumingData.AmountToWantToConsume && !m_vWaitingForSpot[i]) {
+			AddGoToConsumeSpotTask(sourceType);
+		}
 	}
 }
 
-void UConsumingController::OnRetryGoToConsumeSpot(EConsumeSourceType sourceType) {
-	m_vWaitingForSpot[uint32(sourceType)] = false;
-	AddGoToConsumeSpotTask(sourceType);
+Consume& UConsumingController::GetPropertyByConsumeType(EConsumeSourceType sourceType) {
+	return m_vConsumeProperties[uint32(sourceType)];
 }
 
 void UConsumingController::InitProperties() {
-	m_xBellyful.Init(this);
-	m_xBellyful.GetMinMaxType().SetMinMax(GetInitData()->MinBellyful, GetInitData()->MaxBellyful);
+	auto initData = GetInitData();
 
-	m_xBellyful.GetCurrentModifycationType().Set(100.f);
+	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
+		auto& currentProperty = m_vConsumeProperties[i];
+		currentProperty.Init(this);
+		
+		auto& consumeData = initData->ConsumingData[EConsumeSourceType(i)];
+
+		currentProperty.GetMinMaxType().SetMinMax(consumeData.Min, consumeData.Max);
+		currentProperty.GetCurrentModifycationType().Set(consumeData.StartingValue);
+	}
 }
 
 void UConsumingController::EndConsuming() {
@@ -136,13 +149,19 @@ void UConsumingController::TryConsumeLater(EConsumeSourceType sourceType) {
 	UE_LOG(ConsumingControllerLog, Log, TEXT("Pig will try to consume later"));
 
 	isWaiting = true;
+
 	FTimerHandle h;
+	TFunction<void()> onRetryToConsumeLayter{[this, sourceType]() {
+		m_vWaitingForSpot[uint32(sourceType)] = false;
+		AddGoToConsumeSpotTask(sourceType);
+	}};
+
 	// todo check if timer works correctly.
 	GetPig()->GetWorldTimerManager().SetTimer(h,
-		[this, sourceType] { OnRetryGoToConsumeSpot(sourceType); },
+		MoveTemp(onRetryToConsumetLayer),
 		1.f,
 		false,
-		s_fWaitUntilRetryGoToConsume); // todo move this global variable into init data
+		GetInitData()->ConsumingData[sourceType].WaitUntilRetryConsume);
 }
 
 void UConsumingController::AddGoToConsumeSpotTask(EConsumeSourceType consumeType) {
@@ -154,6 +173,6 @@ void UConsumingController::AddGoToConsumeSpotTask(EConsumeSourceType consumeType
 	/// this is bad because task can fail when pig for instance can't reach to spot
 }
 
-const Bellyful* UConsumingController::GetBellyful() {
-	return &m_xBellyful;
+const Consume* UConsumingController::GetBellyful() {
+	return &GetPropertyByConsumeType(EConsumeSourceType::Eating);
 }

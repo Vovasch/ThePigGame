@@ -9,7 +9,7 @@
 DEFINE_LOG_CATEGORY_STATIC(SupremePropertyControllerLog, Log, All)
 
 USupremePropertyController::USupremePropertyController() {
-	// todo add controllers into array.
+	// todo add controllers into array. and use CreateDefaultSubObject, because we are in the constructor
 	m_pAgeController = NewObject<UAgeController>();
 	m_pConsumingController = NewObject<UConsumingController>();
 	m_pSleepingController = NewObject<USleepingController>();

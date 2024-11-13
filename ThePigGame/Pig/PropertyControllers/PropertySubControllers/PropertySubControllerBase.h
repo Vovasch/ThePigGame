@@ -11,7 +11,6 @@
 /// No one else can change value of these properties
 /// Even using a public function inside of which property would be changed
 
-// todo rename this class into PropertySubControllerBase. Rename folder for this class into PropertySubControllers.
 UCLASS(Abstract)
 class THEPIGGAME_API UPropertySubControllerBase : public UObject, public INoCachePigDataUser, public IPropertyTickProvider
 {
