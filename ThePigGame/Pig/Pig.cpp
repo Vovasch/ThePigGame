@@ -73,6 +73,12 @@ AFarm* APig::GetOwnerFarm() {
 void APig::FillPigInfo() {
 	FString str(UTF8_TO_TCHAR("Current age = "));
 
+	str += "\n Bellyful: ";
+	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Bellyful>()->GetCurrent());
+
+	str += "\n Thirst: ";
+	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Thirst>()->GetCurrent());
+
 	// todo move to new component "pig info component"
 	/*auto currentAge = m_xAge.GetCurrent();
 	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());

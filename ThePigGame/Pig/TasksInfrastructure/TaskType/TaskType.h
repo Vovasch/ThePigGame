@@ -6,7 +6,8 @@
 UENUM(BlueprintType)
 enum class ETaskType : uint8 {
 	None,
-	GoToConsumeSpot,
+	GoToEatingSpot,
+	GoToDrinkingSpot,
 	GoToSleep,
 	GoToRandomLocation,
 	Size

@@ -1,5 +1,4 @@
 #include "SupremePropertyController.h"
-
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/AgeController/AgeController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/ConsumingController/ConsumingController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/MiscController/MiscController.h"
@@ -19,6 +18,7 @@ USupremePropertyController::USupremePropertyController() {
 	m_vProperties[uint32(EPigPropertyType::Age)] = m_pAgeController->GetAge();
 	m_vProperties[uint32(EPigPropertyType::IsAdult)] = m_pAgeController->GetIsAdult();
 	m_vProperties[uint32(EPigPropertyType::Bellyful)] = m_pConsumingController->GetBellyful();
+	m_vProperties[uint32(EPigPropertyType::Thirst)] = m_pConsumingController->GetThirst();
 	m_vProperties[uint32(EPigPropertyType::Energy)] = m_pSleepingController->GetEnergy();
 	m_vProperties[uint32(EPigPropertyType::MaxWeight)] = m_pWeightController->GetMaxWeight();
 	m_vProperties[uint32(EPigPropertyType::CriticalWeight)] = m_pWeightController->GetCriticalWeight();
@@ -26,9 +26,17 @@ USupremePropertyController::USupremePropertyController() {
 	m_vProperties[uint32(EPigPropertyType::Scale)] = m_pMiscController->GetScale();
 	m_vProperties[uint32(EPigPropertyType::Morph)] = m_pMiscController->GetMorph();
 
-	// todo check if error works fine
-	for(const auto property : m_vProperties) {
-		if(!property) UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("Property is a nullptr"));
+
+	auto foundNullptr = false;
+	for(uint32 i = 0; i < uint32(EPigPropertyType::Size); ++i) {
+		if(!m_vProperties[i]) {
+			foundNullptr = true;
+			UE_LOG(SupremePropertyControllerLog, Error, TEXT("%s property is a nullptr"), *UEnum::GetDisplayValueAsText(EPigPropertyType(i)).ToString());
+		}
+	}
+
+	if(foundNullptr) {
+		UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("One property or more are nullptr"));
 	}
 }
 

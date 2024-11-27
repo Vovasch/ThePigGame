@@ -12,13 +12,15 @@ UCLASS()
 class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	GENERATED_BODY()
 
-	static inline constexpr uint32 s_uConsumeTypesAmount = uint32(EConsumeSourceType::Size);
+	public:
+	UConsumingController();
 
 	public:
 	virtual void Tick(float delta) override;
 
 	public:
 	const Consume* GetBellyful();
+	const Consume* GetThirst();
 
 	public:
 	virtual void InitProperties() override;
@@ -40,16 +42,15 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	private:
 	void ProcessTick();
 	void ProcessConsumingState();
-	void ProcessNonConsumingState();
 
 	private:
 	Consume& GetPropertyByConsumeType(EConsumeSourceType sourceType);
 
 	private:
-	TStaticArray<Consume, s_uConsumeTypesAmount> m_vConsumeProperties {};
+	TMap<EConsumeSourceType, Consume> m_mConsumeProperties;
 
 	private:
 	// if !IsExplicitlyNull => consuming is in progress
 	TWeakObjectPtr<UConsumeSpotComponent> m_pOccupiedSpot = nullptr;
-	TStaticArray<bool, s_uConsumeTypesAmount> m_vWaitingForSpot{InPlace, false};
+	TStaticArray<bool, uint32(EConsumeSourceType::Size)> m_vWaitingForSpot{InPlace, false};
 };

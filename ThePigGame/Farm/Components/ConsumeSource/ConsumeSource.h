@@ -24,7 +24,7 @@ class AConsumeSource : public AActor {
 	AConsumeSource();
 
 	public:
-	EConsumeSourceType GetConsumeType();
+	virtual EConsumeSourceType GetConsumeType() PURE_VIRTUAL("Not implemented", return EConsumeSourceType::Size;)
 
 	public:
 	void Fill(float amount);
@@ -52,10 +52,6 @@ class AConsumeSource : public AActor {
 	UTextRenderComponent* Info = nullptr;
 
 	TConsumeSourceFullness m_xFullness;
-
-	protected:
-	// todo remake into a pure virtual getter
-	EConsumeSourceType m_xType = EConsumeSourceType::Size;
 
 	private:
 	// no need for UProperty, these are actor components.

@@ -2,12 +2,14 @@
 
 #include "../Base/TaskBase.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 #include "GoToConsumeSpotTask.generated.h"
 
 class UGoToConsumeSpotData;
 class UConsumeSpotComponent;
 
-UCLASS()
+// todo move into base folder
+UCLASS(Abstract)
 class THEPIGGAME_API UGoToConsumeSpotTask : public UTaskBase {
 	GENERATED_BODY()
 	
@@ -17,7 +19,7 @@ class THEPIGGAME_API UGoToConsumeSpotTask : public UTaskBase {
 	virtual void Tick(float delta) override;
 
 	public:
-	ETaskType GetTaskType() override;
+	ETaskType GetTaskType() override PURE_VIRTUAL("Not implemented", return ETaskType::None;)
 
 	private:
 	EConsumeSourceType GetSourceType();
@@ -33,9 +35,6 @@ class THEPIGGAME_API UGoToConsumeSpotTask : public UTaskBase {
 
 	private:
 	void UnsubscribeAll();
-
-	private:
-	const UGoToConsumeSpotData* GetTaskDataChecked();
 
 	private:
 	TWeakObjectPtr<UConsumeSpotComponent> m_pTargetConsumeSpot = nullptr;

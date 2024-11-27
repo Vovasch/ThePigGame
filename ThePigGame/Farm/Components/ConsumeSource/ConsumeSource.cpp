@@ -15,15 +15,7 @@ AConsumeSource::AConsumeSource() {
 	Info->SetupAttachment(RootComponent);
 }
 
-EConsumeSourceType AConsumeSource::GetConsumeType() {
-	return m_xType;
-}
-
 void AConsumeSource::BeginPlay() {
-	if(m_xType==EConsumeSourceType::Size) {
-		UE_LOG(ConsumeSourceLog, Fatal, TEXT("Invalid consume source type. This sould be set up in consturctor of classes derived from AConsumeSource"));
-	}
-
 	Super::BeginPlay();
 
 	// todo move into separate function "Init owner".
@@ -93,17 +85,13 @@ TOptional<float> AConsumeSource::TryConsumeOut(float amount, const APig* consume
 	auto current = m_xFullness.GetCurrent();
 	if(FMath::IsNearlyZero(current)) return NullOpt;
 
-	auto successConsumeOut = 0.f;
-
-	if(amount >= current) {
-		successConsumeOut = current;
-	} else {
-		successConsumeOut = amount;
+	if(amount > current) {
+		amount = current;
 	}
 
-	m_xFullness.GetCurrentModifycationType().Add(-successConsumeOut);
+	m_xFullness.GetCurrentModifycationType().Add(-amount);
 
 	UpdateInfo();
 
-	return successConsumeOut;
+	return amount;
 }

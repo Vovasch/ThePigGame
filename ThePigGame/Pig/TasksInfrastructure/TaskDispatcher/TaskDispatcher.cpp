@@ -2,13 +2,16 @@
 #include "../../PigStateMachine/PigStateMachine.h"
 #include "../../PigStateMachine/PigDefaultState.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToConsumeSpotTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToDrinkingSpotTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToEatingSpotTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToRandomLocationTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToSleepTask.h"
 
 UTaskDispatcher::UTaskDispatcher() {
 	// todo make m_valltask a staticarray and add checking if all types of tasks has been created.
 	m_vAllTasks.AddDefaulted((uint32)ETaskType::Size);
-	CreateTask<UGoToConsumeSpotTask>();
+	CreateTask<UGoToEatingSpotTask>();
+	CreateTask<UGoToDrinkingSpotTask>();
 	CreateTask<UGoToSleepTask>();
 	CreateTask<UGoToRandomLocationTask>();
 }
@@ -52,6 +55,7 @@ const UTaskBase* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 }
 
 void UTaskDispatcher::AddTask(ETaskType taskType, TStrongObjectPtr<const UTaskDataBase> data) {
+	// todo it's better to check this when adding task with data. just make function in UTaskBase::CheckMyData(data){return true}. then override where needed
 	auto& taskState = m_vTaskState[uint32(taskType)];
 	if(taskState != ETaskState::None) return;
 

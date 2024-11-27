@@ -4,10 +4,20 @@
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
-#include "ThePigGame/Pig/TasksInfrastructure/TaskData/GoToConsumeSpotData.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
+#include "ThePigGame/Pig/TasksInfrastructure/TaskHelper/ConsumeConnector.h"
 
 DEFINE_LOG_CATEGORY_STATIC(ConsumingControllerLog, Log, All)
+
+UConsumingController::UConsumingController() {
+
+	m_mConsumeProperties.Add( EConsumeSourceType::Eating, {});
+	m_mConsumeProperties.Add( EConsumeSourceType::Drinking, {} );
+
+	if(m_mConsumeProperties.Num()!=uint32(EConsumeSourceType::Size)) {
+		UE_LOG(ConsumingControllerLog, Fatal, TEXT("Amount of consuming properties isn't equal to the amount of consuming spots"));
+	}
+}
 
 void UConsumingController::Tick(float delta) {
 	UPropertySubControllerBase::Tick(delta);
@@ -51,20 +61,22 @@ void UConsumingController::ProcessTick() {
 	
 	/// We loose bellyful even when we eat. that is ok 
 	/// todo but in init data for pig we should ensure that pig would be eating faster than loosing bellyful
-	
-	auto& consumingData = GetInitData()->ConsumingData;
-	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
-		auto enumType = EConsumeSourceType(i);
 
-		GetPropertyByConsumeType(enumType).GetCurrentModifycationType().Add(-consumingData[enumType].LoseDeltaPerTick);
+	auto& consumingData = GetInitData()->ConsumingData;
+
+	for(auto& [sourceType, property] : m_mConsumeProperties) {
+
+		property.GetCurrentModifycationType().Add(-consumingData[sourceType].LoseDeltaPerTick);
+
+		auto& currentConsumingData = consumingData[sourceType];
+		if(property.GetCurrent() <= currentConsumingData.AmountToWantToConsume && !m_vWaitingForSpot[uint32(sourceType)]) {
+			AddGoToConsumeSpotTask(sourceType);
+		}
 	}
 
 	if(GetStateMachine()->GetCurrentStateType()==EPigStates::Consuming) {
 		ProcessConsumingState();
-	} else {
-		ProcessNonConsumingState();
 	}
-
 }
 
 void UConsumingController::ProcessConsumingState() {
@@ -96,36 +108,21 @@ void UConsumingController::ProcessConsumingState() {
 	}
 }
 
-void UConsumingController::ProcessNonConsumingState() {
-
-	auto& consumingData = GetInitData()->ConsumingData;
-
-	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
-
-		auto sourceType = EConsumeSourceType(i);
-		auto& currentConsumingData = consumingData[sourceType];
-
-		if(GetPropertyByConsumeType(sourceType).GetCurrent() <= currentConsumingData.AmountToWantToConsume && !m_vWaitingForSpot[i]) {
-			AddGoToConsumeSpotTask(sourceType);
-		}
-	}
-}
-
 Consume& UConsumingController::GetPropertyByConsumeType(EConsumeSourceType sourceType) {
-	return m_vConsumeProperties[uint32(sourceType)];
+	return m_mConsumeProperties[sourceType];
 }
 
 void UConsumingController::InitProperties() {
 	auto initData = GetInitData();
 
-	for(uint32 i = 0; i < s_uConsumeTypesAmount; ++i) {
-		auto& currentProperty = m_vConsumeProperties[i];
-		currentProperty.Init(this);
-		
-		auto& consumeData = initData->ConsumingData[EConsumeSourceType(i)];
+	for(auto& [sourceType, property] : m_mConsumeProperties) {
 
-		currentProperty.GetMinMaxType().SetMinMax(consumeData.Min, consumeData.Max);
-		currentProperty.GetCurrentModifycationType().Set(consumeData.StartingValue);
+		property.Init(this);
+		
+		auto& consumeData = initData->ConsumingData[sourceType];
+
+		property.GetMinMaxType().SetMinMax(consumeData.Min, consumeData.Max);
+		property.GetCurrentModifycationType().Set(consumeData.StartingValue);
 	}
 }
 
@@ -151,23 +148,21 @@ void UConsumingController::TryConsumeLater(EConsumeSourceType sourceType) {
 	isWaiting = true;
 
 	FTimerHandle h;
-	TFunction<void()> onRetryToConsumeLayter{[this, sourceType]() {
+	TFunction<void()> onRetryToConsumeLater{[this, sourceType]() {
 		m_vWaitingForSpot[uint32(sourceType)] = false;
 		AddGoToConsumeSpotTask(sourceType);
 	}};
 
 	// todo check if timer works correctly.
 	GetPig()->GetWorldTimerManager().SetTimer(h,
-		MoveTemp(onRetryToConsumetLayer),
+		MoveTemp(onRetryToConsumeLater),
 		1.f,
 		false,
 		GetInitData()->ConsumingData[sourceType].WaitUntilRetryConsume);
 }
 
 void UConsumingController::AddGoToConsumeSpotTask(EConsumeSourceType consumeType) {
-	auto data = TStrongObjectPtr(NewObject<UGoToConsumeSpotData>());
-	data->ConsumeType = consumeType;
-	GetTaskDispatcher()->AddTask(ETaskType::GoToConsumeSpot, data);
+	GetTaskDispatcher()->AddTask(ConsumeConnector::TaskBySource(consumeType));
 	/// todo I add task. and don't subsribe to succes
 	/// because taks is calling StartConsuming and OnNoSpotAvailable
 	/// this is bad because task can fail when pig for instance can't reach to spot
@@ -175,4 +170,8 @@ void UConsumingController::AddGoToConsumeSpotTask(EConsumeSourceType consumeType
 
 const Consume* UConsumingController::GetBellyful() {
 	return &GetPropertyByConsumeType(EConsumeSourceType::Eating);
+}
+
+const Consume* UConsumingController::GetThirst() {
+	return &GetPropertyByConsumeType(EConsumeSourceType::Drinking);
 }
