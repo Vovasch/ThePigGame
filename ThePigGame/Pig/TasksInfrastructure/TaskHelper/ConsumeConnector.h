@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
-#include "ThePigGame/Pig/PigProperties/PigPropertyType.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskType/TaskType.h"
 
 class ConsumeConnector {

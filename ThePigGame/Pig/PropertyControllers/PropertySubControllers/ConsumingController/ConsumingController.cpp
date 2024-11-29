@@ -1,6 +1,7 @@
 #include "ConsumingController.h"
 #include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Farm/Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
+#include "ThePigGame/Farm/Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
@@ -28,8 +29,11 @@ void UConsumingController::OnNoConsumeSpotAvailable(EConsumeSourceType sourceTyp
 	TryConsumeLater(sourceType);
 }
 
-TWeakObjectPtr<const UConsumeSpotComponent> UConsumingController::GetOccupiedSpot() {
-	return m_pOccupiedSpot;
+EConsumeSourceType UConsumingController::GetOccupiedSpotTypeChecked() {
+	if(!m_pOccupiedSpot.IsValid()) {
+		UE_LOG(ConsumingControllerLog, Fatal, TEXT("Pig is not in consuming state or did't occupiy consume spot"));
+	}
+	return m_pOccupiedSpot->GetSpotType();
 }
 
 void UConsumingController::StartConsuming(TWeakObjectPtr<UConsumeSpotComponent> consumeSpot) {

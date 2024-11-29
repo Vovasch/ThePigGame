@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ThePigGame/Farm/Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
+#include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSourceType.h"
 #include "ConsumeSpotComponent.generated.h"
 
+class APig;
 class AConsumeSource;
 class ATrough;
 

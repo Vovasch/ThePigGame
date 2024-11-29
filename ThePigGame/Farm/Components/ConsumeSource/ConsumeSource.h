@@ -5,6 +5,7 @@
 #include "ThePigGame/Utils/Property/Property.h"
 #include "ConsumeSource.generated.h"
 
+class UConsumeSpotsController;
 class APig;
 class AFarm;
 class UConsumeSourcePrototype;
@@ -35,13 +36,16 @@ class AConsumeSource : public AActor {
 
 	protected:
 	void BeginPlay() override;
+
+	private:
+	void InitOwner();
 	void InitProperties();
 	void InitConsumeSpots();
 
-	protected:
+	private:
 	void UpdateInfo();
 
-	protected:
+	private:
 	UPROPERTY(EditAnywhere)
 	UConsumeSourcePrototype* m_pPrototype = nullptr;
 
@@ -53,7 +57,6 @@ class AConsumeSource : public AActor {
 
 	TConsumeSourceFullness m_xFullness;
 
-	private:
 	// no need for UProperty, these are actor components.
 	TArray<UConsumeSpotComponent*> m_vConsumeSpots;
 

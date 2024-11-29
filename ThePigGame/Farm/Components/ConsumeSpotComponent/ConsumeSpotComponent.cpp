@@ -1,6 +1,7 @@
 #include "ConsumeSpotComponent.h"
 #include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Farm/Components/ConsumeSource/ConsumeSource.h"
+#include "ThePigGame/Farm/Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
 
 bool UConsumeSpotComponent::IsAvailable() const { 
 	return GetConsumeSourceOwner()->GetOwnerFarm()->GetConsumeSpotsController()->IsSpotAvailable(this);

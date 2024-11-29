@@ -27,7 +27,6 @@ UPigInitData::UPigInitData() {
 	AdultWalkingData.RunSpeed = 514.05f;
 	AdultWalkingData.SprintSpeed = 820.88f;
 
-	// todo check if changed values in engine's UI would be reverted if new EConsumeSourceTyped added
 	for(uint32 i = 0; i<uint32(EConsumeSourceType::Size); ++i) {
 		ConsumingData.Add(EConsumeSourceType(i), FConsumingData{});
 	}

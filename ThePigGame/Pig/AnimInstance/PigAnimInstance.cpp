@@ -18,12 +18,7 @@ void UPigAnimInstance::OnStateFinished(EPigStates pigState) {
 }
 
 EConsumeSourceType UPigAnimInstance::GetCurrentConsumeSpotType() {
-	// todo hide this functionality and error inside of Consuming Controller by create a GetOccupiedSpotTypeChecked there
-	auto spot = GetPropertyController()->GetConsumingController()->GetOccupiedSpot();
-	if(!spot.IsValid()) {
-		UE_LOG(PigAnimInstanceLog, Fatal, TEXT("Pig is not in eating state"));
-	}
-	return spot->GetSpotType();
+	return GetPropertyController()->GetConsumingController()->GetOccupiedSpotTypeChecked();
 }
 
 void UPigAnimInstance::Init(APig* pig) {

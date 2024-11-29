@@ -3,6 +3,7 @@
 #include "Components/TextRenderComponent.h"
 #include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Farm/Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
+#include "ThePigGame/Farm/Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(ConsumeSourceLog, Log, All)
 
@@ -18,19 +19,21 @@ AConsumeSource::AConsumeSource() {
 void AConsumeSource::BeginPlay() {
 	Super::BeginPlay();
 
-	// todo move into separate function "Init owner".
-	auto owner = GetParentActor();
-	if(!owner) {
-		UE_LOG(ConsumeSourceLog, Fatal, TEXT("AConsume source supposed to be created from a child actor component"))
-	}
-
-	SetOwner(owner);
+	InitOwner();
 
 	InitConsumeSpots();
 
 	InitProperties();
 
 	UpdateInfo();
+}
+
+void AConsumeSource::InitOwner() {
+	auto owner = GetParentActor();
+	if(!owner) {
+		UE_LOG(ConsumeSourceLog, Fatal, TEXT("AConsume source supposed to be created from a child actor component"))
+	}
+	SetOwner(owner);
 }
 
 void AConsumeSource::InitConsumeSpots() {

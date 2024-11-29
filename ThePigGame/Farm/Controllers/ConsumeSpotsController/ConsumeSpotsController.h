@@ -16,7 +16,6 @@ class UConsumeSpotsController : public UFarmControllerBase {
 	using OccupiedSpotsStorage = TStaticArray<TMap<UConsumeSpotComponent*, const APig*>, uint32(EConsumeSourceType::Size)>;
 
 	public:
-	// todo make friend in UConsumeSource. This should not be public for everyone
 	void AddConsumeSpot(UConsumeSpotComponent* consumeSpot);
 
 	public:
@@ -37,7 +36,7 @@ class UConsumeSpotsController : public UFarmControllerBase {
 
 	private:
 	// only checks if the spot is controlled by this controller
-	bool ValidateSpot(UConsumeSpotComponent* consumeSpot);
+	void ValidateSpot(const UConsumeSpotComponent* consumeSpot);
 	void ErrorOnInvalidSpot(const FString& explanation);
 
 	private:

@@ -3,6 +3,7 @@
 #include "ThePigGame/Pig/Movement/MovementControllerEvent.h"
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "ThePigGame/Farm/Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
+#include "ThePigGame/Farm/Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
 #include "ThePigGame/Pig/Movement/MovementController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/ConsumingController/ConsumingController.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskHelper/ConsumeConnector.h"

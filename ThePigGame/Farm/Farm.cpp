@@ -1,6 +1,5 @@
 #include "Farm.h"
-#include "Components/ConsumeSource/ConsumeSource.h"
-#include "Components/ConsumeSpotComponent/ConsumeSpotComponent.h"
+#include "Controllers/ConsumeSpotsController/ConsumeSpotsController.h"
 #include "Controllers/PigsController/PigsController.h"
 #include "Controllers/SleepingPigsController/SleepingPigsController.h"
 #include "Engine/World.h"
@@ -8,15 +7,8 @@
 AFarm::AFarm() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// todo make functions Create Components and Create Controllers
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default"));
-
-	m_pSleepingArea = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SleepringArea"));
-	m_pSleepingArea->SetupAttachment(RootComponent);
-
-	m_pPigsController = CreateDefaultSubobject<UPigsController>(TEXT("PigsController"));
-	m_pSleepingPigsController = CreateDefaultSubobject<USleepingPigsController>(TEXT("SleepringPigsController"));
-	m_pConsumeSpotsController = CreateDefaultSubobject<UConsumeSpotsController>(TEXT("ConsumeSpotsController"));
+	CreateComponents();
+	CreateControllers();
 }
 
 void AFarm::BeginPlay() {
@@ -25,6 +17,19 @@ void AFarm::BeginPlay() {
 	InitControllers();
 
 	m_pPigsController->BeginPlay();
+}
+
+void AFarm::CreateComponents() {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Default"));
+
+	m_pSleepingArea = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SleepringArea"));
+	m_pSleepingArea->SetupAttachment(RootComponent);
+}
+
+void AFarm::CreateControllers() {
+	m_pPigsController = CreateDefaultSubobject<UPigsController>(TEXT("PigsController"));
+	m_pSleepingPigsController = CreateDefaultSubobject<USleepingPigsController>(TEXT("SleepringPigsController"));
+	m_pConsumeSpotsController = CreateDefaultSubobject<UConsumeSpotsController>(TEXT("ConsumeSpotsController"));
 }
 
 void AFarm::InitControllers() {

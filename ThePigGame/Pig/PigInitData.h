@@ -35,9 +35,16 @@ USTRUCT()
 struct FPigRotationData {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
 	float WalkDeltaX = 0.f;
+
+	UPROPERTY(EditAnywhere)
 	float WalkDeltaY = 0.f;
+
+	UPROPERTY(EditAnywhere)
 	float TimeTaken = 0.f;
+
+	UPROPERTY(EditAnywhere)
 	float DegreesInTime = 0.f;
 };
 
@@ -143,7 +150,6 @@ class UPigInitData : public UObject {
 	// Consuming
 	//
 
-	// todo check how TMap will work in engine's property window
 	UPROPERTY(EditAnywhere, meta = (EditFixedSize))
 	TMap<EConsumeSourceType, FConsumingData> ConsumingData;
 
@@ -165,8 +171,6 @@ class UPigInitData : public UObject {
 	
 	UPROPERTY(EditAnyWhere)
 	float MaxSizesAtAgeYears = 8.f;
-
-	
 
 	//
 	// Energy
@@ -216,12 +220,10 @@ class UPigInitData : public UObject {
 	// Rotation
 	//
 
-	//
-	// Consuming
-	//
-
-	// todo make it editable from engine's property window.
+	UPROPERTY(EditAnywhere)
 	FPigRotationData ChildRotationData;
+
+	UPROPERTY(EditAnywhere)
 	FPigRotationData AdultRotationData;
 
 

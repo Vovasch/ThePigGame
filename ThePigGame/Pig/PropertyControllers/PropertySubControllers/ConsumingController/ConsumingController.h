@@ -30,7 +30,7 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	void OnNoConsumeSpotAvailable(EConsumeSourceType sourceType);
 
 	public:
-	TWeakObjectPtr<const UConsumeSpotComponent> GetOccupiedSpot();
+	EConsumeSourceType GetOccupiedSpotTypeChecked();
 
 	private:
 	void AddGoToConsumeSpotTask(EConsumeSourceType consumeType);

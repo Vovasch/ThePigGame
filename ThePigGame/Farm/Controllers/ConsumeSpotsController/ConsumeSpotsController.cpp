@@ -9,7 +9,7 @@ void UConsumeSpotsController::AddConsumeSpot(UConsumeSpotComponent* consumeSpot)
 }
 
 bool UConsumeSpotsController::TryOccupySpot(UConsumeSpotComponent* consumeSpot, const APig* pig) {
-	if(!ValidateSpot(consumeSpot)) return false;
+	ValidateSpot(consumeSpot);
 
 	if(!consumeSpot->IsAvailable()) return false;
 
@@ -22,7 +22,7 @@ bool UConsumeSpotsController::TryOccupySpot(UConsumeSpotComponent* consumeSpot, 
 }
 
 bool UConsumeSpotsController::TryFreeSpot(UConsumeSpotComponent* consumeSpot, const APig* pig) {
-	if(!ValidateSpot(consumeSpot)) return false;
+	ValidateSpot(consumeSpot);
 
 	if(!IsOccupiedBy(consumeSpot, pig)) return false;
 
@@ -35,12 +35,12 @@ bool UConsumeSpotsController::TryFreeSpot(UConsumeSpotComponent* consumeSpot, co
 }
 
 bool UConsumeSpotsController::IsSpotAvailable(const UConsumeSpotComponent* consumeSpot) {
-	//todo add validate spot
+	ValidateSpot(consumeSpot);
 	return FreeSpots[uint32(consumeSpot->GetSpotType())].Contains(consumeSpot);
 }
 
 bool UConsumeSpotsController::IsOccupiedBy(const UConsumeSpotComponent* consumeSpot, const APig* consumer) {
-	// todo add validate spot
+	ValidateSpot(consumeSpot);
 	if(!consumer) return false;
 	if(IsSpotAvailable(consumeSpot)) return false;
 
@@ -51,34 +51,38 @@ bool UConsumeSpotsController::IsOccupiedBy(const UConsumeSpotComponent* consumeS
 }
 
 UConsumeSpotComponent* UConsumeSpotsController::GetOccupiedBy(const APig* consumer, EConsumeSourceType type) {
-	// TODO check if pis is from the same farm
 	return *OccupiedSpots[uint32(type)].FindKey(consumer);
 }
 
 UConsumeSpotComponent* UConsumeSpotsController::GetNearestFreeSpot(FVector location, EConsumeSourceType type) {
-	// todo implement
-
 	auto& freeSpots = FreeSpots[uint32(type)];
 
 	if(freeSpots.IsEmpty()) {
 		return nullptr;	
 	}
 
-	return freeSpots[0];
+	auto min = FVector::DistSquared(location, freeSpots[0]->GetComponentLocation());
+	auto result = freeSpots[0];
+
+	for(auto spot : freeSpots) {
+		auto dist = FVector::DistSquared(location, spot->GetComponentLocation());
+		if(dist<min) {
+			min = dist;
+			result = spot;
+		}
+	}
+
+	return result;
 }
 
-bool UConsumeSpotsController::ValidateSpot(UConsumeSpotComponent* consumeSpot) {
+void UConsumeSpotsController::ValidateSpot(const UConsumeSpotComponent* consumeSpot) {
 	if(!consumeSpot) {
 		ErrorOnInvalidSpot(TEXT("Consume spot is nullptr"));
-		return false;
 	}
 
 	if(consumeSpot->GetConsumeSourceOwner()->GetOwnerFarm()!=GetFarm()) {
 		ErrorOnInvalidSpot(TEXT("Consume spot from a different farm"));
-		return false;
 	}
-
-	return true;
 }
 
 void UConsumeSpotsController::ErrorOnInvalidSpot(const FString& explanation) {

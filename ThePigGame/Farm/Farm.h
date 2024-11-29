@@ -27,6 +27,10 @@ class THEPIGGAME_API AFarm : public AActor {
 	void BeginPlay() override;
 
 	private:
+	void CreateComponents();
+	void CreateControllers();
+
+	private:
 	void InitControllers();
 
 	protected:
