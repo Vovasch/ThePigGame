@@ -14,7 +14,7 @@ void USleepingPigsController::RegisterPig(APig* pig) {
 		OnPigEndedSleeping(pig);
 	});
 
-	// todo implement pig live phase controller
+	// todo LifePhaseController implement pig live phase controller
 	/*pig->Subscribe(this, EPigEvent::RemovedFromFarm, [this, pig]() {
 		m_pSleepingArea->OnPigRemovedFromFarm(pig);
 	});*/

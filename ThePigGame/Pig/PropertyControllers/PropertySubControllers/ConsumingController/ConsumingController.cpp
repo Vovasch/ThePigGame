@@ -7,6 +7,7 @@
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskHelper/ConsumeConnector.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(ConsumingControllerLog, Log, All)
 
@@ -23,10 +24,6 @@ UConsumingController::UConsumingController() {
 void UConsumingController::Tick(float delta) {
 	UPropertySubControllerBase::Tick(delta);
 	ProcessTick();
-}
-
-void UConsumingController::OnNoConsumeSpotAvailable(EConsumeSourceType sourceType) {
-	TryConsumeLater(sourceType);
 }
 
 EConsumeSourceType UConsumingController::GetOccupiedSpotTypeChecked() {
@@ -62,9 +59,8 @@ void UConsumingController::StartConsuming(TWeakObjectPtr<UConsumeSpotComponent> 
 }
 
 void UConsumingController::ProcessTick() {
-	
 	/// We loose bellyful even when we eat. that is ok 
-	/// todo but in init data for pig we should ensure that pig would be eating faster than loosing bellyful
+	/// todo WorldCharacteristic but in init data for pig we should ensure that pig would be eating faster than loosing bellyful
 
 	auto& consumingData = GetInitData()->ConsumingData;
 
@@ -73,7 +69,10 @@ void UConsumingController::ProcessTick() {
 		property.GetCurrentModifycationType().Add(-consumingData[sourceType].LoseDeltaPerTick);
 
 		auto& currentConsumingData = consumingData[sourceType];
-		if(property.GetCurrent() <= currentConsumingData.AmountToWantToConsume && !m_vWaitingForSpot[uint32(sourceType)]) {
+		if(property.GetCurrent() <= currentConsumingData.AmountToWantToConsume
+			&& !m_vWaitingForSpot[uint32(sourceType)]
+			&& (!m_pOccupiedSpot.IsValid() || m_pOccupiedSpot->GetSpotType()!=sourceType)) 
+		{
 			AddGoToConsumeSpotTask(sourceType);
 		}
 	}
@@ -112,7 +111,7 @@ void UConsumingController::ProcessConsumingState() {
 	}
 }
 
-Consume& UConsumingController::GetPropertyByConsumeType(EConsumeSourceType sourceType) {
+ConsumeProperty& UConsumingController::GetPropertyByConsumeType(EConsumeSourceType sourceType) {
 	return m_mConsumeProperties[sourceType];
 }
 
@@ -157,7 +156,6 @@ void UConsumingController::TryConsumeLater(EConsumeSourceType sourceType) {
 		AddGoToConsumeSpotTask(sourceType);
 	}};
 
-	// todo check if timer works correctly.
 	GetPig()->GetWorldTimerManager().SetTimer(h,
 		MoveTemp(onRetryToConsumeLater),
 		1.f,
@@ -166,16 +164,24 @@ void UConsumingController::TryConsumeLater(EConsumeSourceType sourceType) {
 }
 
 void UConsumingController::AddGoToConsumeSpotTask(EConsumeSourceType consumeType) {
-	GetTaskDispatcher()->AddTask(ConsumeConnector::TaskBySource(consumeType));
-	/// todo I add task. and don't subsribe to succes
-	/// because taks is calling StartConsuming and OnNoSpotAvailable
-	/// this is bad because task can fail when pig for instance can't reach to spot
+	auto taskDispatcher = GetTaskDispatcher();
+	auto taskType = ConsumeConnector::TaskBySource(consumeType);
+	auto goToConsumeTask = taskDispatcher->GetTaskByType(taskType);
+
+	// No subscribe to success here
+	// because StartConsuming function will be explicitly called from inside the task
+
+	goToConsumeTask->Subscribe(this, ETaskEvent::Fail, [this, consumeType]() {
+		TryConsumeLater(consumeType);
+	});
+
+	GetTaskDispatcher()->AddTask(taskType);
 }
 
-const Consume* UConsumingController::GetBellyful() {
+const ConsumeProperty* UConsumingController::GetBellyful() {
 	return &GetPropertyByConsumeType(EConsumeSourceType::Eating);
 }
 
-const Consume* UConsumingController::GetThirst() {
+const ConsumeProperty* UConsumingController::GetHydrated() {
 	return &GetPropertyByConsumeType(EConsumeSourceType::Drinking);
 }

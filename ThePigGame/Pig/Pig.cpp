@@ -77,7 +77,7 @@ void APig::FillPigInfo() {
 	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Bellyful>()->GetCurrent());
 
 	str += "\n Thirst: ";
-	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Thirst>()->GetCurrent());
+	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Hydrated>()->GetCurrent());
 
 	// todo move to new component "pig info component"
 	/*auto currentAge = m_xAge.GetCurrent();

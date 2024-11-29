@@ -8,4 +8,6 @@ class UPigSleepingState : public TStateBase<EPigStates> {
 	public:
 	UPigSleepingState(TArray<EPigStates>&& transitions);
 
+	public:
+	EPigStates StateType() const override;
 };

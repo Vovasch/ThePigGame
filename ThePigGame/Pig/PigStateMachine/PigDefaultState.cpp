@@ -6,9 +6,7 @@
 
 using ParentTaskType = TStateBase<EPigStates>;
 
-UPigDefaultState::UPigDefaultState(TArray<EPigStates>&& transitions) : TStateBase<EPigStates>(std::move(transitions)) {
-	SetStateType(EPigStates::Default);
-}
+UPigDefaultState::UPigDefaultState(TArray<EPigStates>&& transitions) : TStateBase<EPigStates>(std::move(transitions)) {}
 
 void UPigDefaultState::Init(APig* pig) {
 	ParentTaskType::Init(pig);
@@ -21,4 +19,8 @@ void UPigDefaultState::Init(APig* pig) {
 void UPigDefaultState::Start() {
 	ParentTaskType::Start();
 	GetTaskDispatcher()->AddTask(ETaskType::GoToRandomLocation);
+}
+
+EPigStates UPigDefaultState::StateType() const {
+	return EPigStates::Default;
 }

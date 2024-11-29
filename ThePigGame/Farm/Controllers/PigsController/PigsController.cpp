@@ -15,7 +15,6 @@ void UPigsController::SpawnTestPigs() {
 	// todo remake text path to asset storage like in cyber bug
 	auto uclass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
 
-	// todo make normal Z coord
 	origin.Z = 88.f;
 	for(int i = 0; i < 1; i++) {
 		auto pig = GetWorld()->SpawnActor<APig>(uclass, origin, FRotator::ZeroRotator);

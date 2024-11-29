@@ -4,7 +4,7 @@
 #include "../EventHandler/TEventHandler.h"
 #include "../PigDataUser/IPigDataUser.h"
 
-// todo there is not need for template. better remake it to be UObject derived class. and then remake creation of states in UStateMachine
+// todo SaveSystemTask there is not need for template. better remake it to be UObject derived class. and then remake creation of states in UStateMachine
 template<typename EnumType>
 class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser {
 	public:
@@ -16,7 +16,7 @@ class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser 
 	virtual ~TStateBase()=default;
 
 	public:
-	EnumType StateType() const { return m_xStateType; }
+	virtual EnumType StateType() const=0;
 
 	public:
 	bool CanTransitTo(EnumType enumVal) {
@@ -36,15 +36,6 @@ class TStateBase : public TEventHandler<EStateEvent>, public ICachedPigDataUser 
 		OnEvent(EStateEvent::End);
 	}
 
-	protected:
-	// todo remove this stupid method and make pure virtual getter
-	void SetStateType(EnumType enumVal) {
-		m_xStateType = enumVal;
-	}
-
-	protected:
-	EnumType m_xStateType;
-
-	protected:
+	private:
 	TArray<EnumType> m_vTransitions;
 };

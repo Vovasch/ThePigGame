@@ -11,8 +11,7 @@ enum class EPigPropertyType : uint8 {
 	Age,
 	IsAdult,
 	Bellyful,
-	// todo rename into hydrated
-	Thirst,
+	Hydrated,
 	Energy,
 	MaxWeight,
 	CriticalWeight,

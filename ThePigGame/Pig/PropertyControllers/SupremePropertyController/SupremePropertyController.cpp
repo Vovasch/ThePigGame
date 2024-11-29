@@ -18,7 +18,7 @@ USupremePropertyController::USupremePropertyController() {
 	m_vProperties[uint32(EPigPropertyType::Age)] = m_pAgeController->GetAge();
 	m_vProperties[uint32(EPigPropertyType::IsAdult)] = m_pAgeController->GetIsAdult();
 	m_vProperties[uint32(EPigPropertyType::Bellyful)] = m_pConsumingController->GetBellyful();
-	m_vProperties[uint32(EPigPropertyType::Thirst)] = m_pConsumingController->GetThirst();
+	m_vProperties[uint32(EPigPropertyType::Hydrated)] = m_pConsumingController->GetHydrated();
 	m_vProperties[uint32(EPigPropertyType::Energy)] = m_pSleepingController->GetEnergy();
 	m_vProperties[uint32(EPigPropertyType::MaxWeight)] = m_pWeightController->GetMaxWeight();
 	m_vProperties[uint32(EPigPropertyType::CriticalWeight)] = m_pWeightController->GetCriticalWeight();

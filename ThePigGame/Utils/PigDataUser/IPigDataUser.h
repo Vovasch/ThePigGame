@@ -2,9 +2,11 @@
 
 #include "../../Pig/Pig.h"
 
-// TODO: make friend in pig and delete getters in pig
-class INoCachePigDataUser {	
+class INoCachePigDataUser {
+
 	public:
+	virtual ~INoCachePigDataUser()=default;
+
 	virtual APig* GetPig()=0;
 
 	virtual AFarm* GetFarm() {
@@ -46,7 +48,6 @@ class ICachedPigDataUser : public INoCachePigDataUser {
 		m_pPig = pig;
 	}
 
-	public:
 	virtual APig* GetPig() override {
 		return m_pPig;
 	}

@@ -23,7 +23,7 @@ class UConsumeSpotsController : public UFarmControllerBase {
 	bool TryOccupySpot(UConsumeSpotComponent* consumeSpot, const APig* pig);
 
 	// true - successfully freed spot; false - it has already been freed.
-	// todo don't forget to free spot after pig is removed from farm
+	// todo LifePhaseController don't forget to free spot after pig is removed from farm
 	bool TryFreeSpot(UConsumeSpotComponent* consumeSpot, const APig* pig);
 
 	public:

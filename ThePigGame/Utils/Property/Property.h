@@ -203,7 +203,7 @@ class TCoefficientalProperty : public TCoefficientalPropertyBase<MinMaxType, Tic
 
 };
 
-// тут зробити, щоб сщуфіцієнт перераховувася кожен тік
+// todo SaveSystemTask тут зробити, щоб сщуфіцієнт перераховувася кожен тік
 template<typename MinMaxType, typename TickingType, typename CurrentModyficationType>
 class TDynamicCoefficientalProperty : public TCoefficientalProperty<MinMaxType, TickingType, CurrentModyficationType> {
 	private:
@@ -357,7 +357,7 @@ class TInstantTicking : public ITicking {
 	TArray<TTickingFunction> m_vSubs;
 };
 
-// todo remove because may be unused 
+// todo SaveSystemTask remove because may be unused 
 class TEventualTicking : public TInstantTicking {
 	public:
 	virtual void Init(IPropertyTickProvider* tickProvider) override;
@@ -367,7 +367,7 @@ class TEventualTicking : public TInstantTicking {
 	void StopTicking();
 };
 
-// todo remove because may be unused 
+// todo SaveSystemTask remove because may be unused 
 class TConditionalTicking : public TInstantTicking {
 	
 	using TCondition = TFunction<bool()>;

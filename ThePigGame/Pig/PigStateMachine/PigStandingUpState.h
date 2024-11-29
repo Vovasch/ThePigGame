@@ -9,4 +9,7 @@ class UPigStandingUpState : public TStateBase<EPigStates> {
 	public:
 	UPigStandingUpState(TArray<EPigStates>&& transitions);
 
+	public:
+	EPigStates StateType() const override;
+
 };

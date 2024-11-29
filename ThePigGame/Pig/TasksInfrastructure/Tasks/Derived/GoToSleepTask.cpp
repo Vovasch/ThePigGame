@@ -89,7 +89,7 @@ void UGoToSleepTask::FindPlaceForSleeping() {
 	});
 
 	movementController->Subscribe(this, EMovementControllerEvent::MovementFailed, [this]() {
-		// TODO: handle failed to move 
+		// TODO: ImproveSleepingBehaviour handle failed to move 
 		//OnFailedToReachSleepingPlace();
 	});
 
@@ -122,7 +122,7 @@ void UGoToSleepTask::OnFailedToReachSleepingPlace() {
 		Complete();
 	} else {
 
-		// TODO: here we check if pig can't get onto sleeping area because of other pigs
+		// TODO: ImproveSleepingBehaviour here we check if pig can't get onto sleeping area because of other pigs
 		// if so this pig should make load sound. then other pigs will change their positions of sleeping
 		// to let this pig get onto sleeping area.
 		FindPlaceForSleeping();

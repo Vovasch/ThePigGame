@@ -15,4 +15,7 @@ class UPigDefaultState : public TStateBase<EPigStates> {
 	public:
 	virtual void Start() override;
 
+	public:
+	EPigStates StateType() const override;
+
 };

@@ -8,4 +8,6 @@ class UPigLayingDownState : public TStateBase<EPigStates> {
 	public:
 	UPigLayingDownState(TArray<EPigStates>&& transitions);
 
+	public:
+	EPigStates StateType() const override;
 };

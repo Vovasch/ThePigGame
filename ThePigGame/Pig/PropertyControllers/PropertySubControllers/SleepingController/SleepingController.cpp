@@ -43,7 +43,7 @@ void USleepingController::GoToSleep() {
 		GetStateMachine()->TryChangeState(EPigStates::LayingDown);
 	});
 
-	// todo: subscribe on failed, but at first implement it in task
+	// todo: ImproveSleepingBehaviour subscribe on failed, but at first implement it in task
 
 	GetTaskDispatcher()->AddTask(ETaskType::GoToSleep);
 }
@@ -57,10 +57,10 @@ void USleepingController::CheckEnergyLevel() {
 	auto energyLevel = m_xEnergy.GetCurrent();
 	
 	if(energyLevel <= GetInitData()->EnergyLevelToWantToSleepLevel) {
-		// TODO: integrate into sleeping system
+		// TODO: WorldCharacteristic integrate into sleeping system
 		//AddTask(ETaskType::GoToSleep);
 	} else if(energyLevel >= GetInitData()->EnergyLevelSleepedEnought) {
-		// TODO: integrate into sleeping system
+		// TODO: WorldCharacteristic integrate into sleeping system
 		//m_pStateMachine->TryChangeState(EPigStates::StandingUp);
 	}
 }

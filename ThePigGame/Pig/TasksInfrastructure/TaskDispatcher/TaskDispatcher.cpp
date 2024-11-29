@@ -33,18 +33,15 @@ void UTaskDispatcher::Init(APig* pig) {
 }
 
 void UTaskDispatcher::OnTaskStarted(ETaskType taskType) {
-	// todo this seems to be unused
 	OnEvent(ETaskDispatcherEvent::TaskStarted, taskType);
 }
 
-// todo this should not be public make such method in taskbase and make it friend here
 void UTaskDispatcher::OnEndTask(ETaskType taskType) {
 	auto currentTask = GetCurrentInProgressTask();
 	if(!currentTask || currentTask->GetTaskType()!=taskType) return;
 
 	m_xTaskQue.Pop();
 	m_vTaskState[uint32(taskType)] = ETaskState::None;
-	// todo this seems to be unused
 	OnEvent(ETaskDispatcherEvent::TaskFinished, currentTask->GetTaskType());
 	
 	TryStartNewTask();

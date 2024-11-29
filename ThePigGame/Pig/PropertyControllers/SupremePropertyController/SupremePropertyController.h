@@ -44,8 +44,8 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 		
 		if constexpr(type == EPigPropertyType::Age) return dynamic_cast<const Age*>(m_vProperties[uint32(type)]);
 		else if constexpr(type == EPigPropertyType::IsAdult) return dynamic_cast<const TBoolProperty*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Bellyful) return dynamic_cast<const Consume*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Thirst) return dynamic_cast<const Consume*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Bellyful) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(type)]);
+		else if constexpr(type == EPigPropertyType::Hydrated) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(type)]);
 		else if constexpr(type == EPigPropertyType::Energy) return dynamic_cast<const Energy*>(m_vProperties[uint32(type)]);
 		else if constexpr(type == EPigPropertyType::MaxWeight) return dynamic_cast<const MaxWeight*>(m_vProperties[uint32(type)]);
 		else if constexpr(type == EPigPropertyType::CriticalWeight) return dynamic_cast<const CriticalWeight*>(m_vProperties[uint32(type)]);

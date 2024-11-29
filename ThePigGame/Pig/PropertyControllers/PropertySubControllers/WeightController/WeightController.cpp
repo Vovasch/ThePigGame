@@ -20,7 +20,7 @@ const Weight* UWeightController::GetWeight() {
 void UWeightController::Tick(float delta) {
 	Super::Tick(delta);
 
-	// TODO: won't ever be true because of clamp in property
+	// TODO: WorldCharacteristic won't ever be true because of clamp in property
 	if(m_xWeight.GetCurrent() <= m_xCriticalWeight.GetCurrent())
 	{
 		// confisacate pig
@@ -45,7 +45,7 @@ void UWeightController::CheckBellyful() {
 }
 
 void UWeightController::InitServiceProperties() {
-	m_fWeightDeltaPerTick = (GetInitData()->CriticalWeightAtMaxAge - GetInitData()->CriticalWeightAtMinAge) / GetPropertyController()->GetAgeController()->GetMaxSizesAtSeconds(); // TODO: verify
+	m_fWeightDeltaPerTick = (GetInitData()->CriticalWeightAtMaxAge - GetInitData()->CriticalWeightAtMinAge) / GetPropertyController()->GetAgeController()->GetMaxSizesAtSeconds(); // TODO: WorldCharacteristic verify
 	m_fWeightDeltaPerTick *= 1.5f;
 
 	m_fWeightDeltaPerTick = 0.5;

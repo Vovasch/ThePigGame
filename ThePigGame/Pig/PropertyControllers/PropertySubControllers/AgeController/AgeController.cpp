@@ -40,7 +40,7 @@ void UAgeController::Tick(float delta) {
 
 	if(m_xAge.GetCurrent() >= m_fMaxAgeAtSeconds)
 	{
-		// todo won't fire because of clamp in property
+		// todo SaveSystemTask won't fire because of clamp in property
 		OnEvent(EAgeControllerEvent::BecomeOld);
 		// take pig out of bussiness into hospice
 		//OnEvent(EPigEvent::RemovedFromFarm);

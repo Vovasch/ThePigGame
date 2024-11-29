@@ -35,7 +35,7 @@ void UGoToConsumeSpotTask::TryGoToSpot() {
 	m_pTargetConsumeSpot = GetFarm()->GetConsumeSpotsController()->GetNearestFreeSpot(GetPig()->GetActorLocation(), consumeSourceType);
 
 	if(!m_pTargetConsumeSpot.IsValid()) {
-		OnNoSpotAvailable();
+		Fail();
 		return;
 	}
 
@@ -45,15 +45,13 @@ void UGoToConsumeSpotTask::TryGoToSpot() {
 	});
 
 	movementController->Subscribe(this, EMovementControllerEvent::MovementFailed, [this]() {
-		// TODO: handle failed to move
-		//this->TryGoToSpot();
+		Fail();
 	});
 
 	movementController->MoveTo(m_pTargetConsumeSpot->GetComponentLocation());
 }
 
 void UGoToConsumeSpotTask::OnMovementCompleted() {
-	//  todo maybe check here and in other places if still in progress. And if not then throw an error
 	if(m_pTargetConsumeSpot.IsValid() && m_pTargetConsumeSpot->IsAvailable()) {
 		GetPig()->GetPropertyController()->GetConsumingController()->StartConsuming(m_pTargetConsumeSpot);
 		this->Complete();
@@ -62,15 +60,9 @@ void UGoToConsumeSpotTask::OnMovementCompleted() {
 	}
 }
 
-void UGoToConsumeSpotTask::OnNoSpotAvailable() {
-	GetPropertyController()->GetConsumingController()->OnNoConsumeSpotAvailable(GetSourceType());
-	Fail();
-}
-
 void UGoToConsumeSpotTask::UnsubscribeAll() {
 	GetMovementController()->Unsubscribe(this);
 }
-
 
 EConsumeSourceType UGoToConsumeSpotTask::GetSourceType() {
 	return ConsumeConnector::SourceByTask(GetTaskType());

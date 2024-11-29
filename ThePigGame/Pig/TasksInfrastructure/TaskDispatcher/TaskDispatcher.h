@@ -33,7 +33,6 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 	void Tick(float delta);
 
 	public:
-	// todo make friend in UTaskBase. This should not be public
 	void OnEndTask(ETaskType taskType);
 
 	const UTaskBase* GetTaskByType(ETaskType type);

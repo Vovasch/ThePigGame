@@ -31,9 +31,6 @@ class THEPIGGAME_API UGoToConsumeSpotTask : public UTaskBase {
 	void OnMovementCompleted();
 
 	private:
-	void OnNoSpotAvailable();
-
-	private:
 	void UnsubscribeAll();
 
 	private:

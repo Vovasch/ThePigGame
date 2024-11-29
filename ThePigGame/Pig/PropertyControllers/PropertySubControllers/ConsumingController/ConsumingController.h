@@ -19,15 +19,14 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	virtual void Tick(float delta) override;
 
 	public:
-	const Consume* GetBellyful();
-	const Consume* GetThirst();
+	const ConsumeProperty* GetBellyful();
+	const ConsumeProperty* GetHydrated();
 
 	public:
 	virtual void InitProperties() override;
 
 	public:
 	void StartConsuming(TWeakObjectPtr<UConsumeSpotComponent> consumeSpot);
-	void OnNoConsumeSpotAvailable(EConsumeSourceType sourceType);
 
 	public:
 	EConsumeSourceType GetOccupiedSpotTypeChecked();
@@ -44,10 +43,10 @@ class THEPIGGAME_API UConsumingController : public UPropertySubControllerBase {
 	void ProcessConsumingState();
 
 	private:
-	Consume& GetPropertyByConsumeType(EConsumeSourceType sourceType);
+	ConsumeProperty& GetPropertyByConsumeType(EConsumeSourceType sourceType);
 
 	private:
-	TMap<EConsumeSourceType, Consume> m_mConsumeProperties;
+	TMap<EConsumeSourceType, ConsumeProperty> m_mConsumeProperties;
 
 	private:
 	// if !IsExplicitlyNull => consuming is in progress
