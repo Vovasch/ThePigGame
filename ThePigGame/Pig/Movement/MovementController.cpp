@@ -46,7 +46,7 @@ void UMovementController::Init(APig* pig) {
 	m_pRotationController->Init(pig);
 	m_pRotationController->SetWalkingController(m_pWalkingController);
 
-	auto ageController = GetPropertyController()->GetAgeController();
+	auto ageController = GetPropertyController()->GetSubController<ESubControllerType::Age>();
 
 	if(ageController->GetIsAdult()) {
 		InitAdultVelocityData();

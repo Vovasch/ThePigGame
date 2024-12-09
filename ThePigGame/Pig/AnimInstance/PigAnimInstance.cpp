@@ -18,7 +18,7 @@ void UPigAnimInstance::OnStateFinished(EPigStates pigState) {
 }
 
 EConsumeSourceType UPigAnimInstance::GetCurrentConsumeSpotType() {
-	return GetPropertyController()->GetConsumingController()->GetOccupiedSpotTypeChecked();
+	return GetPropertyController()->GetSubController<ESubControllerType::Consuming>()->GetOccupiedSpotTypeChecked();
 }
 
 void UPigAnimInstance::Init(APig* pig) {

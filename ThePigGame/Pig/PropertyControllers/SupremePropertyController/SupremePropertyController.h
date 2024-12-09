@@ -3,9 +3,16 @@
 #include "CoreMinimal.h"
 #include "ThePigGame/Pig/PigProperties/PigProperties.h"
 #include "ThePigGame/Pig/PigProperties/PigPropertyType.h"
+#include "ThePigGame/Pig/PropertyControllers/SubControllerType.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/AgeController/AgeController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/ConsumingController/ConsumingController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/MiscController/MiscController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/SleepingController/SleepingController.h"
+#include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "SupremePropertyController.generated.h"
 
+class UPropertySubControllerBase;
 class UConsumingController;
 class IProperty;
 class UMiscController;
@@ -17,6 +24,8 @@ class USleepingController;
 ///	1) GetProperty 2) Constructor
 /// Well, in both cases are supposed to be warned by fatal or compile error, but anyways
 
+DECLARE_LOG_CATEGORY_EXTERN(SupremePropertyControllerLog, Log, All)
+
 UCLASS()
 class THEPIGGAME_API USupremePropertyController : public UObject, public ICachedPigDataUser
 {
@@ -27,50 +36,54 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 
 	public:
 	virtual void Init(APig* pig) override;
-
-	public:
-	UAgeController* GetAgeController();
-	UConsumingController* GetConsumingController();
-	USleepingController* GetSleepingController();
-	UWeightController* GetWeightController();
-	UMiscController* GetMiscController();
-
 	void Tick(float delta);
 
 	public:
-	// If you have errors using this function, you might need to add property return for some type
-	template<EPigPropertyType type>
+	// If you have errors using this function, you might need to add property return for some Type
+	template<EPigPropertyType Type>
 	const auto* GetProperty() {
 		
-		if constexpr(type == EPigPropertyType::Age) return dynamic_cast<const Age*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::IsAdult) return dynamic_cast<const TBoolProperty*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Bellyful) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Hydrated) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Energy) return dynamic_cast<const Energy*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::MaxWeight) return dynamic_cast<const MaxWeight*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::CriticalWeight) return dynamic_cast<const CriticalWeight*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Weight) return dynamic_cast<const Weight*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Scale) return dynamic_cast<const Scale*>(m_vProperties[uint32(type)]);
-		else if constexpr(type == EPigPropertyType::Morph) return dynamic_cast<const Morph*>(m_vProperties[uint32(type)]);
-		else {}// no return => compile error. Add return for the property type
+		if constexpr(Type == EPigPropertyType::Age) return dynamic_cast<const Age*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::IsAdult) return dynamic_cast<const TBoolProperty*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Bellyful) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Hydrated) return dynamic_cast<const ConsumeProperty*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Energy) return dynamic_cast<const Energy*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::MaxWeight) return dynamic_cast<const MaxWeight*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::CriticalWeight) return dynamic_cast<const CriticalWeight*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Weight) return dynamic_cast<const Weight*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Scale) return dynamic_cast<const Scale*>(m_vProperties[uint32(Type)]);
+		else if constexpr(Type == EPigPropertyType::Morph) return dynamic_cast<const Morph*>(m_vProperties[uint32(Type)]);
+		else {} // no return => compile error. Add return for the property Type
 	}
 
-	protected:
-	UPROPERTY()
-	UAgeController* m_pAgeController = nullptr;
+	template<ESubControllerType Type>
+	auto* GetSubController() {
+		
+		if constexpr(Type == ESubControllerType::Age) return Cast<UAgeController>(m_vSubControllers[uint32(Type)].Get());
+		else if constexpr(Type == ESubControllerType::Consuming) return Cast<UConsumingController>(m_vSubControllers[uint32(Type)].Get());
+		else if constexpr(Type == ESubControllerType::Sleeping) return Cast<USleepingController>(m_vSubControllers[uint32(Type)].Get());
+		else if constexpr(Type == ESubControllerType::Weight) return Cast<UWeightController>(m_vSubControllers[uint32(Type)].Get());
+		else if constexpr(Type == ESubControllerType::Misc) return Cast<UMiscController>(m_vSubControllers[uint32(Type)].Get());
+		else {} // no return => compile error. Add return for the sub controller Type
+	}
 
-	UPROPERTY()
-	UConsumingController* m_pConsumingController = nullptr;
+	private:
+	template<typename EnumType, typename Element, uint32 NumElements>
+	void VerifyContainerElements(const TStaticArray<Element, NumElements>& container) {
+		auto foundNullptr = false;
+		for(uint32 i = 0; i < uint32(EnumType::Size); ++i) {
+			if(!container[i]) {
+				foundNullptr = true;
+				UE_LOG(SupremePropertyControllerLog, Error, TEXT("%s is a nullptr"), *UEnum::GetDisplayValueAsText(EnumType(i)).ToString());
+			}
+		}
 
-	UPROPERTY()
-	USleepingController* m_pSleepingController = nullptr;
+		if(foundNullptr) {
+			UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("One or more container elements are nullptr"));
+		}
+	}
 
-	UPROPERTY()
-	UWeightController* m_pWeightController = nullptr;
-
-	UPROPERTY()
-	UMiscController* m_pMiscController = nullptr;
-
-	protected:
+	private:
+	TStaticArray<TStrongObjectPtr<UPropertySubControllerBase>, uint32(ESubControllerType::Size)> m_vSubControllers {InPlace, nullptr};
 	TStaticArray<const IProperty*, uint32(EPigPropertyType::Size)> m_vProperties {InPlace, nullptr};
 };

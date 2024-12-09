@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ThePigGame/Pig/PigProperties/PigProperties.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/PropertySubControllerBase.h"
 #include "SleepingController.generated.h"
 

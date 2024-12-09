@@ -1,7 +1,5 @@
 #include "PropertySubControllerBase.h"
-
 #include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
-
 
 void UPropertySubControllerBase::Init(USupremePropertyController* owner) {
 	m_pOwnerController = owner;
@@ -13,6 +11,10 @@ APig* UPropertySubControllerBase::GetPig() {
 
 void UPropertySubControllerBase::Tick(float delta) {
 	TickProviderTick(delta);
+}
+
+USupremePropertyController* UPropertySubControllerBase::GetSupremePropertyController() {
+	return m_pOwnerController.Get();
 }
 
 void UPropertySubControllerBase::InitProperties() {

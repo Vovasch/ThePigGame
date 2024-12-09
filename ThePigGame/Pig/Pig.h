@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Pig.generated.h"
 
+class UVisualInfoController;
 class UAnimInstanceController;
 class USupremePropertyController;
 class USkeletalMeshComponent;
@@ -25,16 +26,9 @@ class THEPIGGAME_API APig : public ACharacter {
 	public:
 	APig();
 
-	public:
-	virtual void BeginPlay() override;
-
-	public:	
 	virtual void Tick(float DeltaTime) override;
-	
-	public:
-	AFarm* GetOwnerFarm();
 
-	public:
+	AFarm* GetOwnerFarm();
 	const UPigInitData* GetInitData();
 	USupremePropertyController* GetPropertyController();
 	UPigStateMachine* GetPigStateMachine();
@@ -43,19 +37,21 @@ class THEPIGGAME_API APig : public ACharacter {
 	APigAIController* GetPigAIController();
 	UAnimInstanceController* GetAnimInstanceController();
 	UPigAnimInstance* GetPigAnimInstance();
+	UTextRenderComponent* GetPigInfoComponent();
 
 	protected:
+	virtual void BeginPlay() override;
+
+	private:
 	void CreateObjects();
 	void InitObjects();
 	void AfterInitObjects();
 
 	protected:
-	void FillPigInfo();
-
-	protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, NoClear)
 	UPigInitData* m_pInitData = nullptr;
 
+	private:
 	UPROPERTY()
 	USupremePropertyController* m_pPropertyController = nullptr;
 
@@ -71,7 +67,9 @@ class THEPIGGAME_API APig : public ACharacter {
 	UPROPERTY()
 	UAnimInstanceController* m_pAnimInstanceController = nullptr;
 
-	protected:
+	UPROPERTY()
+	UVisualInfoController* m_pVisualInfoController = nullptr;
+
 	UPROPERTY()
 	UTextRenderComponent* PigInfo = nullptr;
 };

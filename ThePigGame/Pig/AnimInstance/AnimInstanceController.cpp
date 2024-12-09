@@ -9,7 +9,7 @@
 void UAnimInstanceController::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
 
-	GetPropertyController()->GetAgeController()->Subscribe(this, EAgeControllerEvent::BecomeAdult, [this]() {
+	GetPropertyController()->GetSubController<ESubControllerType::Age>()->Subscribe(this, EAgeControllerEvent::BecomeAdult, [this]() {
 		ReinitAnimInstance();
 	});
 }

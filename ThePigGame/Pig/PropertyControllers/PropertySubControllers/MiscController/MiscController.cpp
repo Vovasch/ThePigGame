@@ -17,21 +17,21 @@ void UMiscController::InitProperties() {
 	m_xScale.Init(this);
 	m_xScale.GetMinMaxType().SetMinMax(GetInitData()->ChildMinScale, GetInitData()->ChildMaxScale);
 
-	auto ageProp = GetProperty<EPigPropertyType::Age>();
-	m_xScale.CalcCoeff(ageProp->GetCurrentPtr(), 0, m_pOwnerController->GetAgeController()->GetAgeWhenAdultSeconds());
+	auto ageProp = GetSupremePropertyController()->GetProperty<EPigPropertyType::Age>();
+	m_xScale.CalcCoeff(ageProp->GetCurrentPtr(), 0, GetSupremePropertyController()->GetSubController<ESubControllerType::Age>()->GetAgeWhenAdultSeconds());
 
 	m_xMorph.Init(this);
 	m_xMorph.GetMinMaxType().SetMinMax(GetInitData()->MorphTargetMinValue, GetInitData()->MorphTargetMaxValue);
-	m_xMorph.CalcCoeff(	GetProperty<EPigPropertyType::Weight>()->GetCurrentPtr(),
-								GetProperty<EPigPropertyType::CriticalWeight>()->GetCurrentPtr(), 
-								GetProperty<EPigPropertyType::MaxWeight>()->GetCurrentPtr());
+	m_xMorph.CalcCoeff(GetSupremePropertyController()->GetProperty<EPigPropertyType::Weight>()->GetCurrentPtr(),
+					   GetSupremePropertyController()->GetProperty<EPigPropertyType::CriticalWeight>()->GetCurrentPtr(),
+					   GetSupremePropertyController()->GetProperty<EPigPropertyType::MaxWeight>()->GetCurrentPtr());
 
-	m_pOwnerController->GetAgeController()->Subscribe(this, EAgeControllerEvent::BecomeAdult, [this]() {
+	GetSupremePropertyController()->GetSubController<ESubControllerType::Age>()->Subscribe(this, EAgeControllerEvent::BecomeAdult, [this]() {
 		m_xScale.GetMinMaxType().SetMinMax(GetInitData()->AdultMinScale, GetInitData()->AdultMaxScale);
 
-		auto ageProperty = m_pOwnerController->GetProperty<EPigPropertyType::Age>();
+		auto ageProperty = GetSupremePropertyController()->GetProperty<EPigPropertyType::Age>();
 
-		auto ageController = m_pOwnerController->GetAgeController();
+		auto ageController = GetSupremePropertyController()->GetSubController<ESubControllerType::Age>();
 		m_xScale.CalcCoeff(ageProperty->GetCurrentPtr(), ageController->GetAgeWhenAdultSeconds(), ageController->GetMaxSizesAtSeconds());
 	});
 }

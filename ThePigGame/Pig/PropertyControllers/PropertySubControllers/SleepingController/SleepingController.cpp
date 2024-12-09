@@ -2,6 +2,7 @@
 #include "ThePigGame/Levels/MainLevel/GameModeEvent.h"
 #include "ThePigGame/Levels/MainLevel/MainScreenGameMode.h"
 #include "ThePigGame/Pig/PigInitData.h"
+#include "ThePigGame/Pig/PigProperties/PigProperties.h"
 #include "ThePigGame/Pig/PigStateMachine/PigStateMachine.h"
 #include "ThePigGame/Pig/TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/TaskBase.h"

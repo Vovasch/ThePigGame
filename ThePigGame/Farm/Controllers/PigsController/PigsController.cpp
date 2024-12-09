@@ -1,6 +1,8 @@
 #include "PigsController.h"
 #include "ThePigGame/Farm/Farm.h"
 #include "ThePigGame/Farm/Controllers/SleepingPigsController/SleepingPigsController.h"
+#include "ThePigGame/Infrastructure/AssetStorage.h"
+#include "ThePigGame/Infrastructure/PG_GameInstance.h"
 #include "ThePigGame/Pig/Pig.h"
 
 void UPigsController::BeginPlay() {
@@ -12,8 +14,7 @@ void UPigsController::SpawnTestPigs() {
 	FVector boxExtent;
 	GetFarm()->GetActorBounds(false, origin, boxExtent);
 
-	// todo remake text path to asset storage like in cyber bug
-	auto uclass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Pig/BP_Pig.BP_Pig_C'"));
+	auto uclass = Cast<UPG_GameInstance>(GetWorld()->GetGameInstance())->GetAssetStorage()->PigBP;
 
 	origin.Z = 88.f;
 	for(int i = 0; i < 1; i++) {

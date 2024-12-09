@@ -1,18 +1,14 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Pig.h"
+﻿#include "Pig.h"
 #include "Components/TextRenderComponent.h"
 #include "PigAI/PigAIController.h"
 #include "../Farm/Farm.h"
 #include "PigStateMachine/PigStateMachine.h"
-#include "Kismet/GameplayStatics.h"
-#include "../Levels/MainLevel/GameMainPlayerController.h"
 #include "AnimInstance/AnimInstanceController.h"
 #include "AnimInstance/PigAnimInstance.h"
 #include "Movement/MovementController.h"
 #include "PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "TasksInfrastructure/TaskDispatcher/TaskDispatcher.h"
+#include "VisualInfoController/VisualInfoController.h"
 
 APig::APig() {
 
@@ -21,12 +17,12 @@ APig::APig() {
 	PigInfo = CreateDefaultSubobject<UTextRenderComponent, UTextRenderComponent>("PigInfo");
 	PigInfo->SetupAttachment(GetRootComponent());
 	PigInfo->bHiddenInGame = true;
+
+	CreateObjects();
 }
 
 void APig::BeginPlay() {
 	Super::BeginPlay();
-
-	CreateObjects();
 
 	InitObjects();
 
@@ -40,16 +36,16 @@ void APig::Tick(float DeltaTime) {
 	m_pStateMachine->Tick(DeltaTime);
 	m_pTaskDispatcher->Tick(DeltaTime);
 	m_pMovementController->Tick(DeltaTime);
-	
-	FillPigInfo();
+	m_pVisualInfoController->Tick(DeltaTime);
 }
 
 void APig::CreateObjects() {
-	m_pPropertyController = NewObject<USupremePropertyController>(this);
-	m_pStateMachine = NewObject<UPigStateMachine>(this);
-	m_pTaskDispatcher = NewObject<UTaskDispatcher>(this);
-	m_pMovementController = NewObject<UMovementController>(this);
-	m_pAnimInstanceController = NewObject<UAnimInstanceController>(this);
+	m_pPropertyController = CreateDefaultSubobject<USupremePropertyController>(TEXT("PropertyController"));
+	m_pStateMachine = CreateDefaultSubobject<UPigStateMachine>(TEXT("StateMachine"));
+	m_pTaskDispatcher = CreateDefaultSubobject<UTaskDispatcher>(TEXT("TaskDispatcher"));
+	m_pMovementController = CreateDefaultSubobject<UMovementController>(TEXT("MovementController"));
+	m_pAnimInstanceController = CreateDefaultSubobject<UAnimInstanceController>(TEXT("AnimInstanceController"));
+	m_pVisualInfoController = CreateDefaultSubobject<UVisualInfoController>(TEXT("VisualInfoController"));
 }
 
 void APig::InitObjects() {
@@ -58,6 +54,7 @@ void APig::InitObjects() {
 	m_pTaskDispatcher->Init(this);
 	m_pMovementController->Init(this);
 	m_pAnimInstanceController->Init(this);
+	m_pVisualInfoController->Init(this);
 
 	GetPigAnimInstance()->Init(this);
 }
@@ -68,48 +65,6 @@ void APig::AfterInitObjects() {
 
 AFarm* APig::GetOwnerFarm() {
 	return Cast<AFarm>(GetOwner());
-}
-
-void APig::FillPigInfo() {
-	FString str(UTF8_TO_TCHAR("Current age = "));
-
-	str += "\n Bellyful: ";
-	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Bellyful>()->GetCurrent());
-
-	str += "\n Thirst: ";
-	str += FString::SanitizeFloat(m_pPropertyController->GetProperty<EPigPropertyType::Hydrated>()->GetCurrent());
-
-	// todo move to new component "pig info component"
-	/*auto currentAge = m_xAge.GetCurrent();
-	auto gameMode = Cast<AMainScreenGameMode>(GetWorld()->GetAuthGameMode());
-	str += FString::SanitizeFloat(m_xAge.GetCurrent() / gameMode->GetOneYearInSeconds());
-	str += " years";
-	str += "\n";
-
-	str += "Current weight = ";
-	str += FString::SanitizeFloat(m_xWeight.GetCurrent());
-	str += " kg ";
-
-	{
-		auto weight = 100.f * (m_xWeight.GetCurrent() - m_xCriticalWeight.GetCurrent()) / (m_xMaxWeight.GetCurrent() - m_xCriticalWeight.GetCurrent());
-		str += FString::SanitizeFloat(weight);
-	}
-	str += " %";
-	str += "\n";
-
-
-	str += "Current bellyful = ";
-	str += FString::SanitizeFloat(m_xBellyful.GetCurrent());
-	str += "\n";
-
-	str += "Current energy = ";
-	str += FString::SanitizeFloat(m_xEnergy.GetCurrent());
-
-	PigInfo->SetText(FText::FromString(str));*/
-
-	auto plc = Cast<AGameMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-	plc->SetPigInfo(str);
 }
 
 const UPigInitData* APig::GetInitData() {
@@ -142,4 +97,8 @@ UAnimInstanceController* APig::GetAnimInstanceController() {
 
 UPigAnimInstance* APig::GetPigAnimInstance() {
 	return Cast<UPigAnimInstance>(GetMesh()->GetAnimInstance());
+}
+
+UTextRenderComponent* APig::GetPigInfoComponent() {
+	return PigInfo;
 }

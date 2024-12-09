@@ -16,7 +16,6 @@ const ConsumeConnector& ConsumeConnector::GetConnections() {
 }
 
 ConsumeConnector ConsumeConnector::GenerateConnections() {
-	// todo check if this is called only once
 	ConsumeConnector result;
 
 	result.AddConnection(ETaskType::GoToEatingSpot, EConsumeSourceType::Eating, result);

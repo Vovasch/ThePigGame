@@ -1,8 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ThePigGame/Pig/PigProperties/PigPropertyType.h"
-#include "ThePigGame/Pig/PropertyControllers/SupremePropertyController/SupremePropertyController.h"
 #include "ThePigGame/Utils/PigDataUser/IPigDataUser.h"
 #include "ThePigGame/Utils/Property/Property.h"
 #include "PropertySubControllerBase.generated.h"
@@ -27,13 +25,10 @@ class THEPIGGAME_API UPropertySubControllerBase : public UObject, public INoCach
 	public:
 	virtual void Tick(float delta);
 
-	protected:
-	template<EPigPropertyType type>
-	auto GetProperty() {
-		return m_pOwnerController->GetProperty<type>();
-	}
+	public:
+	USupremePropertyController* GetSupremePropertyController();
 
-	protected:
+	private:
 	TWeakObjectPtr<USupremePropertyController> m_pOwnerController = nullptr;
 
 };

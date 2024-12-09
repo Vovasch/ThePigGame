@@ -53,7 +53,7 @@ void UGoToConsumeSpotTask::TryGoToSpot() {
 
 void UGoToConsumeSpotTask::OnMovementCompleted() {
 	if(m_pTargetConsumeSpot.IsValid() && m_pTargetConsumeSpot->IsAvailable()) {
-		GetPig()->GetPropertyController()->GetConsumingController()->StartConsuming(m_pTargetConsumeSpot);
+		GetPig()->GetPropertyController()->GetSubController<ESubControllerType::Consuming>()->StartConsuming(m_pTargetConsumeSpot);
 		this->Complete();
 	} else {
 		TryGoToSpot();

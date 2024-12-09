@@ -1,5 +1,4 @@
 #include "WeightController.h"
-
 #include "ThePigGame/Pig/PigInitData.h"
 #include "ThePigGame/Pig/PigProperties/PigPropertyType.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/AgeController/AgeController.h"
@@ -20,17 +19,19 @@ const Weight* UWeightController::GetWeight() {
 void UWeightController::Tick(float delta) {
 	Super::Tick(delta);
 
+	CheckBellyful();
+
 	// TODO: WorldCharacteristic won't ever be true because of clamp in property
 	if(m_xWeight.GetCurrent() <= m_xCriticalWeight.GetCurrent())
 	{
-		// confisacate pig
+		//todo LifePhaseController confisacate pig
 		//OnEvent(EPigEvent::RemovedFromFarm);
 	}
 }
 
 void UWeightController::CheckBellyful() {
 
-	auto currentBellyful = GetProperty<EPigPropertyType::Bellyful>()->GetCurrent();
+	auto currentBellyful = GetSupremePropertyController()->GetProperty<EPigPropertyType::Bellyful>()->GetCurrent();
 	if(currentBellyful >= GetInitData()->BellyfulLevelToGetFat) {
 		m_xWeight.SetDelta(m_fWeightDeltaPerTick);
 		return;
@@ -45,7 +46,7 @@ void UWeightController::CheckBellyful() {
 }
 
 void UWeightController::InitServiceProperties() {
-	m_fWeightDeltaPerTick = (GetInitData()->CriticalWeightAtMaxAge - GetInitData()->CriticalWeightAtMinAge) / GetPropertyController()->GetAgeController()->GetMaxSizesAtSeconds(); // TODO: WorldCharacteristic verify
+	m_fWeightDeltaPerTick = (GetInitData()->CriticalWeightAtMaxAge - GetInitData()->CriticalWeightAtMinAge) / GetPropertyController()->GetSubController<ESubControllerType::Age>()->GetMaxSizesAtSeconds(); // TODO: WorldCharacteristic verify
 	m_fWeightDeltaPerTick *= 1.5f;
 
 	m_fWeightDeltaPerTick = 0.5;
@@ -53,8 +54,8 @@ void UWeightController::InitServiceProperties() {
 
 void UWeightController::InitProperties() {
 
-	auto ageProp = GetProperty<EPigPropertyType::Age>();
-	auto maxSizesAtSeconds = m_pOwnerController->GetAgeController()->GetMaxSizesAtSeconds();
+	auto ageProp = GetSupremePropertyController()->GetProperty<EPigPropertyType::Age>();
+	auto maxSizesAtSeconds = GetSupremePropertyController()->GetSubController<ESubControllerType::Age>()->GetMaxSizesAtSeconds();
 
 	m_xCriticalWeight.Init(this);
 	m_xCriticalWeight.GetMinMaxType().SetMinMax(GetInitData()->CriticalWeightAtMinAge, GetInitData()->CriticalWeightAtMaxAge);

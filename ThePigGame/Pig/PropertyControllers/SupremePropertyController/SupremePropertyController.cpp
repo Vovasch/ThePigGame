@@ -4,89 +4,54 @@
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/MiscController/MiscController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/SleepingController/SleepingController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
+#include <functional>
 
-DEFINE_LOG_CATEGORY_STATIC(SupremePropertyControllerLog, Log, All)
+DEFINE_LOG_CATEGORY(SupremePropertyControllerLog)
 
 USupremePropertyController::USupremePropertyController() {
-	// todo add controllers into array. and use CreateDefaultSubObject, because we are in the constructor
-	m_pAgeController = NewObject<UAgeController>();
-	m_pConsumingController = NewObject<UConsumingController>();
-	m_pSleepingController = NewObject<USleepingController>();
-	m_pWeightController = NewObject<UWeightController>();
-	m_pMiscController = NewObject<UMiscController>();
+	m_vSubControllers[uint32(ESubControllerType::Age)] = TStrongObjectPtr(CreateDefaultSubobject<UAgeController>("AgeSubController"));
+	m_vSubControllers[uint32(ESubControllerType::Consuming)] = TStrongObjectPtr(CreateDefaultSubobject<UConsumingController>("ConsumingSubController"));
+	m_vSubControllers[uint32(ESubControllerType::Sleeping)] = TStrongObjectPtr(CreateDefaultSubobject<USleepingController>("SleepingSubController"));
+	m_vSubControllers[uint32(ESubControllerType::Weight)] = TStrongObjectPtr(CreateDefaultSubobject<UWeightController>("WeightSubController"));
+	m_vSubControllers[uint32(ESubControllerType::Misc)] = TStrongObjectPtr(CreateDefaultSubobject<UMiscController>("MiscSubController"));
 
-	m_vProperties[uint32(EPigPropertyType::Age)] = m_pAgeController->GetAge();
-	m_vProperties[uint32(EPigPropertyType::IsAdult)] = m_pAgeController->GetIsAdult();
-	m_vProperties[uint32(EPigPropertyType::Bellyful)] = m_pConsumingController->GetBellyful();
-	m_vProperties[uint32(EPigPropertyType::Hydrated)] = m_pConsumingController->GetHydrated();
-	m_vProperties[uint32(EPigPropertyType::Energy)] = m_pSleepingController->GetEnergy();
-	m_vProperties[uint32(EPigPropertyType::MaxWeight)] = m_pWeightController->GetMaxWeight();
-	m_vProperties[uint32(EPigPropertyType::CriticalWeight)] = m_pWeightController->GetCriticalWeight();
-	m_vProperties[uint32(EPigPropertyType::Weight)] = m_pWeightController->GetWeight();
-	m_vProperties[uint32(EPigPropertyType::Scale)] = m_pMiscController->GetScale();
-	m_vProperties[uint32(EPigPropertyType::Morph)] = m_pMiscController->GetMorph();
+	m_vProperties[uint32(EPigPropertyType::Age)] = GetSubController<ESubControllerType::Age>()->GetAge();
+	m_vProperties[uint32(EPigPropertyType::IsAdult)] = GetSubController<ESubControllerType::Age>()->GetIsAdult();
+	m_vProperties[uint32(EPigPropertyType::Bellyful)] = GetSubController<ESubControllerType::Consuming>()->GetBellyful();
+	m_vProperties[uint32(EPigPropertyType::Hydrated)] = GetSubController<ESubControllerType::Consuming>()->GetHydrated();
+	m_vProperties[uint32(EPigPropertyType::Energy)] = GetSubController<ESubControllerType::Sleeping>()->GetEnergy();
+	m_vProperties[uint32(EPigPropertyType::MaxWeight)] = GetSubController<ESubControllerType::Weight>()->GetMaxWeight();
+	m_vProperties[uint32(EPigPropertyType::CriticalWeight)] = GetSubController<ESubControllerType::Weight>()->GetCriticalWeight();
+	m_vProperties[uint32(EPigPropertyType::Weight)] = GetSubController<ESubControllerType::Weight>()->GetWeight();
+	m_vProperties[uint32(EPigPropertyType::Scale)] = GetSubController<ESubControllerType::Misc>()->GetScale();
+	m_vProperties[uint32(EPigPropertyType::Morph)] = GetSubController<ESubControllerType::Misc>()->GetMorph();
 
-
-	auto foundNullptr = false;
-	for(uint32 i = 0; i < uint32(EPigPropertyType::Size); ++i) {
-		if(!m_vProperties[i]) {
-			foundNullptr = true;
-			UE_LOG(SupremePropertyControllerLog, Error, TEXT("%s property is a nullptr"), *UEnum::GetDisplayValueAsText(EPigPropertyType(i)).ToString());
-		}
-	}
-
-	if(foundNullptr) {
-		UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("One property or more are nullptr"));
-	}
+	VerifyContainerElements<ESubControllerType>(m_vSubControllers);
+	VerifyContainerElements<EPigPropertyType>(m_vProperties);
 }
 
 void USupremePropertyController::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
 
-	// todo add controllers into array.
-	m_pAgeController->Init(this);
-	m_pConsumingController->Init(this);
-	m_pSleepingController->Init(this);
-	m_pWeightController->Init(this);
-	m_pMiscController->Init(this);
+	auto functions = {
+		std::function([this](TStrongObjectPtr<UPropertySubControllerBase> controller) {
+				controller->Init(this);
+		}),
+		std::function([](TStrongObjectPtr<UPropertySubControllerBase> controller) {
+				controller->InitServiceProperties();
+		}),
+		std::function([](TStrongObjectPtr<UPropertySubControllerBase> controller) {
+				controller->InitProperties();
+		})
+	};
 
-	m_pAgeController->InitServiceProperties();
-	m_pConsumingController->InitServiceProperties();
-	m_pSleepingController->InitServiceProperties();
-	m_pWeightController->InitServiceProperties();
-	m_pMiscController->InitServiceProperties();
-
-	m_pAgeController->InitProperties();
-	m_pConsumingController->InitProperties();
-	m_pSleepingController->InitProperties();
-	m_pWeightController->InitProperties();
-	m_pMiscController->InitProperties();
-}
-
-UAgeController* USupremePropertyController::GetAgeController() {
-	return m_pAgeController;
-}
-
-UConsumingController* USupremePropertyController::GetConsumingController() {
-	return m_pConsumingController;
-}
-
-USleepingController* USupremePropertyController::GetSleepingController() {
-	return m_pSleepingController;
-}
-
-UWeightController* USupremePropertyController::GetWeightController() {
-	return m_pWeightController;
-}
-
-UMiscController* USupremePropertyController::GetMiscController() {
-	return m_pMiscController;
+	for(auto& func : functions) {
+		std::for_each(m_vSubControllers.begin(), m_vSubControllers.end(), func);
+	}
 }
 
 void USupremePropertyController::Tick(float delta) {
-	m_pAgeController->Tick(delta);
-	m_pConsumingController->Tick(delta);
-	m_pSleepingController->Tick(delta);
-	m_pWeightController->Tick(delta);
-	m_pMiscController->Tick(delta);
+	for(auto controller : m_vSubControllers) {
+		controller->Tick(delta);
+	}
 }

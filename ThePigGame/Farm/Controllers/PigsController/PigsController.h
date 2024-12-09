@@ -22,5 +22,4 @@ class THEPIGGAME_API UPigsController : public UFarmControllerBase {
 	protected:
 	UPROPERTY()
 	TArray<APig*> m_vPigs;
-
 };
