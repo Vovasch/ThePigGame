@@ -23,6 +23,10 @@ void UTaskBase::OnEnd() {
 	GetTaskDispatcher()->OnEndTask(GetTaskType());
 }
 
+bool UTaskBase::IsValidData() {
+	return true;
+}
+
 void UTaskBase::Complete() {
 	if(!m_bInProgress) return;
 	UE_LOG(TaskLog, Log, TEXT("Task %s completed. %s"), *UEnum::GetDisplayValueAsText(GetTaskType()).ToString(), *GetPig()->GetName());
@@ -48,4 +52,7 @@ bool UTaskBase::IsInProgress() {
 
 void UTaskBase::SetTaskData(TStrongObjectPtr<const UTaskDataBase> taskData) {
 	m_pTaskData = taskData;
+	if(!IsValidData()) {
+		UE_LOG(TaskLog, Fatal, TEXT("Provided data is not valid"))
+	}
 }

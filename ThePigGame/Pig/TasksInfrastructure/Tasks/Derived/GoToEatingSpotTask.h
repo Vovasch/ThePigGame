@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GoToConsumeSpotTask.h"
+#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Base/GoToConsumeSpotTask.h"
 #include "GoToEatingSpotTask.generated.h"
 
 UCLASS()

@@ -37,24 +37,20 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 
 	const UTaskBase* GetTaskByType(ETaskType type);
 
-	protected:
+	private:
 	void TryStartNewTask();
-
-	protected:
 	void OnTaskStarted(ETaskType taskType);
 
-	protected:
+	UTaskBase* GetTaskByTypeInner(ETaskType taskType);
+	UTaskBase* GetCurrentInProgressTask();
+	
 	template<typename TaskType>
 	void CreateTask() {
 		static_assert(std::is_base_of_v<UTaskBase, TaskType>, "TaskType must be derived from UTaskBase");
 
-		auto task = NewObject<TaskType>();
+		auto task = TStrongObjectPtr(NewObject<TaskType>());
 		m_vAllTasks[(uint32)task->GetTaskType()] = task;
 	}
-
-	protected:
-	UTaskBase* GetTaskByTypeInner(ETaskType taskType);
-	UTaskBase* GetCurrentInProgressTask();
 
 	enum class ETaskState {
 		None,
@@ -62,13 +58,12 @@ class THEPIGGAME_API UTaskDispatcher : public UObject, public TEventHandler<ETas
 		InProgress
 	};
 
-	protected:
+	private:
 	// tail is next to start or current in progress
 	TQueue<ETaskType> m_xTaskQue;
 
-	UPROPERTY()
-	TArray<UTaskBase*> m_vAllTasks;
+	TStaticArray<TStrongObjectPtr<UTaskBase>, (int32)ETaskType::Size> m_vAllTasks{InPlace, nullptr};
 
-	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskState;
+	TStaticArray<ETaskState, (int32)ETaskType::Size> m_vTaskState {InPlace, ETaskState::None};
 
 };

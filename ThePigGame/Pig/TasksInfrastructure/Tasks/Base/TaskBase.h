@@ -32,9 +32,9 @@ class THEPIGGAME_API UTaskBase : public UObject, public TEventHandler<ETaskEvent
 	protected:
 	virtual void OnEnd();
 
-	protected:
-	TStrongObjectPtr<const UTaskDataBase> m_pTaskData = nullptr;
+	virtual bool IsValidData();
 
 	private:
+	TStrongObjectPtr<const UTaskDataBase> m_pTaskData = nullptr;
 	bool m_bInProgress = false;
 };

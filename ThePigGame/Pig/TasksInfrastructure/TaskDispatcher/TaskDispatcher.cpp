@@ -1,30 +1,27 @@
 #include "TaskDispatcher.h"
 #include "../../PigStateMachine/PigStateMachine.h"
 #include "../../PigStateMachine/PigDefaultState.h"
-#include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToConsumeSpotTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToDrinkingSpotTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToEatingSpotTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToRandomLocationTask.h"
 #include "ThePigGame/Pig/TasksInfrastructure/Tasks/Derived/GoToSleepTask.h"
+#include "ThePigGame/Utils/Misc/TMiscUtils.h"
 
 UTaskDispatcher::UTaskDispatcher() {
-	// todo make m_valltask a staticarray and add checking if all types of tasks has been created.
-	m_vAllTasks.AddDefaulted((uint32)ETaskType::Size);
 	CreateTask<UGoToEatingSpotTask>();
 	CreateTask<UGoToDrinkingSpotTask>();
 	CreateTask<UGoToSleepTask>();
 	CreateTask<UGoToRandomLocationTask>();
+
+	utils::VerifyContainerElements<ETaskType>(m_vAllTasks);
 }
 
 void UTaskDispatcher::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
-	// todo here shall not be if(task) check this is stupid we shall have fatal error and not able to get to this stage of the program if any task is a nullptr
-	for(auto& task : m_vAllTasks) {
-		if(task) task->Init(pig);
-	}
 
-	for(auto& data : m_vTaskState) {
-		data = ETaskState::None;
+	// i = 1; because of None
+	for(uint32 i = 1; i < m_vAllTasks.Num(); ++i) {
+		m_vAllTasks[i]->Init(pig);
 	}
 
 	GetStateMachine()->GetState(EPigStates::Default)->Subscribe(this, EStateEvent::Start, [this]() {
@@ -52,7 +49,6 @@ const UTaskBase* UTaskDispatcher::GetTaskByType(ETaskType taskType) {
 }
 
 void UTaskDispatcher::AddTask(ETaskType taskType, TStrongObjectPtr<const UTaskDataBase> data) {
-	// todo it's better to check this when adding task with data. just make function in UTaskBase::CheckMyData(data){return true}. then override where needed
 	auto& taskState = m_vTaskState[uint32(taskType)];
 	if(taskState != ETaskState::None) return;
 
@@ -71,7 +67,7 @@ void UTaskDispatcher::Tick(float delta) {
 
 UTaskBase* UTaskDispatcher::GetTaskByTypeInner(ETaskType taskType) {
 	if(taskType==ETaskType::None || taskType == ETaskType::Size) return nullptr;
-	return m_vAllTasks[(uint32)taskType];
+	return m_vAllTasks[(uint32)taskType].Get();
 }
 
 UTaskBase* UTaskDispatcher::GetCurrentInProgressTask() {
@@ -115,7 +111,7 @@ void UTaskDispatcher::TryStartNewTask() {
 		
 		if(m_xTaskQue.IsEmpty()) {
 			m_xTaskQue.Enqueue(taskTypeToStart);
-			// todo maybe set some task state for task we've returned. in progress will be set later
+			m_vTaskState[(uint32)taskTypeToStart] = ETaskState::InQueue;
 			break;
 		}
 

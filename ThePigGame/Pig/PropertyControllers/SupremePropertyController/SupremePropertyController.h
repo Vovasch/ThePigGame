@@ -24,8 +24,6 @@ class USleepingController;
 ///	1) GetProperty 2) Constructor
 /// Well, in both cases are supposed to be warned by fatal or compile error, but anyways
 
-DECLARE_LOG_CATEGORY_EXTERN(SupremePropertyControllerLog, Log, All)
-
 UCLASS()
 class THEPIGGAME_API USupremePropertyController : public UObject, public ICachedPigDataUser
 {
@@ -65,22 +63,6 @@ class THEPIGGAME_API USupremePropertyController : public UObject, public ICached
 		else if constexpr(Type == ESubControllerType::Weight) return Cast<UWeightController>(m_vSubControllers[uint32(Type)].Get());
 		else if constexpr(Type == ESubControllerType::Misc) return Cast<UMiscController>(m_vSubControllers[uint32(Type)].Get());
 		else {} // no return => compile error. Add return for the sub controller Type
-	}
-
-	private:
-	template<typename EnumType, typename Element, uint32 NumElements>
-	void VerifyContainerElements(const TStaticArray<Element, NumElements>& container) {
-		auto foundNullptr = false;
-		for(uint32 i = 0; i < uint32(EnumType::Size); ++i) {
-			if(!container[i]) {
-				foundNullptr = true;
-				UE_LOG(SupremePropertyControllerLog, Error, TEXT("%s is a nullptr"), *UEnum::GetDisplayValueAsText(EnumType(i)).ToString());
-			}
-		}
-
-		if(foundNullptr) {
-			UE_LOG(SupremePropertyControllerLog, Fatal, TEXT("One or more container elements are nullptr"));
-		}
 	}
 
 	private:

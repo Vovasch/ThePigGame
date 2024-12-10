@@ -5,8 +5,7 @@
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/SleepingController/SleepingController.h"
 #include "ThePigGame/Pig/PropertyControllers/PropertySubControllers/WeightController/WeightController.h"
 #include <functional>
-
-DEFINE_LOG_CATEGORY(SupremePropertyControllerLog)
+#include "ThePigGame/Utils/Misc/TMiscUtils.h"
 
 USupremePropertyController::USupremePropertyController() {
 	m_vSubControllers[uint32(ESubControllerType::Age)] = TStrongObjectPtr(CreateDefaultSubobject<UAgeController>("AgeSubController"));
@@ -26,8 +25,8 @@ USupremePropertyController::USupremePropertyController() {
 	m_vProperties[uint32(EPigPropertyType::Scale)] = GetSubController<ESubControllerType::Misc>()->GetScale();
 	m_vProperties[uint32(EPigPropertyType::Morph)] = GetSubController<ESubControllerType::Misc>()->GetMorph();
 
-	VerifyContainerElements<ESubControllerType>(m_vSubControllers);
-	VerifyContainerElements<EPigPropertyType>(m_vProperties);
+	utils::VerifyContainerElements<ESubControllerType>(m_vSubControllers);
+	utils::VerifyContainerElements<EPigPropertyType>(m_vProperties);
 }
 
 void USupremePropertyController::Init(APig* pig) {
