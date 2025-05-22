@@ -20,7 +20,7 @@ void UTaskDispatcher::Init(APig* pig) {
 	ICachedPigDataUser::Init(pig);
 
 	// i = 1; because of None
-	for(uint32 i = 1; i < m_vAllTasks.Num(); ++i) {
+	for(int32 i = 1; i < m_vAllTasks.Num(); ++i) {
 		m_vAllTasks[i]->Init(pig);
 	}
 

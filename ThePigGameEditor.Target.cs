@@ -9,7 +9,9 @@ public class ThePigGameEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		bOverrideBuildEnvironment = true;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("ThePigGame");
+		ExtraModuleNames.AddRange(new string[]{ "ThePigGame", "PigGameCore" });
+		CppStandard = CppStandardVersion.Cpp20;
+		DefaultBuildSettings = BuildSettingsVersion.V5;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 	}
 }

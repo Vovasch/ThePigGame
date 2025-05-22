@@ -52,7 +52,7 @@ class THEPIGGAME_API APig : public ACharacter {
 	UPigInitData* m_pInitData = nullptr;
 
 	private:
-	UPROPERTY()
+	UPROPERTY(SaveGame)
 	USupremePropertyController* m_pPropertyController = nullptr;
 
 	UPROPERTY()

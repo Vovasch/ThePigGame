@@ -77,7 +77,7 @@ void UMovementController::InitAdultVelocityData() {
 }
 
 void UMovementController::InitVelocityData(bool isAdult) {
-	auto initData = GetPig()->GetInitData();
+	auto initData = GetInitData();
 
 	m_pWalkingController->InitWalkingData(isAdult ? initData->AdultWalkingData : initData->ChildWalkingData);
 	m_pRotationController->InitRotationData(isAdult ? initData->AdultRotationData : initData->ChildRotationData);
